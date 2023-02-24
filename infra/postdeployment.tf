@@ -14,39 +14,49 @@
  * limitations under the License.
  */
 
-## Post deployment steps
-# Run the jobs created to populate database and client front-end. 
 
-
-# https://github.com/terraform-google-modules/terraform-google-gcloud/issues/82#issuecomment-726501671 
-module "execute-setup-job" {
-  source        = "terraform-google-modules/gcloud/google"
-  skip_download = true
-
-  additional_components = ["beta"]
-  create_cmd_body       = "beta run jobs execute ${google_cloud_run_v2_job.setup.name} --wait --project ${var.project_id} --region ${var.region}"
-
-  module_depends_on = [
-    google_cloud_run_v2_job.setup
-  ]
-
+resource "google_compute_instance" "initialize" {
+  count = var.init ? 1 : 0
   depends_on = [
-    google_cloud_run_v2_job.setup
-  ]
-}
-
-module "execute-client-job" {
-  source        = "terraform-google-modules/gcloud/google"
-  skip_download = true
-
-  additional_components = ["beta"]
-  create_cmd_body       = "beta run jobs execute ${google_cloud_run_v2_job.client.name} --wait --project ${var.project_id} --region ${var.region}"
-
-  module_depends_on = [
-    google_cloud_run_v2_job.client
+    google_project_service.enabled,
+    google_sql_database_instance.postgres,
   ]
 
-  depends_on = [
-    google_cloud_run_v2_job.setup
-  ]
+  name         = "head-start-initialize"
+  machine_type = "n1-standard-1"
+  zone         = var.zone
+
+  allow_stopping_for_update = true
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+
+  network_interface {
+    network = "default"
+
+    access_config {
+      // Ephemeral public IP
+    }
+  }
+
+  service_account {
+    email  = google_service_account.compute[0].email
+    scopes = ["cloud-platform"] # TODO: Restrict?
+  }
+
+  metadata_startup_script = <<EOT
+#!/bin/bash
+
+echo "Running init database migration"
+gcloud beta run jobs execute ${google_cloud_run_v2_job.setup.name} --wait --project ${var.project_id} --region ${var.region}
+
+
+echo "Running client deploy"
+gcloud beta run jobs execute ${google_cloud_run_v2_job.client.name} --wait --project ${var.project_id} --region ${var.region}
+
+# shutdown -h now
+EOT
 }

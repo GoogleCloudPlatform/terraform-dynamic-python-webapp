@@ -41,6 +41,13 @@ resource "google_service_account" "automation" {
   depends_on   = [google_project_service.enabled]
 }
 
+resource "google_service_account" "compute" {
+  account_id   = var.random_suffix ? "compute-startup-${random_id.suffix.hex}" : "compute-startup"
+  display_name = "Head Start App Compute Instance SA"
+  depends_on   = [google_project_service.enabled]
+  count = var.init ? 1 : 0
+}
+
 # Both the server and Cloud Build can access the database
 resource "google_project_iam_binding" "server_permissions" {
   project    = var.project_id
@@ -65,3 +72,13 @@ resource "google_project_iam_binding" "client_permissions" {
   members    = [local.client_SA]
   depends_on = [google_service_account.client]
 }
+
+# GCE instance needs access to start Jobs
+resource "google_project_iam_binding" "computestartup_permissions" {
+  project    = var.project_id
+  role       = "roles/run.invoker"
+  members    = ["serviceAccount:${google_service_account.compute[0].email}"]
+  depends_on = [google_service_account.compute]
+  count = var.init ? 1 : 0
+}
+

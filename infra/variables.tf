@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+# Standard values
+
 variable "project_id" {
   type        = string
   description = "Google Cloud Project ID"
@@ -25,34 +27,12 @@ variable "region" {
   description = "Google Cloud Region"
 }
 
-variable "instance_name" {
-  type        = string
-  default     = "psql"
-  description = "Cloud SQL Instance name"
-}
+# HSA
 
-variable "service_name" {
+variable "zone" {
   type        = string
-  default     = "server"
-  description = "Cloud Run service name"
-}
-
-variable "image_host_project" {
-  type        = string
-  default     = "avocano-images-tmp"
-  description = "Google Cloud Project that hosts images"
-}
-
-variable "database_name" {
-  type        = string
-  default     = "django"
-  description = "Cloud SQL database name"
-}
-
-variable "database_username" {
-  type        = string
-  default     = "server"
-  description = "Cloud SQL database name"
+  description = "GCP zone for provisioning zonal resources."
+  default     = "us-central1-c"
 }
 
 variable "labels" {
@@ -71,4 +51,40 @@ resource "random_id" "suffix" {
   byte_length = 2
 }
 
+variable "init" {
+  type        = bool
+  description = "Initialize database?"
+  default     = true
+}
 
+# Optional customisation
+
+variable "instance_name" {
+  type        = string
+  default     = "psql"
+  description = "Cloud SQL Instance name"
+}
+
+variable "service_name" {
+  type        = string
+  default     = "server"
+  description = "Cloud Run service name"
+}
+
+variable "image_host_project" {
+  type        = string
+  default     = "hsa-public"
+  description = "Google Cloud Project that hosts images"
+}
+
+variable "database_name" {
+  type        = string
+  default     = "django"
+  description = "Cloud SQL database name"
+}
+
+variable "database_username" {
+  type        = string
+  default     = "server"
+  description = "Cloud SQL database name"
+}

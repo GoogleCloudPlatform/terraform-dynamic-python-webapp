@@ -8,10 +8,10 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
-## [0.1.0](https://github.com/terraform-google-modules/terraform-google-firebase-cloudrun/releases/tag/v0.1.0) - 20XX-YY-ZZ
+## [0.1.0](https://github.com/terraform-google-modules/terraform-dynamic-python-webapp/releases/tag/v0.1.0) - 20XX-YY-ZZ
 
 ### Features
 
 - Initial release
 
-[0.1.0]: https://github.com/terraform-google-modules/terraform-google-firebase-cloudrun/releases/tag/v0.1.0
+[0.1.0]: https://github.com/terraform-google-modules/terraform-dynamic-python-webapp/releases/tag/v0.1.0

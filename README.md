@@ -1,4 +1,4 @@
-# terraform-google-firebase-cloudrun
+# terraform-dynamic-python-webapp
 
 ## Description
 ### tagline
@@ -9,7 +9,7 @@ This module was generated from [terraform-google-module-template](https://github
 
 The resources/services/activations/deletions that this module will create/trigger are:
 
-- Create a GCS bucket with the provided name
+- TODO
 
 ### preDeploy
 To deploy this blueprint you must have an active billing account and billing permissions.
@@ -21,15 +21,7 @@ To deploy this blueprint you must have an active billing account and billing per
 
 Basic usage of this module is as follows:
 
-```hcl
-module "firebase_cloudrun" {
-  source  = "terraform-google-modules/firebase-cloudrun/google"
-  version = "~> 0.1"
-
-  project_id  = "<PROJECT ID>"
-  bucket_name = "gcs-test-bucket"
-}
-```
+TODO
 
 Functional examples are included in the
 [examples](./examples/) directory.
@@ -39,7 +31,6 @@ Functional examples are included in the
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| bucket\_name | The name of the bucket to create | `string` | n/a | yes |
 | project\_id | The project ID to deploy to | `string` | n/a | yes |
 
 ## Outputs
@@ -66,7 +57,7 @@ The following dependencies must be available:
 A service account with the following roles must be used to provision
 the resources of this module:
 
-- Storage Admin: `roles/storage.admin`
+- TODO
 
 The [Project Factory module][project-factory-module] and the
 [IAM module][iam-module] may be used in combination to provision a
@@ -77,7 +68,7 @@ service account with the necessary roles applied.
 A project with the following APIs enabled must be used to host the
 resources of this module:
 
-- Google Cloud Storage JSON API: `storage-api.googleapis.com`
+- TODO
 
 The [Project Factory module][project-factory-module] can be used to
 provision a project with the necessary APIs enabled.

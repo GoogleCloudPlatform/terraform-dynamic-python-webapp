@@ -1,4 +1,4 @@
-module github.com/terraform-google-modules/firebase-cloudrun/test/integration
+module github.com/terraform-google-modules/dynamic-python-webapp/test/integration
 
 go 1.18
 

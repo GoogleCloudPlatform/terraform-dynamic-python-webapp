@@ -23,7 +23,4 @@ terraform {
     }
   }
 
-  provider_meta "google" {
-    module_name = "blueprints/terraform/firebase-cloudrun/v0.0.1"
-  }
 }

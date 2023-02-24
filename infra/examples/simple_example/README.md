@@ -1,6 +1,6 @@
 # Simple Example
 
-This example illustrates how to use the `firebase-cloudrun` module.
+This example illustrates how to use the `dynamic-python-webapp` module.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

@@ -20,6 +20,8 @@ resource "google_compute_instance" "initialize" {
   depends_on = [
     google_project_service.enabled,
     google_sql_database_instance.postgres,
+    google_cloud_run_v2_job.setup,
+    google_cloud_run_v2_job.client,
   ]
 
   name         = "head-start-initialize"

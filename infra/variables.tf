@@ -73,7 +73,7 @@ variable "service_name" {
 
 variable "image_host_project" {
   type        = string
-  default     = "hsa-public"
+  default     = "hsa-public/terraform-python-dynamic-webapp"
   description = "Google Cloud Project that hosts images"
 }
 

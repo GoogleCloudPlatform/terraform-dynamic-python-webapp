@@ -15,6 +15,10 @@
 package multiple_buckets
 
 import (
+	"fmt"
+	"io"
+	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
@@ -30,12 +34,56 @@ func TestSimpleExample(t *testing.T) {
 		example.DefaultVerify(assert)
 
 		projectID := example.GetStringOutput("project_id")
-		services := gcloud.Run(t, "services list", gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})).Array()
+		t.Logf("Using Project ID %q", projectID)
 
-		match := utils.GetFirstMatchResult(t, services, "config.name", "storage.googleapis.com")
-		assert.Equal("ENABLED", match.Get("state").String(), "storage service should be enabled")
+		{
+			// Check that the Cloud Storage API is enabled
+			services := gcloud.Run(t, "services list", gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})).Array()
+			match := utils.GetFirstMatchResult(t, services, "config.name", "storage.googleapis.com")
+			assert.Equal("ENABLED", match.Get("state").String(), "storage service should be enabled")
+		}
 
-		//TODO: Add more here. 
+		{
+			// Check that the Cloud Run service is deployed, is serving, and accepts unauthenticated requests
+			cloudRunServices := gcloud.Run(t, "run services list", gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})).Array()
+			nbServices := len(cloudRunServices)
+			assert.Equal(1, nbServices, "we expected a single Cloud Run service to be deployed, found %d services", nbServices)
+			match := utils.GetFirstMatchResult(t, cloudRunServices, "kind", "Service")
+			serviceURL := match.Get("status.url").String()
+			assert.Truef(strings.HasSuffix(serviceURL, ".run.app"), "unexpected service URL %q", serviceURL)
+			t.Log("Cloud Run service is running at", serviceURL)
+
+			// The Cloud Run service is the app's API backend (it does not serve the Avocano homepage)
+			assertResponseContains(assert, serviceURL, "/api", "/admin")
+
+			// The API must return a list that includes our flagship product
+			assertResponseContains(assert, serviceURL+"/api/products/", "Sparkly Avocado")
+		}
+		{
+			// Check that the Avocano front page is deployed to Firebase Hosting, and serving
+			firebaseURL := fmt.Sprintf("https://%s.web.app", projectID)
+			assertResponseContains(assert, firebaseURL, "<title>Avocano</title>")
+		}
 	})
 	example.Test()
+}
+
+func assertResponseContains(assert *assert.Assertions, url string, text ...string) {
+	code, responseBody, err := httpGetRequest(url)
+	assert.Nil(err)
+	assert.GreaterOrEqual(code, 200)
+	assert.LessOrEqual(code, 299)
+	for _, fragment := range text {
+		assert.Containsf(responseBody, fragment, "couldn't find %q in response body", fragment)
+	}
+}
+
+func httpGetRequest(url string) (statusCode int, body string, err error) {
+	res, err := http.Get(url)
+	if err != nil {
+		return 0, "", err
+	}
+	buffer, err := io.ReadAll(res.Body)
+	res.Body.Close()
+	return res.StatusCode, string(buffer), err
 }

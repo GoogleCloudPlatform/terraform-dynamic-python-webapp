@@ -15,6 +15,10 @@
  */
 
 
+resource "google_compute_network" "default" {
+  name = "default"
+}
+
 resource "google_compute_instance" "initialize" {
   count = var.init ? 1 : 0
   depends_on = [
@@ -22,6 +26,7 @@ resource "google_compute_instance" "initialize" {
     google_sql_database_instance.postgres,
     google_cloud_run_v2_job.setup,
     google_cloud_run_v2_job.client,
+    google_compute_network.default,
   ]
 
   name         = "head-start-initialize"

@@ -76,7 +76,7 @@ resource "google_project_iam_binding" "client_permissions" {
 # GCE instance needs access to start Jobs
 resource "google_project_iam_binding" "computestartup_permissions" {
   project    = var.project_id
-  role       = "roles/run.invoker"
+  role       = "roles/run.developer"
   members    = ["serviceAccount:${google_service_account.compute[0].email}"]
   depends_on = [google_service_account.compute]
   count = var.init ? 1 : 0

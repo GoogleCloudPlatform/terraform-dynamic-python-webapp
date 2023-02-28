@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-module "firebase_cloudrun" {
+module "dynamic-python-webapp" {
   source = "../.."
 
   project_id  = var.project_id

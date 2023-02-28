@@ -22,5 +22,5 @@ output "project_id" {
 output "usage" {
   sensitive = true
   description = "Connection details for the project"
-  value       = module.firebase_cloudrun.usage
+  value       = module.dynamic-python-webapp.usage
 }

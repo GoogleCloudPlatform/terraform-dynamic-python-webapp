@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-# Base images supplied pre-built. 
+# Base images supplied pre-built.
 
 locals {
   server_image = "gcr.io/${var.image_host_project}/server"

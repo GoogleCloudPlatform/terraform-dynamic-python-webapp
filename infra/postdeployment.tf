@@ -15,8 +15,22 @@
  */
 
 
-resource "google_compute_network" "default" {
-  name = "default"
+module "gce-vpc" {
+  count        = var.init ? 1 : 0
+  source       = "terraform-google-modules/network/google"
+  version      = "~> 6.0"
+  project_id   = var.project_id
+  network_name = "gce-init-network"
+
+  subnets = [
+    {
+      subnet_name   = "subnet-gce-int"
+      subnet_ip     = "10.10.10.0/24"
+      subnet_region = var.region
+    }
+  ]
+  
+  depends_on = [google_project_service.enabled]
 }
 
 resource "google_compute_instance" "initialize" {
@@ -26,7 +40,6 @@ resource "google_compute_instance" "initialize" {
     google_sql_database_instance.postgres,
     google_cloud_run_v2_job.setup,
     google_cloud_run_v2_job.client,
-    google_compute_network.default,
   ]
 
   name         = "head-start-initialize"
@@ -42,7 +55,8 @@ resource "google_compute_instance" "initialize" {
   }
 
   network_interface {
-    network = "default"
+    network    = module.gce-vpc[0].network_self_link
+    subnetwork = module.gce-vpc[0].subnets_self_links[0]
 
     access_config {
       // Ephemeral public IP

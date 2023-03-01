@@ -47,10 +47,6 @@ variable "random_suffix" {
   default     = true
 }
 
-resource "random_id" "suffix" {
-  byte_length = 2
-}
-
 variable "init" {
   type        = bool
   description = "Initialize database?"

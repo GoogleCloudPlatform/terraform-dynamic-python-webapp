@@ -13,7 +13,8 @@ This example illustrates how to use the `dynamic-python-webapp` module.
 
 | Name | Description |
 |------|-------------|
-| usage | Usage data |
+| project\_id | The ID of the project in which resources are provisioned. |
+| usage | Connection details for the project |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

@@ -19,6 +19,7 @@ resource "google_storage_bucket" "media" {
 
   location      = "us-central1"
   storage_class = "REGIONAL"
+  force_destroy = true
 
   labels = var.labels
 }

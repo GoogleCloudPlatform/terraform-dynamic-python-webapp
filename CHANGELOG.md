@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.1.1](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.1.0...v0.1.1) (2023-03-01)
+
+
+### Bug Fixes
+
+* Ensure on deletion, bucket contents also destroyed ([9adfb1b](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/9adfb1b15852b7ba6477bb10030e34e8c90c4004))
+
 ## 0.1.0 (2023-03-01)
 
 

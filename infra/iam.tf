@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 # Service Accounts
 
 locals {
@@ -45,7 +45,7 @@ resource "google_service_account" "compute" {
   account_id   = var.random_suffix ? "compute-startup-${random_id.suffix.hex}" : "compute-startup"
   display_name = "Head Start App Compute Instance SA"
   depends_on   = [google_project_service.enabled]
-  count = var.init ? 1 : 0
+  count        = var.init ? 1 : 0
 }
 
 # Both the server and Cloud Build can access the database
@@ -79,6 +79,6 @@ resource "google_project_iam_binding" "computestartup_permissions" {
   role       = "roles/run.developer"
   members    = ["serviceAccount:${google_service_account.compute[0].email}"]
   depends_on = [google_service_account.compute]
-  count = var.init ? 1 : 0
+  count      = var.init ? 1 : 0
 }
 

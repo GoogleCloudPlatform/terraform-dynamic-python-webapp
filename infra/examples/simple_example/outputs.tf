@@ -20,7 +20,7 @@ output "project_id" {
 }
 
 output "usage" {
-  sensitive = true
+  sensitive   = true
   description = "Connection details for the project"
   value       = module.dynamic-python-webapp.usage
 }

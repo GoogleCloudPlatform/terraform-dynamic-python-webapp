@@ -29,7 +29,7 @@ module "gce-vpc" {
       subnet_region = var.region
     }
   ]
-  
+
   depends_on = [google_project_service.enabled]
 }
 

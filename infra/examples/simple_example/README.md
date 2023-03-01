@@ -13,7 +13,7 @@ This example illustrates how to use the `dynamic-python-webapp` module.
 
 | Name | Description |
 |------|-------------|
-| usage | Usage data |
+| usage | Connection details for the project |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

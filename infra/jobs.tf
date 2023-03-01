@@ -134,7 +134,7 @@ resource "google_cloud_run_v2_job" "client" {
       }
     }
   }
-  
+
   depends_on = [
     google_project_service.enabled
   ]

@@ -18,31 +18,27 @@ locals {
   server_url = google_cloud_run_service.server.status[0].url
 }
 
-output "project_id" {
-  value = var.project_id
-}
-
-output "region" {
-  value = var.region
-}
-
 output "firebase_url" {
-  value = "https://${var.project_id}.web.app"
+  description = "Firebase URL"
+  value       = "https://${var.project_id}.web.app"
 }
 
 output "django_admin_url" {
-  value = "${local.server_url}/admin"
+  description = "Djando Admin URL"
+  value       = "${local.server_url}/admin"
 }
 
 output "django_admin_password" {
-  sensitive = true
-  value     = google_secret_manager_secret_version.django_admin_password.secret_data
+  description = "Djando Admin password"
+  sensitive   = true
+  value       = google_secret_manager_secret_version.django_admin_password.secret_data
 }
 
 
 output "usage" {
-  sensitive = true
-  value     = <<-EOF
+  description = "Next steps for usage"
+  sensitive   = true
+  value       = <<-EOF
     This deployment is now ready for use!
     https://${var.project_id}.web.app
     API Login:

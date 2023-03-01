@@ -33,7 +33,7 @@ func TestSimpleExample(t *testing.T) {
 	example.DefineVerify(func(assert *assert.Assertions) {
 		example.DefaultVerify(assert)
 
-		projectID := example.GetStringOutput("project_id")
+		projectID := example.GetTFSetupStringOutput("project_id")
 		t.Logf("Using Project ID %q", projectID)
 
 		{

@@ -18,6 +18,10 @@
 
 ## Instance
 
+resource "random_id" "suffix" {
+  byte_length = 2
+}
+
 resource "google_sql_database_instance" "postgres" {
   name             = var.random_suffix ? "${var.instance_name}-${random_id.suffix.hex}" : var.instance_name
   database_version = "POSTGRES_14"

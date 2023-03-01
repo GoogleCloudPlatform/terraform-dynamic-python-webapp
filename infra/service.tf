@@ -55,7 +55,7 @@ resource "google_cloud_run_service" "server" {
 }
 
 
-# Allow server to be public readable. 
+# Allow server to be public readable.
 data "google_iam_policy" "noauth" {
   binding {
     role    = "roles/run.invoker"

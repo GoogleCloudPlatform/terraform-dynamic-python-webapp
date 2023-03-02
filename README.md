@@ -30,7 +30,6 @@ To deploy this blueprint you must have an active billing account and billing per
 Basic usage of this module is as follows:
 
 ```
-
 module "dynamic-python-webapp" {
   source = "."
   project_id = var.project_id

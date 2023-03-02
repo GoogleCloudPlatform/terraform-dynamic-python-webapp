@@ -8,11 +8,14 @@ This is an auto-generated module.
 
 ### detailed
 
-This module was generated from [terraform-google-module-template](https://github.com/terraform-google-modules/terraform-google-module-template/), which by default generates a module that simply creates a GCS bucket. As the module develops, this README should be updated.
-
 The resources/services/activations/deletions that this module will create/trigger are:
 
-- TODO
+- Cloud Run
+- Cloud SQL
+- Firebase Hosting
+- Secret Manager
+- IAM
+- Cloud Storage
 
 ### preDeploy
 
@@ -26,7 +29,13 @@ To deploy this blueprint you must have an active billing account and billing per
 
 Basic usage of this module is as follows:
 
-TODO
+```
+
+module "dynamic-python-webapp" {
+  source = "."
+  project_id = var.project_id
+}
+```
 
 Functional examples are included in the
 [examples](./examples/) directory.
@@ -36,13 +45,26 @@ Functional examples are included in the
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| project\_id | The project ID to deploy to | `string` | n/a | yes |
+| database\_name | Cloud SQL database name | `string` | `"django"` | no |
+| database\_username | Cloud SQL database name | `string` | `"server"` | no |
+| image\_host\_project | Google Cloud Project that hosts images | `string` | `"hsa-public/terraform-python-dynamic-webapp"` | no |
+| init | Initialize database? | `bool` | `true` | no |
+| instance\_name | Cloud SQL Instance name | `string` | `"psql"` | no |
+| labels | A set of key/value label pairs to assign to the resources deployed by this blueprint. | `map(string)` | `{}` | no |
+| project\_id | Google Cloud Project ID | `string` | n/a | yes |
+| random\_suffix | Add random suffix to VM name | `string` | `true` | no |
+| region | Google Cloud Region | `string` | `"us-central1"` | no |
+| service\_name | Cloud Run service name | `string` | `"server"` | no |
+| zone | GCP zone for provisioning zonal resources. | `string` | `"us-central1-c"` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| bucket\_name | Name of the bucket |
+| django\_admin\_password | Djando Admin password |
+| django\_admin\_url | Djando Admin URL |
+| firebase\_url | Firebase URL |
+| usage | Next steps for usage |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
@@ -62,7 +84,18 @@ The following dependencies must be available:
 A service account with the following roles must be used to provision
 the resources of this module:
 
-- TODO
+- roles/cloudsql.admin
+- roles/cloudsql.admin
+- roles/firebasehosting.admin
+- roles/iam.serviceAccountAdmin
+- roles/iam.serviceAccountUser
+- roles/resourcemanager.projectIamAdmin
+- roles/run.admin
+- roles/secretmanager.admin
+- roles/storage.admin
+- roles/compute.networkAdmin
+- roles/compute.admin
+
 
 The [Project Factory module][project-factory-module] and the
 [IAM module][iam-module] may be used in combination to provision a
@@ -73,14 +106,25 @@ service account with the necessary roles applied.
 A project with the following APIs enabled must be used to host the
 resources of this module:
 
-- TODO
+- run.googleapis.com
+- iam.googleapis.com
+- artifactregistry.googleapis.com
+- compute.googleapis.com
+- sql-component.googleapis.com
+- cloudbuild.googleapis.com
+- secretmanager.googleapis.com
+- firebase.googleapis.com
+- config.googleapis.com
+- cloudresourcemanager.googleapis.com 
+- sqladmin.googleapis.com
+
 
 The [Project Factory module][project-factory-module] can be used to
 provision a project with the necessary APIs enabled.
 
 ## Contributing
 
-Refer to the [contribution guidelines](./CONTRIBUTING.md) for
+Refer to the [contribution guidelines](CONTRIBUTING.md) for
 information on contributing to this module.
 
 [iam-module]: https://registry.terraform.io/modules/terraform-google-modules/iam/google
@@ -90,4 +134,4 @@ information on contributing to this module.
 
 ## Security Disclosures
 
-Please see our [security disclosure process](./SECURITY.md).
+Please see our [security disclosure process](SECURITY.md).

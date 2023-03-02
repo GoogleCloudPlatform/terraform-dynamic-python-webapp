@@ -8,11 +8,14 @@ This is an auto-generated module.
 
 ### detailed
 
-This module was generated from [terraform-google-module-template](https://github.com/terraform-google-modules/terraform-google-module-template/), which by default generates a module that simply creates a GCS bucket. As the module develops, this README should be updated.
-
 The resources/services/activations/deletions that this module will create/trigger are:
 
-- TODO
+- Cloud Run
+- Cloud SQL
+- Firebase Hosting
+- Secret Manager
+- IAM
+- Cloud Storage
 
 ### preDeploy
 
@@ -26,7 +29,13 @@ To deploy this blueprint you must have an active billing account and billing per
 
 Basic usage of this module is as follows:
 
-TODO
+```
+
+module "dynamic-python-webapp" {
+  source = "."
+  project_id = var.project_id
+}
+```
 
 Functional examples are included in the
 [examples](./examples/) directory.
@@ -75,7 +84,18 @@ The following dependencies must be available:
 A service account with the following roles must be used to provision
 the resources of this module:
 
-- TODO
+- roles/cloudsql.admin
+- roles/cloudsql.admin
+- roles/firebasehosting.admin
+- roles/iam.serviceAccountAdmin
+- roles/iam.serviceAccountUser
+- roles/resourcemanager.projectIamAdmin
+- roles/run.admin
+- roles/secretmanager.admin
+- roles/storage.admin
+- roles/compute.networkAdmin
+- roles/compute.admin
+
 
 The [Project Factory module][project-factory-module] and the
 [IAM module][iam-module] may be used in combination to provision a
@@ -86,7 +106,18 @@ service account with the necessary roles applied.
 A project with the following APIs enabled must be used to host the
 resources of this module:
 
-- TODO
+- run.googleapis.com
+- iam.googleapis.com
+- artifactregistry.googleapis.com
+- compute.googleapis.com
+- sql-component.googleapis.com
+- cloudbuild.googleapis.com
+- secretmanager.googleapis.com
+- firebase.googleapis.com
+- config.googleapis.com
+- cloudresourcemanager.googleapis.com 
+- sqladmin.googleapis.com
+
 
 The [Project Factory module][project-factory-module] can be used to
 provision a project with the necessary APIs enabled.

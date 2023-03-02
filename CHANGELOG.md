@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.1.2](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.1.1...v0.1.2) (2023-03-02)
+
+
+### Bug Fixes
+
+* update infra/README.md ([3b950d6](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/3b950d6f0a61d39e146f27fecddb3dece4a0fdec))
+
 ## [0.1.1](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.1.0...v0.1.1) (2023-03-01)
 
 

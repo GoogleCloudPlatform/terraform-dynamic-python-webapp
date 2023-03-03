@@ -34,7 +34,6 @@ output "django_admin_password" {
   value       = google_secret_manager_secret_version.django_admin_password.secret_data
 }
 
-
 output "usage" {
   description = "Next steps for usage"
   sensitive   = true

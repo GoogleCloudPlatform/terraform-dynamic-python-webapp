@@ -23,10 +23,11 @@ resource "random_id" "suffix" {
 }
 
 resource "google_sql_database_instance" "postgres" {
-  name             = var.random_suffix ? "${var.instance_name}-${random_id.suffix.hex}" : var.instance_name
-  database_version = "POSTGRES_14"
-  project          = var.project_id
-  region           = var.region
+  name                = var.random_suffix ? "${var.instance_name}-${random_id.suffix.hex}" : var.instance_name
+  database_version    = "POSTGRES_14"
+  project             = var.project_id
+  region              = var.region
+  deletion_protection = false
 
   settings {
     tier        = "db-custom-2-4096" # 2 CPU, 4GB Memory
@@ -38,18 +39,21 @@ resource "google_sql_database_instance" "postgres" {
 
 ## Database
 resource "google_sql_database" "database" {
-  name     = var.random_suffix ? "${var.database_name}-${random_id.suffix.hex}" : var.database_name
-  instance = google_sql_database_instance.postgres.name
+  name            = var.random_suffix ? "${var.database_name}-${random_id.suffix.hex}" : var.database_name
+  instance        = google_sql_database_instance.postgres.name
+  deletion_policy = "ABANDON"
 }
 
 ## Database User
 ## Details used in Django config settings
 # NOTE: users created this way automatically gain cloudsqladmin rights.
 resource "google_sql_user" "django" {
-  name     = var.random_suffix ? "${var.database_username}-${random_id.suffix.hex}" : var.database_username
-  instance = google_sql_database_instance.postgres.name
-  password = random_password.database_user_password.result
+  name            = var.random_suffix ? "${var.database_username}-${random_id.suffix.hex}" : var.database_username
+  instance        = google_sql_database_instance.postgres.name
+  password        = random_password.database_user_password.result
+  deletion_policy = "ABANDON"
 }
+
 resource "random_password" "database_user_password" {
   length  = 30
   special = false

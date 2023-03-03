@@ -20,6 +20,7 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
@@ -34,6 +35,7 @@ func TestSimpleExample(t *testing.T) {
 		example.DefaultVerify(assert)
 
 		projectID := example.GetTFSetupStringOutput("project_id")
+		region := "us-central1"
 		t.Logf("Using Project ID %q", projectID)
 
 		{
@@ -55,6 +57,35 @@ func TestSimpleExample(t *testing.T) {
 
 			// The Cloud Run service is the app's API backend (it does not serve the Avocano homepage)
 			assertResponseContains(assert, serviceURL, "/api", "/admin")
+
+			// The data is populated by two Cloud Run jobs, so wait for the final job to finish before continuing.
+			// A job execution is completed if it has a completed time.
+			isJobFinished := func() (bool, error) {
+				clientJobExecs := gcloud.Run(t, "beta run jobs executions list ", gcloud.WithCommonArgs([]string{"--filter", "metadata.name~client", "--project", projectID, "--region", region, "--format", "json"})).Array()
+
+				if len(clientJobExecs) == 0 {
+					t.Log("Cloud Run job been executed. Retrying...")
+					return true, nil
+				}
+
+				match := utils.GetFirstMatchResult(t, clientJobExecs, "kind", "Execution")
+				completionTime := match.Get("status.completionTime").String()
+
+				if completionTime == "" {
+					// retry
+					t.Log("Cloud Run job execution hasn't completed. Retrying...")
+					return true, nil
+				}
+
+				t.Log("Cloud Run job completed", completionTime)
+				assert.NotEqual(completionTime, "", "completedTime must have a value")
+
+				succeededCount := match.Get("status.succeededCount").Int()
+				assert.Equal(succeededCount, int64(1), "succeededCount must not be 0")
+
+				return false, nil
+			}
+			utils.Poll(t, isJobFinished, 10, time.Second*10)
 
 			// The API must return a list that includes our flagship product
 			assertResponseContains(assert, serviceURL+"/api/products/", "Sparkly Avocado")

@@ -24,19 +24,14 @@ resource "google_storage_bucket" "media" {
   labels = var.labels
 }
 
-data "google_iam_policy" "mediaaccess" {
-
-  binding {
-    role    = "roles/storage.legacyBucketOwner"
-    members = ["projectOwner:${var.project_id}", "projectEditor:${var.project_id}", local.server_SA, local.automation_SA]
-  }
-  binding {
-    role    = "roles/storage.legacyBucketReader"
-    members = ["projectViewer:${var.project_id}"]
-  }
+resource "google_storage_bucket_iam_member" "server" {
+  bucket = google_storage_bucket.media.name
+  member = local.server_SA
+  role   = "roles/storage.admin"
 }
 
-resource "google_storage_bucket_iam_policy" "policy" {
-  bucket      = google_storage_bucket.media.name
-  policy_data = data.google_iam_policy.mediaaccess.policy_data
+resource "google_storage_bucket_iam_member" "automation" {
+  bucket = google_storage_bucket.media.name
+  member = local.automation_SA
+  role   = "roles/storage.admin"
 }

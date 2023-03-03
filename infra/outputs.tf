@@ -46,7 +46,3 @@ output "usage" {
     Password: ${google_secret_manager_secret_version.django_admin_password.secret_data}
     EOF
 }
-
-output "region" {
-  value = var.region
-}

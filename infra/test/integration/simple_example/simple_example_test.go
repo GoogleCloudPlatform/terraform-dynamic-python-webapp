@@ -35,7 +35,7 @@ func TestSimpleExample(t *testing.T) {
 		example.DefaultVerify(assert)
 
 		projectID := example.GetTFSetupStringOutput("project_id")
-		region := example.GetStringOutput("region")
+		region := "us-central1"
 		t.Logf("Using Project ID %q", projectID)
 
 		{

@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.1.4](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.1.3...v0.1.4) (2023-03-04)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/stretchr/testify to v1.8.2 ([#19](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/19)) ([e5e6f68](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/e5e6f683ae30f1c57eb3d4f2cd608e39c67f64a4))
+
 ## [0.1.3](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.1.2...v0.1.3) (2023-03-03)
 
 

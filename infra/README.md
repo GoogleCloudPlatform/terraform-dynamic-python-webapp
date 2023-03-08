@@ -114,7 +114,7 @@ resources of this module:
 - secretmanager.googleapis.com
 - firebase.googleapis.com
 - config.googleapis.com
-- cloudresourcemanager.googleapis.com 
+- cloudresourcemanager.googleapis.com
 - sqladmin.googleapis.com
 
 

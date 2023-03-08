@@ -1,0 +1,117 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: blueprints.cloud.google.com/v1alpha1
+kind: BlueprintMetadata
+metadata:
+  name: terraform-dynamic-python-webapp
+  annotations:
+    config.kubernetes.io/local-config: "true"
+spec:
+  title: terraform-dynamic-python-webapp
+  source:
+    repo: https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp.git
+    sourceType: git
+  actuationTool:
+    type: Terraform
+    version: '>= 0.13'
+  description:
+    tagline: This is an auto-generated module.
+    detailed: |-
+      The resources/services/activations/deletions that this module will create/trigger are:
+      - Cloud Run
+      - Cloud SQL
+      - Firebase Hosting
+      - Secret Manager
+      - IAM
+      - Cloud Storage
+    preDeploy: To deploy this blueprint you must have an active billing account and billing permissions.
+  documentation:
+  - title: Hosting a Static Website
+    url: https://cloud.google.com/storage/docs/hosting-static-website
+  examples:
+  - name: simple_example
+    location: examples/simple_example
+  variables:
+  - name: database_name
+    description: Cloud SQL database name
+    type: string
+    default: django
+    required: false
+  - name: database_username
+    description: Cloud SQL database name
+    type: string
+    default: server
+    required: false
+  - name: image_host_project
+    description: Google Cloud Project that hosts images
+    type: string
+    default: hsa-public/terraform-python-dynamic-webapp
+    required: false
+  - name: init
+    description: Initialize database?
+    type: bool
+    default: true
+    required: false
+  - name: instance_name
+    description: Cloud SQL Instance name
+    type: string
+    default: psql
+    required: false
+  - name: labels
+    description: A set of key/value label pairs to assign to the resources deployed by this blueprint.
+    type: map(string)
+    default: {}
+    required: false
+  - name: project_id
+    description: Google Cloud Project ID
+    type: string
+    required: true
+  - name: random_suffix
+    description: Add random suffix to VM name
+    type: string
+    default: true
+    required: false
+  - name: region
+    description: Google Cloud Region
+    type: string
+    default: us-central1
+    required: false
+  - name: service_name
+    description: Cloud Run service name
+    type: string
+    default: server
+    required: false
+  - name: zone
+    description: GCP zone for provisioning zonal resources.
+    type: string
+    default: us-central1-c
+    required: false
+  outputs:
+  - name: django_admin_password
+    description: Djando Admin password
+  - name: django_admin_url
+    description: Djando Admin URL
+  - name: firebase_url
+    description: Firebase URL
+  - name: usage
+    description: Next steps for usage
+  roles:
+  - level: Project
+    roles:
+    - roles/owner
+  services:
+  - cloudresourcemanager.googleapis.com
+  - storage-api.googleapis.com
+  - serviceusage.googleapis.com

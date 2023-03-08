@@ -2,14 +2,13 @@
 
 ## Description
 
-### tagline
+### Tagline
 
 This is an auto-generated module.
 
-### detailed
+### Detailed
 
 The resources/services/activations/deletions that this module will create/trigger are:
-
 - Cloud Run
 - Cloud SQL
 - Firebase Hosting
@@ -17,7 +16,7 @@ The resources/services/activations/deletions that this module will create/trigge
 - IAM
 - Cloud Storage
 
-### preDeploy
+### PreDeploy
 
 To deploy this blueprint you must have an active billing account and billing permissions.
 

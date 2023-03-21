@@ -53,6 +53,24 @@ variable "init" {
   default     = true
 }
 
+variable "image_version" {
+  type        = string
+  default     = "v1.1.1"
+  description = "Version of the image to use"
+}
+
+variable "client_image_host" {
+  type        = string
+  default     = "hsa-public/terraform-python-dynamic-webapp"
+  description = "Google Cloud Project that hosts client images"
+}
+
+variable "server_image_host" {
+  type        = string
+  default     = "hsa-public/terraform-python-dynamic-webapp"
+  description = "Google Cloud Project that hosts server images"
+}
+
 # Optional customisation
 
 variable "instance_name" {
@@ -65,12 +83,6 @@ variable "service_name" {
   type        = string
   default     = "server"
   description = "Cloud Run service name"
-}
-
-variable "image_host_project" {
-  type        = string
-  default     = "hsa-public/terraform-python-dynamic-webapp"
-  description = "Google Cloud Project that hosts images"
 }
 
 variable "database_name" {

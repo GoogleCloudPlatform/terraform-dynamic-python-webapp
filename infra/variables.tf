@@ -56,19 +56,19 @@ variable "init" {
 variable "image_version" {
   type        = string
   default     = "v1.1.1"
-  description = "Version of the image to use"
+  description = "Version of the Container Registry image to use"
 }
 
 variable "client_image_host" {
   type        = string
   default     = "hsa-public/terraform-python-dynamic-webapp"
-  description = "Google Cloud Project that hosts client images"
+  description = "Container Registry that hosts the client image (PROJECT_ID[/folder])"
 }
 
 variable "server_image_host" {
   type        = string
   default     = "hsa-public/terraform-python-dynamic-webapp"
-  description = "Google Cloud Project that hosts server images"
+  description = "Container Registry that hosts the server image (PROJECT_ID[/folder])"
 }
 
 # Optional customisation

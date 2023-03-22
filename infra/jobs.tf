@@ -120,7 +120,7 @@ resource "google_cloud_run_v2_job" "client" {
         image = local.client_image
         env {
           name  = "SERVICE_NAME"
-          value = google_cloud_run_service.server.name
+          value = google_cloud_run_v2_service.server.name
         }
         env {
           name  = "REGION"

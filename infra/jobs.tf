@@ -15,9 +15,8 @@
  */
 
 resource "google_cloud_run_v2_job" "setup" {
-  name         = var.random_suffix ? "setup-${random_id.suffix.hex}" : "setup"
-  location     = var.region
-  launch_stage = "GA"
+  name     = var.random_suffix ? "setup-${random_id.suffix.hex}" : "setup"
+  location = var.region
 
   labels = var.labels
 

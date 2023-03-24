@@ -15,9 +15,8 @@
  */
 
 resource "google_cloud_run_v2_job" "setup" {
-  name         = var.random_suffix ? "setup-${random_id.suffix.hex}" : "setup"
-  location     = var.region
-  launch_stage = "BETA"
+  name     = var.random_suffix ? "setup-${random_id.suffix.hex}" : "setup"
+  location = var.region
 
   labels = var.labels
 
@@ -109,7 +108,7 @@ resource "google_cloud_run_v2_job" "client" {
 
   name         = var.random_suffix ? "client-${random_id.suffix.hex}" : "client"
   location     = var.region
-  launch_stage = "BETA"
+  launch_stage = "GA"
 
   labels = var.labels
 
@@ -120,7 +119,7 @@ resource "google_cloud_run_v2_job" "client" {
         image = local.client_image
         env {
           name  = "SERVICE_NAME"
-          value = google_cloud_run_service.server.name
+          value = google_cloud_run_v2_service.server.name
         }
         env {
           name  = "REGION"

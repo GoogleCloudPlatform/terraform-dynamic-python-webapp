@@ -15,7 +15,7 @@
  */
 
 locals {
-  server_url = google_cloud_run_service.server.status[0].url
+  server_url = google_cloud_run_v2_service.server.uri
 }
 
 output "firebase_url" {
@@ -41,7 +41,7 @@ output "usage" {
     This deployment is now ready for use!
     https://${var.project_id}.web.app
     API Login:
-    ${google_cloud_run_service.server.status[0].url}/admin
+    ${google_cloud_run_v2_service.server.uri}/admin
     Username: admin
     Password: ${google_secret_manager_secret_version.django_admin_password.secret_data}
     EOF

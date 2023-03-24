@@ -30,10 +30,36 @@ resource "google_cloud_run_v2_service" "server" {
             version = "latest"
           }
         }
+        env {
+          name  = "PYTHONPATH"
+          value = ""
+        }
+        env {
+          name  = "DJANGO_SETTINGS_MODULE"
+          value = "avocano_api.settings"
+        }
+        env {
+          name  = "OTEL_METRICS_EXPORTER"
+          value = "none"
+        }
+        env {
+          name  = "OTEL_TRACES_EXPORTER"
+          value = "gcp_trace"
+        }
       }
       volume_mounts {
         name       = "cloudsql"
         mount_path = "/cloudsql"
+      }
+      startup_probe {
+        http_get {
+          path = "/ready"
+        }
+      }
+      liveness_probe {
+        http_get {
+          path = "/healthy"
+        }
       }
     }
     labels = var.labels

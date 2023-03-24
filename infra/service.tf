@@ -17,7 +17,6 @@
 resource "google_cloud_run_v2_service" "server" {
   name         = var.random_suffix ? "${var.service_name}-${random_id.suffix.hex}" : var.service_name
   location     = var.region
-  launch_stage = "BETA"
 
   template {
     service_account = google_service_account.server.email

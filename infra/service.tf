@@ -37,10 +37,6 @@ resource "google_cloud_run_v2_service" "server" {
       }
     }
     labels = var.labels
-    annotations = {
-      "autoscaling.knative.dev/maxScale" = "100"
-      "run.googleapis.com/client-name"   = "terraform"
-    }
     volumes {
       name = "cloudsql"
       cloud_sql_instance {

@@ -15,8 +15,8 @@
  */
 
 resource "google_cloud_run_v2_service" "server" {
-  name     = var.random_suffix ? "${var.service_name}-${random_id.suffix.hex}" : var.service_name
-  location = var.region
+  name         = var.random_suffix ? "${var.service_name}-${random_id.suffix.hex}" : var.service_name
+  location     = var.region
   launch_stage = "BETA"
 
   template {

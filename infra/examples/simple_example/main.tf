@@ -17,6 +17,5 @@
 module "dynamic-python-webapp" {
   source = "../.."
 
-  project_id    = var.project_id
-  image_version = "v1.3.0"
+  project_id = var.project_id
 }

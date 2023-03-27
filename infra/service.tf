@@ -39,6 +39,9 @@ resource "google_cloud_run_v2_service" "server" {
         name  = "DJANGO_SETTINGS_MODULE"
         value = "avocano_api.settings"
       }
+      # These variables are a standard part of OpenTelemetry SDK configuration.
+      # Details are available at
+      # https://opentelemetry.io/docs/reference/specification/sdk-environment-variables/#exporter-selection
       env {
         name  = "OTEL_METRICS_EXPORTER"
         value = "none"

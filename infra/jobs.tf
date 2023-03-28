@@ -63,9 +63,8 @@ resource "google_cloud_run_v2_job" "setup" {
 }
 
 resource "google_cloud_run_v2_job" "migrate" {
-  name         = var.random_suffix ? "migrate-${random_id.suffix.hex}" : "migrate"
-  location     = var.region
-  launch_stage = "BETA"
+  name     = var.random_suffix ? "migrate-${random_id.suffix.hex}" : "migrate"
+  location = var.region
 
   labels = var.labels
 
@@ -106,9 +105,8 @@ resource "google_cloud_run_v2_job" "migrate" {
 
 resource "google_cloud_run_v2_job" "client" {
 
-  name         = var.random_suffix ? "client-${random_id.suffix.hex}" : "client"
-  location     = var.region
-  launch_stage = "GA"
+  name     = var.random_suffix ? "client-${random_id.suffix.hex}" : "client"
+  location = var.region
 
   labels = var.labels
 

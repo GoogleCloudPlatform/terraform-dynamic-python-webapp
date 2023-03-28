@@ -2,14 +2,13 @@
 
 ## Description
 
-### tagline
+### Tagline
 
 This is an auto-generated module.
 
-### detailed
+### Detailed
 
 The resources/services/activations/deletions that this module will create/trigger are:
-
 - Cloud Run
 - Cloud SQL
 - Firebase Hosting
@@ -17,7 +16,7 @@ The resources/services/activations/deletions that this module will create/trigge
 - IAM
 - Cloud Storage
 
-### preDeploy
+### PreDeploy
 
 To deploy this blueprint you must have an active billing account and billing permissions.
 
@@ -30,6 +29,7 @@ To deploy this blueprint you must have an active billing account and billing per
 Basic usage of this module is as follows:
 
 ```
+
 module "dynamic-python-webapp" {
   source = "."
   project_id = var.project_id
@@ -44,15 +44,17 @@ Functional examples are included in the
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| client\_image\_host | Container Registry that hosts the client image (PROJECT\_ID[/folder]) | `string` | `"hsa-public/terraform-python-dynamic-webapp"` | no |
 | database\_name | Cloud SQL database name | `string` | `"django"` | no |
 | database\_username | Cloud SQL database name | `string` | `"server"` | no |
-| image\_host\_project | Google Cloud Project that hosts images | `string` | `"hsa-public/terraform-python-dynamic-webapp"` | no |
+| image\_version | Version of the Container Registry image to use | `string` | `"v1.1.1"` | no |
 | init | Initialize database? | `bool` | `true` | no |
 | instance\_name | Cloud SQL Instance name | `string` | `"psql"` | no |
 | labels | A set of key/value label pairs to assign to the resources deployed by this blueprint. | `map(string)` | `{}` | no |
 | project\_id | Google Cloud Project ID | `string` | n/a | yes |
 | random\_suffix | Add random suffix to VM name | `string` | `true` | no |
 | region | Google Cloud Region | `string` | `"us-central1"` | no |
+| server\_image\_host | Container Registry that hosts the server image (PROJECT\_ID[/folder]) | `string` | `"hsa-public/terraform-python-dynamic-webapp"` | no |
 | service\_name | Cloud Run service name | `string` | `"server"` | no |
 | zone | GCP zone for provisioning zonal resources. | `string` | `"us-central1-c"` | no |
 

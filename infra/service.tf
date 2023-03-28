@@ -31,9 +31,38 @@ resource "google_cloud_run_v2_service" "server" {
           }
         }
       }
+      env {
+        name  = "PYTHONPATH"
+        value = ""
+      }
+      env {
+        name  = "DJANGO_SETTINGS_MODULE"
+        value = "avocano_api.settings"
+      }
+      # These variables are a standard part of OpenTelemetry SDK configuration.
+      # Details are available at
+      # https://opentelemetry.io/docs/reference/specification/sdk-environment-variables/#exporter-selection
+      env {
+        name  = "OTEL_METRICS_EXPORTER"
+        value = "none"
+      }
+      env {
+        name  = "OTEL_TRACES_EXPORTER"
+        value = "gcp_trace"
+      }
       volume_mounts {
         name       = "cloudsql"
         mount_path = "/cloudsql"
+      }
+      startup_probe {
+        http_get {
+          path = "/ready"
+        }
+      }
+      liveness_probe {
+        http_get {
+          path = "/healthy"
+        }
       }
     }
     labels = var.labels

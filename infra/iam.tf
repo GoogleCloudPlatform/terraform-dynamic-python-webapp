@@ -82,3 +82,10 @@ resource "google_project_iam_binding" "computestartup_permissions" {
   count      = var.init ? 1 : 0
 }
 
+# Server needs to write to Cloud Trace
+resource "google_project_iam_binding" "server_traceagent" {
+  project    = var.project_id
+  role       = "roles/cloudtrace.agent"
+  members    = [local.server_SA]
+  depends_on = [google_service_account.server]
+}

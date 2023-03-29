@@ -1,0 +1,29 @@
+allowedCopyrightHolders:
+  - "Google LLC"
+
+allowedLicenses:
+  - "Apache-2.0"
+  - "MIT"
+  - "BSD-3"
+
+ignoreFiles:
+  - "**/package.json"
+  - "**/package-lock.json"
+  - "**/requirements.txt"
+  - "**/requirements-test.txt"
+  - "**/__init__.py"
+
+ignoreLicenseYear: true
+
+sourceFileExtensions:
+  - "js"
+  - "sh"
+  - "Dockerfile"
+  - "yaml"
+  - "yml"
+  - "py"
+  - "html"
+  - "txt"
+  - "go"
+  - "proto"
+  - "tf"

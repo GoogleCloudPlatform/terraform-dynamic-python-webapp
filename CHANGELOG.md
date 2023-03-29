@@ -8,6 +8,14 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.3.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.2.0...v0.3.0) (2023-03-29)
+
+
+### Features
+
+* add health checks and opentelemetry trace configuration ([#27](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/27)) ([4db3641](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/4db36416a4954e3c976ab61158ed399a69616728))
+* **infra:** migrate server to cloud run v2 resource ([#26](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/26)) ([d77b1cf](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/d77b1cf085556b4a1f2269a2424b786c44944c12))
+
 ## [0.2.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.1.4...v0.2.0) (2023-03-21)
 
 

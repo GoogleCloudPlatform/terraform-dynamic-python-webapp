@@ -15,6 +15,7 @@ This changelog is generated automatically based on [Conventional Commits](https:
 
 * add health checks and opentelemetry trace configuration ([#27](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/27)) ([4db3641](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/4db36416a4954e3c976ab61158ed399a69616728))
 * **infra:** migrate server to cloud run v2 resource ([#26](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/26)) ([d77b1cf](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/d77b1cf085556b4a1f2269a2424b786c44944c12))
+* fix: Update outputs.tf to include neos toc tutorial url ([#29](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/29)) ([58f4dfd](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/58f4dfdce61bf400d1f24cd2d00753cec4bc226b))
 
 ## [0.2.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.1.4...v0.2.0) (2023-03-21)
 

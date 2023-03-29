@@ -23,6 +23,11 @@ output "firebase_url" {
   value       = "https://${var.project_id}.web.app"
 }
 
+output "neos_toc_url" {
+  description = "Neos Tutorial URL"
+  value       = "http://console.cloud.google.com/welcome?walkthrough_id=panels--sic--dynamic-python-web-app_toc"
+}
+   
 output "django_admin_url" {
   description = "Djando Admin URL"
   value       = "${local.server_url}/admin"

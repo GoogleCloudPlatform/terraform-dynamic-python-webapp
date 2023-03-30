@@ -25,7 +25,7 @@ output "firebase_url" {
 
 output "neos_toc_url" {
   description = "Neos Tutorial URL"
-  value       = "http://console.cloud.google.com/welcome?walkthrough_id=panels--sic--dynamic-python-web-app_toc"
+  value       = "https://console.cloud.google.com/products/solutions/deployments?walkthrough_id=panels--sic--dynamic-python-web-app_toc"
 }
 
 output "django_admin_url" {

@@ -23,9 +23,20 @@ output "firebase_url" {
   value       = "https://${var.project_id}.web.app"
 }
 
+locals {
+  toggleCommerceActive = length(split("serverless-ecommerce", var.client_image_host)) > 1
+  neosUrlTemplate      = "https://console.cloud.google.com/products/solutions/deployments?walkthrough_id=panels--sic--%s_toc"
+  jssDynamicWebApp     = "dynamic-python-web-app"
+  jssCommerceApp       = "ecommerce-serverless"
+}
+
 output "neos_toc_url" {
   description = "Neos Tutorial URL"
-  value       = "https://console.cloud.google.com/products/solutions/deployments?walkthrough_id=panels--sic--dynamic-python-web-app_toc"
+  value = (
+    local.toggleCommerceActive ?
+    format(local.neosUrlTemplate, local.jssCommerceApp) :
+    format(local.neosUrlTemplate, local.jssDynamicWebApp)
+  )
 }
 
 output "django_admin_url" {

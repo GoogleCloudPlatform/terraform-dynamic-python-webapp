@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.3.1](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.3.0...v0.3.1) (2023-03-30)
+
+
+### Bug Fixes
+
+* correct neos url ([#34](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/34)) ([7b41126](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/7b41126ab8ec89d337097275235806809c53abdf))
+
 ## [0.3.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.2.0...v0.3.0) (2023-03-29)
 
 

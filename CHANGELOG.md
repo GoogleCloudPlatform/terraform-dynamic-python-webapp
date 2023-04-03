@@ -8,6 +8,14 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.3.2](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.3.1...v0.3.2) (2023-04-03)
+
+
+### Bug Fixes
+
+* add neos_toc_url for ecommerce-serverless ([#37](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/37)) ([50c7552](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/50c75523f22280fe4705a0664383695922a1fe01))
+* ensure storage is deployed to selected region ([#30](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/30)) ([06cdfe3](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/06cdfe30b64883157fe3d3fa5799d18eae21c198))
+
 ## [0.3.1](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.3.0...v0.3.1) (2023-03-30)
 
 

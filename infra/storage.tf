@@ -17,7 +17,7 @@
 resource "google_storage_bucket" "media" {
   name = var.random_suffix ? "media-${var.project_id}-${random_id.suffix.hex}" : "media-${var.project_id}"
 
-  location      = "us-central1"
+  location      = var.region
   storage_class = "REGIONAL"
   force_destroy = true
 

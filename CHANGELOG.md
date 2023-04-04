@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.4.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.3.2...v0.4.0) (2023-04-04)
+
+
+### Features
+
+* update avocano to 1.4.1 ([#39](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/39)) ([8e3799d](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/8e3799db1aa5562047a8491eee1dc6a0e1b07e40))
+
 ## [0.3.2](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.3.1...v0.3.2) (2023-04-03)
 
 

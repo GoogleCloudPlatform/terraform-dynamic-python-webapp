@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.4.1](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.4.0...v0.4.1) (2023-04-05)
+
+
+### Bug Fixes
+
+* add API warmup curl in postdeployment.tf ([#42](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/42)) ([2e0888c](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/2e0888c4f92d5117a172ec37bf5125c0119de5dd))
+
 ## [0.4.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.3.2...v0.4.0) (2023-04-04)
 
 

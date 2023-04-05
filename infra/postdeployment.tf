@@ -78,6 +78,9 @@ gcloud beta run jobs execute ${google_cloud_run_v2_job.setup.name} --wait --proj
 echo "Running client deploy"
 gcloud beta run jobs execute ${google_cloud_run_v2_job.client.name} --wait --project ${var.project_id} --region ${var.region}
 
+echo "Warm up API"
+curl ${local.server_url}/api/products/?warmup
+
 # shutdown -h now
 EOT
 }

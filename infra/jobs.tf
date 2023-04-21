@@ -36,7 +36,7 @@ resource "google_cloud_run_v2_job" "setup" {
           }
         }
         env {
-          name = "ADMIN_PASSWORD"
+          name = "DJANGO_SUPERUSER_PASSWORD"
           value_source {
             secret_key_ref {
               secret  = google_secret_manager_secret.django_admin_password.secret_id

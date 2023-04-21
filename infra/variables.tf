@@ -55,7 +55,7 @@ variable "init" {
 
 variable "image_version" {
   type        = string
-  default     = "v1.5.0"
+  default     = "v1.6.0"
   description = "Version of the Container Registry image to use"
 }
 

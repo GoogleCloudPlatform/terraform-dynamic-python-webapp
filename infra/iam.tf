@@ -48,44 +48,59 @@ resource "google_service_account" "compute" {
   count        = var.init ? 1 : 0
 }
 
-# Both the server and Cloud Build can access the database
-resource "google_project_iam_binding" "server_permissions" {
+# The Cloud Run server can access the database
+resource "google_project_iam_member" "server_permissions" {
   project    = var.project_id
   role       = "roles/cloudsql.client"
-  members    = [local.server_SA, local.automation_SA]
-  depends_on = [google_service_account.server, google_service_account.automation]
+  member     = local.server_SA
+  depends_on = [google_service_account.server]
 }
 
+# Cloud Build can access the database
+resource "google_project_iam_member" "build_permissions" {
+  project    = var.project_id
+  role       = "roles/cloudsql.client"
+  member     = local.automation_SA
+  depends_on = [google_service_account.automation]
+}
 
 # Server needs introspection permissions
-resource "google_project_iam_binding" "server_introspection" {
+resource "google_project_iam_member" "server_introspection" {
   project    = var.project_id
   role       = "roles/run.viewer"
-  members    = [local.server_SA, local.client_SA]
-  depends_on = [google_service_account.server, google_service_account.client]
+  member     = local.server_SA
+  depends_on = [google_service_account.server]
+}
+
+# Client needs introspection permissions
+resource "google_project_iam_member" "client_introspection" {
+  project    = var.project_id
+  role       = "roles/run.viewer"
+  member     = local.client_SA
+  depends_on = [google_service_account.client]
 }
 
 # Client may need permission to deploy the front end
-resource "google_project_iam_binding" "client_permissions" {
+resource "google_project_iam_member" "client_permissions" {
   project    = var.project_id
   role       = "roles/firebasehosting.admin"
-  members    = [local.client_SA]
+  member     = local.client_SA
   depends_on = [google_service_account.client]
 }
 
 # GCE instance needs access to start Jobs
-resource "google_project_iam_binding" "computestartup_permissions" {
+resource "google_project_iam_member" "computestartup_permissions" {
   project    = var.project_id
   role       = "roles/run.developer"
-  members    = ["serviceAccount:${google_service_account.compute[0].email}"]
+  member     = "serviceAccount:${google_service_account.compute[0].email}"
   depends_on = [google_service_account.compute]
   count      = var.init ? 1 : 0
 }
 
 # Server needs to write to Cloud Trace
-resource "google_project_iam_binding" "server_traceagent" {
+resource "google_project_iam_member" "server_traceagent" {
   project    = var.project_id
   role       = "roles/cloudtrace.agent"
-  members    = [local.server_SA]
+  member     = local.server_SA
   depends_on = [google_service_account.server]
 }

@@ -24,7 +24,7 @@ module "gce-vpc" {
 
   subnets = [
     {
-      subnet_name   = var.random_suffix ? "subnet-gce-int-${random_id.suffix.hex}" : "subnet-gce-int"
+      subnet_name   = "subnet-gce-int"
       subnet_ip     = "10.10.10.0/24"
       subnet_region = var.region
     }

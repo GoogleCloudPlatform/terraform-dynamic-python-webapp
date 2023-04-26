@@ -44,15 +44,17 @@ Functional examples are included in the
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| client\_image\_host | Container Registry that hosts the client image (PROJECT\_ID[/folder]) | `string` | `"hsa-public/terraform-python-dynamic-webapp"` | no |
 | database\_name | Cloud SQL database name | `string` | `"django"` | no |
 | database\_username | Cloud SQL database name | `string` | `"server"` | no |
-| image\_host\_project | Google Cloud Project that hosts images | `string` | `"hsa-public/terraform-python-dynamic-webapp"` | no |
+| image\_version | Version of the Container Registry image to use | `string` | `"v1.5.0"` | no |
 | init | Initialize database? | `bool` | `true` | no |
 | instance\_name | Cloud SQL Instance name | `string` | `"psql"` | no |
 | labels | A set of key/value label pairs to assign to the resources deployed by this blueprint. | `map(string)` | `{}` | no |
 | project\_id | Google Cloud Project ID | `string` | n/a | yes |
 | random\_suffix | Add random suffix to VM name | `string` | `true` | no |
 | region | Google Cloud Region | `string` | `"us-central1"` | no |
+| server\_image\_host | Container Registry that hosts the server image (PROJECT\_ID[/folder]) | `string` | `"hsa-public/terraform-python-dynamic-webapp"` | no |
 | service\_name | Cloud Run service name | `string` | `"server"` | no |
 | zone | GCP zone for provisioning zonal resources. | `string` | `"us-central1-c"` | no |
 
@@ -63,6 +65,7 @@ Functional examples are included in the
 | django\_admin\_password | Djando Admin password |
 | django\_admin\_url | Djando Admin URL |
 | firebase\_url | Firebase URL |
+| neos\_toc\_url | Neos Tutorial URL |
 | usage | Next steps for usage |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

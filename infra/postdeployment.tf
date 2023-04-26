@@ -42,9 +42,10 @@ resource "google_compute_instance" "initialize" {
     google_cloud_run_v2_job.client,
   ]
 
-  name         = var.random_suffix ? "head-start-initialize-${random_id.suffix.hex}" : "head-start-initialize"
-  machine_type = "n1-standard-1"
-  zone         = var.zone
+  name           = var.random_suffix ? "head-start-initialize-${random_id.suffix.hex}" : "head-start-initialize"
+  machine_type   = "n1-standard-1"
+  zone           = var.zone
+  desired_status = "RUNNING"
 
   allow_stopping_for_update = true
 
@@ -81,6 +82,6 @@ gcloud beta run jobs execute ${google_cloud_run_v2_job.client.name} --wait --pro
 echo "Warm up API"
 curl ${local.server_url}/api/products/?warmup
 
-# shutdown -h now
+shutdown -h now
 EOT
 }

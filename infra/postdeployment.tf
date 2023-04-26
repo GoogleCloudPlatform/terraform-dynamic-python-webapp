@@ -20,11 +20,11 @@ module "gce-vpc" {
   source       = "terraform-google-modules/network/google"
   version      = "~> 7.0"
   project_id   = var.project_id
-  network_name = "gce-init-network"
+  network_name = var.random_suffix ? "gce-init-network-${random_id.suffix.hex}" : "gce-init-network"
 
   subnets = [
     {
-      subnet_name   = "subnet-gce-int"
+      subnet_name   = var.random_suffix ? "subnet-gce-int-${random_id.suffix.hex}" : "subnet-gce-int"
       subnet_ip     = "10.10.10.0/24"
       subnet_region = var.region
     }
@@ -42,7 +42,7 @@ resource "google_compute_instance" "initialize" {
     google_cloud_run_v2_job.client,
   ]
 
-  name           = "head-start-initialize"
+  name           = var.random_suffix ? "head-start-initialize-${random_id.suffix.hex}" : "head-start-initialize"
   machine_type   = "n1-standard-1"
   zone           = var.zone
   desired_status = "RUNNING"

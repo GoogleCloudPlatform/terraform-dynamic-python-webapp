@@ -20,7 +20,7 @@ output "usage" {
   value       = module.dynamic-python-webapp.usage
 }
 
-output "suffix" { 
+output "suffix" {
   description = "random suffix"
-  value = random_id.suffix.hex
+  value       = random_id.suffix.hex
 }

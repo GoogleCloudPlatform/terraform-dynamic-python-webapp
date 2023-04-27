@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-module "dynamic-python-webapp" {
-  source = "../.."
+output "usage" {
+  sensitive   = true
+  description = "Connection details for the project"
+  value       = module.dynamic-python-webapp.usage
+}
 
-  random_suffix = false
-  project_id = var.project_id
+output "suffix" { 
+  description = "random suffix"
+  value = random_id.suffix.hex
 }

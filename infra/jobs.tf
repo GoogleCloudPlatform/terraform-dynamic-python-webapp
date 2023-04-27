@@ -116,6 +116,10 @@ resource "google_cloud_run_v2_job" "client" {
       containers {
         image = local.client_image
         env {
+          name  = "SUFFIX"
+          value = var.random_suffix ? random_id.suffix.hex : ""
+        }
+        env {
           name  = "SERVICE_NAME"
           value = google_cloud_run_v2_service.server.name
         }

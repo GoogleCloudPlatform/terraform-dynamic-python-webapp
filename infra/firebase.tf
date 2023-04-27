@@ -20,3 +20,9 @@ resource "google_firebase_project" "default" {
 
   depends_on = [google_project_service.enabled]
 }
+
+resource "google_firebase_hosting_site" "client" {
+  provider = google-beta
+  project  = var.project_id
+  site_id  = var.random_suffix ? "${var.project_id}-${random_id.suffix.hex}" : var.project_id
+}

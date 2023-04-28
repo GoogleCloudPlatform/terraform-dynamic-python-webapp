@@ -16,11 +16,12 @@
 
 locals {
   server_url = google_cloud_run_v2_service.server.uri
+  firebase_url = google_firebase_hosting_site.client.default_url
 }
 
 output "firebase_url" {
   description = "Firebase URL"
-  value       = "https://${var.project_id}.web.app"
+  value       = firebase_url
 }
 
 locals {
@@ -55,7 +56,7 @@ output "usage" {
   sensitive   = true
   value       = <<-EOF
     This deployment is now ready for use!
-    https://${var.project_id}.web.app
+    ${firebase_url}
     API Login:
     ${google_cloud_run_v2_service.server.uri}/admin
     Username: admin

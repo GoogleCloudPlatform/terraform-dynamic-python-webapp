@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 
+resource "google_compute_network" "gce_init" {
+  count = var.init ? 1 : 0
 
-module "gce-vpc" {
-  count        = var.init ? 1 : 0
-  source       = "terraform-google-modules/network/google"
-  version      = "~> 7.0"
-  project_id   = var.project_id
-  network_name = var.random_suffix ? "gce-init-network-${random_id.suffix.hex}" : "gce-init-network"
-
-  subnets = [
-    {
-      subnet_name   = var.random_suffix ? "subnet-gce-init-${random_id.suffix.hex}" : "subnet-gce-init"
-      subnet_ip     = "10.10.10.0/24"
-      subnet_region = var.region
-    }
-  ]
-
-  depends_on = [google_project_service.enabled]
+  name                            = var.random_suffix ? "gce-init-network-${random_id.suffix.hex}" : "gce-init-network"
+  auto_create_subnetworks         = false
+  routing_mode                    = "GLOBAL"
+  project                         = var.project_id
+  delete_default_routes_on_create = false
+  mtu                             = 0
 }
 
-resource "google_compute_instance" "initialize" {
+resource "google_compute_subnetwork" "gce_init" {
   count = var.init ? 1 : 0
+
+  name          = var.random_suffix ? "subnet-gce-init-${random_id.suffix.hex}" : "subnet-gce-init"
+  network       = google_compute_network.gce_init[0].id
+  ip_cidr_range = "10.10.10.0/24"
+  region        = var.region
+}
+
+resource "google_compute_instance" "gce_init" {
+  count = var.init ? 1 : 0
+
   depends_on = [
     google_project_service.enabled,
     google_sql_database_instance.postgres,
@@ -56,8 +58,8 @@ resource "google_compute_instance" "initialize" {
   }
 
   network_interface {
-    network    = module.gce-vpc[0].network_self_link
-    subnetwork = module.gce-vpc[0].subnets_self_links[0]
+    network    = google_compute_network.gce_init[0].self_link
+    subnetwork = google_compute_subnetwork.gce_init[0].self_link
 
     access_config {
       // Ephemeral public IP

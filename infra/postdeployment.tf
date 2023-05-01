@@ -66,7 +66,7 @@ resource "google_compute_instance" "initialize" {
 
   service_account {
     email  = google_service_account.compute[0].email
-    scopes = ["cloud-platform"] # TODO: Restrict?
+    scopes = ["cloud-platform"] # TODO: Restrict??
   }
 
   metadata_startup_script = <<EOT

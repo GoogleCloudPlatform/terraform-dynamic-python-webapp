@@ -55,12 +55,12 @@ resource "google_cloud_run_v2_service" "server" {
         mount_path = "/cloudsql"
       }
       startup_probe {
+        initial_delay_seconds = 5
+        period_seconds        = 3
+        timeout_seconds       = 2
+        failure_threshold     = 5
         http_get {
-          initial_delay_seconds = 5
-          period_seconds        = 3
-          timeout_seconds       = 2
-          failure_threshold     = 5
-          path                  = "/ready"
+          path = "/ready"
         }
       }
       liveness_probe {

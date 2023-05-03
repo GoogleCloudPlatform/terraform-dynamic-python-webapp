@@ -87,7 +87,9 @@ A service account with the following roles must be used to provision
 the resources of this module:
 
 - roles/cloudsql.admin
-- roles/cloudsql.admin
+- roles/compute.admin
+- roles/compute.networkAdmin
+- roles/firebase.managementServiceAgent
 - roles/firebasehosting.admin
 - roles/iam.serviceAccountAdmin
 - roles/iam.serviceAccountUser
@@ -95,8 +97,6 @@ the resources of this module:
 - roles/run.admin
 - roles/secretmanager.admin
 - roles/storage.admin
-- roles/compute.networkAdmin
-- roles/compute.admin
 
 
 The [Project Factory module][project-factory-module] and the

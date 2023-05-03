@@ -35,12 +35,6 @@ func TestSimpleExample(t *testing.T) {
 	example.DefineApply(func(assert *assert.Assertions) {
 		example.DefaultApply(assert)
 
-		// Temporary: Output debugging.
-		m := terraform.OutputAll(t, example.GetTFOptions())
-		for k, v := range m {
-			t.Logf("Output %s: %s\n", k, v)
-		}
-
 		// Use of this module as part of a Jump Start Solution triggers a URL
 		// request when terraform apply completes. This primes the Firebase Hosting
 		// CDN with a platform-supplied 404 page.

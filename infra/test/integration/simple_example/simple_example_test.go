@@ -25,11 +25,31 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSimpleExample(t *testing.T) {
 	example := tft.NewTFBlueprintTest(t)
+
+	example.DefineApply(func(assert *assert.Assertions) {
+		example.DefaultApply(assert)
+
+		// Use of this module as part of a Jump Start Solution triggers a URL
+		// request when terraform apply completes. This primes the Firebase Hosting
+		// CDN with a platform-supplied 404 page.
+		//
+		// This extension of apply is meant to emulate that behavior. We confirm
+		// the 404 behavior here to boost confidence that the frontend test in
+		// example.DefineVerify proves the 404 page is fixed.
+		//
+		// If the check for "Site Not Found" is flaky, remove it in favor of
+		// a simpler HTTP request.
+		//
+		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
+		u := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
+		assertResponseContains(assert, u, "Site Not Found")
+	})
 
 	example.DefineVerify(func(assert *assert.Assertions) {
 		example.DefaultVerify(assert)

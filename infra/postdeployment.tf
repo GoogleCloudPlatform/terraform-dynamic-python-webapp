@@ -81,9 +81,9 @@ resource "google_compute_instance" "gce_init" {
 echo "Running init database migration"
 gcloud beta run jobs execute ${google_cloud_run_v2_job.setup.name} --wait --project ${var.project_id} --region ${var.region}
 
-
 echo "Running client deploy"
 gcloud beta run jobs execute ${google_cloud_run_v2_job.client.name} --wait --project ${var.project_id} --region ${var.region}
+curl -X PURGE "${local.client_url}/"
 
 echo "Warm up API"
 curl ${local.server_url}/api/products/?warmup

@@ -13,6 +13,7 @@ This example illustrates how to use the `dynamic-python-webapp` module.
 
 | Name | Description |
 |------|-------------|
+| firebase\_url | Firebase URL |
 | usage | Connection details for the project |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

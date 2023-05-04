@@ -48,11 +48,7 @@ func TestSimpleExample(t *testing.T) {
 		//
 		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
-		fragment := "Site Not Found"
-		code, responseBody, err := httpGetRequest(firebase_url)
-		assert.Nil(err)
-		assert.Equal(code, 404)
-		assert.Containsf(responseBody, fragment, "couldn't find %q in response body", fragment)
+		assertErrorResponseContains(assert, firebase_url, http.StatusNotFound, "Site Not Found")
 	})
 
 	example.DefineVerify(func(assert *assert.Assertions) {
@@ -133,12 +129,20 @@ func assertResponseContains(assert *assert.Assertions, url string, text ...strin
 	}
 }
 
+func assertErrorResponseContains(assert *assert.Assertions, url string, wantCode int, text string) {
+	code, responseBody, err := httpGetRequest(url)
+	assert.Nil(err)
+	assert.Equal(code, wantCode)
+	assert.Containsf(responseBody, text, "couldn't find %q in response body", text)
+}
+
 func httpGetRequest(url string) (statusCode int, body string, err error) {
 	res, err := http.Get(url)
 	if err != nil {
 		return 0, "", err
 	}
+	defer res.Body.Close()
+
 	buffer, err := io.ReadAll(res.Body)
-	res.Body.Close()
 	return res.StatusCode, string(buffer), err
 }

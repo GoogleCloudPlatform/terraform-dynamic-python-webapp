@@ -23,6 +23,8 @@ resource "google_compute_network" "gce_init" {
   project                         = var.project_id
   delete_default_routes_on_create = false
   mtu                             = 0
+
+  depends_on = [google_project_service.enabled]
 }
 
 resource "google_compute_subnetwork" "gce_init" {
@@ -32,6 +34,8 @@ resource "google_compute_subnetwork" "gce_init" {
   network       = google_compute_network.gce_init[0].id
   ip_cidr_range = "10.10.10.0/24"
   region        = var.region
+
+  depends_on = [google_project_service.enabled]
 }
 
 resource "google_compute_instance" "gce_init" {

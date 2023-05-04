@@ -16,7 +16,17 @@
 
 locals {
   int_required_roles = [
-    "roles/owner"
+    "roles/cloudsql.admin",
+    "roles/compute.admin",
+    "roles/compute.networkAdmin",
+    "roles/firebase.managementServiceAgent",
+    "roles/firebasehosting.admin",
+    "roles/iam.serviceAccountAdmin",
+    "roles/iam.serviceAccountUser",
+    "roles/resourcemanager.projectIamAdmin",
+    "roles/run.admin",
+    "roles/secretmanager.admin",
+    "roles/storage.admin",
   ]
 }
 

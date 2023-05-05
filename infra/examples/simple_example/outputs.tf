@@ -19,3 +19,8 @@ output "usage" {
   description = "Connection details for the project"
   value       = module.dynamic-python-webapp.usage
 }
+
+output "firebase_url" {
+  description = "Firebase URL"
+  value       = module.dynamic-python-webapp.firebase_url
+}

@@ -25,11 +25,31 @@ import (
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/gcloud"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
 	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/utils"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSimpleExample(t *testing.T) {
 	example := tft.NewTFBlueprintTest(t)
+
+	example.DefineApply(func(assert *assert.Assertions) {
+		example.DefaultApply(assert)
+
+		// Use of this module as part of a Jump Start Solution triggers a URL
+		// request when terraform apply completes. This primes the Firebase Hosting
+		// CDN with a platform-supplied 404 page.
+		//
+		// This extension of apply is meant to emulate that behavior. We confirm
+		// the 404 behavior here to boost confidence that the frontend test in
+		// example.DefineVerify proves the 404 page is fixed.
+		//
+		// If the check for "Site Not Found" is flaky, remove it in favor of
+		// a simpler HTTP request.
+		//
+		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
+		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
+		assertErrorResponseContains(assert, firebase_url, http.StatusNotFound, "Site Not Found")
+	})
 
 	example.DefineVerify(func(assert *assert.Assertions) {
 		example.DefaultVerify(assert)
@@ -109,12 +129,20 @@ func assertResponseContains(assert *assert.Assertions, url string, text ...strin
 	}
 }
 
+func assertErrorResponseContains(assert *assert.Assertions, url string, wantCode int, text string) {
+	code, responseBody, err := httpGetRequest(url)
+	assert.Nil(err)
+	assert.Equal(code, wantCode)
+	assert.Containsf(responseBody, text, "couldn't find %q in response body", text)
+}
+
 func httpGetRequest(url string) (statusCode int, body string, err error) {
 	res, err := http.Get(url)
 	if err != nil {
 		return 0, "", err
 	}
+	defer res.Body.Close()
+
 	buffer, err := io.ReadAll(res.Body)
-	res.Body.Close()
 	return res.StatusCode, string(buffer), err
 }

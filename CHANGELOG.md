@@ -8,6 +8,29 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.5.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.4.1...v0.5.0) (2023-05-05)
+
+
+### Features
+
+* run jobs on every tf apply ([#46](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/46)) ([8b31d53](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/8b31d5375a4f32055cf0273b85175fa3401c57b5))
+* update Avocano from v1.4.1 to v1.5.0 ([#46](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/46)) ([8b31d53](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/8b31d5375a4f32055cf0273b85175fa3401c57b5))
+* update Avocano to version 1.7.0 ([#74](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/74)) ([bf3aa56](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/bf3aa560e4094dbc6c4d53f649b98a8bf26802aa))
+* update to Avocano from v1.5.0 to v1.6.0 ([#53](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/53)) ([a95f17a](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/a95f17a134aeb6794993aedd4f6cb1661cc2dea6))
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/gruntwork-io/terratest to v0.41.20 ([#72](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/72)) ([3245e4a](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/3245e4ab9ee12eb955aedc1ebc0eddd150d0d98c))
+* **deps:** update module github.com/gruntwork-io/terratest to v0.41.23 ([#73](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/73)) ([b0e9761](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/b0e976188f86045ffe88a9839b4c0f59cf3d3fb1))
+* ensure APIs are enabled before provisioning compute resources ([#68](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/68)) ([791f6e1](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/791f6e13978f26bdf7b35a0de85c7a719049f6fd))
+* make sure subnet is uniquely named ([#61](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/61)) ([490d4b0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/490d4b06e511c52b93d577d7a7cac2b2316fd7f8))
+* prevent website not found errors after firebase deploy completes ([#69](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/69)) ([6d34e1e](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/6d34e1ea9144c9947737994f324b6d270efe3662))
+* remove startup probe ([#71](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/71)) ([7c79494](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/7c79494487510db70f811ad76c6d21752105b47f))
+* update gce-vpc to use random suffix ([#56](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/56)) ([518d795](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/518d795eb59f4d7ca037a2816f9611551863a37d))
+* use DJANGO_SUPERUSER_PASSWORD with setup job ([#53](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/53)) ([a95f17a](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/a95f17a134aeb6794993aedd4f6cb1661cc2dea6))
+* use google_project_iam_member to manage IAM permissions ([#54](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/54)) ([9d0de20](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/9d0de20a794b7c041c191397c638a584bcbf606a))
+
 ## [0.4.1](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.4.0...v0.4.1) (2023-04-05)
 
 

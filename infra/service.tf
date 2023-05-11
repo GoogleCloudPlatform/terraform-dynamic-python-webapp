@@ -54,11 +54,6 @@ resource "google_cloud_run_v2_service" "server" {
         name       = "cloudsql"
         mount_path = "/cloudsql"
       }
-      startup_probe {
-        http_get {
-          path = "/ready"
-        }
-      }
       liveness_probe {
         http_get {
           path = "/healthy"

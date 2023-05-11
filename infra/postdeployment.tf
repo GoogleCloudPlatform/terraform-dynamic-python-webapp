@@ -91,3 +91,49 @@ curl ${local.server_url}/api/products/?warmup
 shutdown -h now
 EOT
 }
+
+
+resource "google_compute_instance" "placeholder_init" {
+  count = var.init ? 1 : 0
+
+  depends_on = [
+    google_project_service.enabled,
+    google_cloud_run_v2_job.placeholder,
+  ]
+
+  name           = var.random_suffix ? "placeholder-initialize-${random_id.suffix.hex}" : "placeholder-initialize"
+  machine_type   = "n1-standard-1"
+  zone           = var.zone
+  desired_status = "RUNNING"
+
+  allow_stopping_for_update = true
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+
+  network_interface {
+    network    = google_compute_network.gce_init[0].self_link
+    subnetwork = google_compute_subnetwork.gce_init[0].self_link
+
+    access_config {
+      // Ephemeral public IP
+    }
+  }
+
+  service_account {
+    email  = google_service_account.compute[0].email
+    scopes = ["cloud-platform"] # TODO: Restrict??
+  }
+
+  metadata_startup_script = <<EOT
+#!/bin/bash
+
+echo "Running placeholder deployment"
+gcloud beta run jobs execute ${google_cloud_run_v2_job.placeholder.name} --wait --project ${var.project_id} --region ${var.region}
+
+shutdown -h now
+EOT
+}

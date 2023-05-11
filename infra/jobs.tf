@@ -136,3 +136,29 @@ resource "google_cloud_run_v2_job" "client" {
     google_project_service.enabled
   ]
 }
+
+
+resource "google_cloud_run_v2_job" "placeholder" {
+  name     = var.random_suffix ? "placeholder-${random_id.suffix.hex}" : "placeholder"
+  location = var.region
+
+  labels = var.labels
+
+  template {
+    template {
+      service_account = google_service_account.client.email
+      containers {
+        image = local.placeholder_image
+        env {
+          name  = "PROJECT_ID"
+          value = var.project_id
+        }
+
+      }
+    }
+  }
+
+  depends_on = [
+    google_project_service.enabled
+  ]
+}

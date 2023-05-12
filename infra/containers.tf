@@ -17,7 +17,7 @@
 # Base images supplied pre-built.
 
 locals {
-  server_image = "gcr.io/${var.server_image_host}/server:${var.image_version}"
-  client_image = "gcr.io/${var.client_image_host}/client:${var.image_version}"
+  server_image      = "gcr.io/${var.server_image_host}/server:${var.image_version}"
+  client_image      = "gcr.io/${var.client_image_host}/client:${var.image_version}"
   placeholder_image = "gcr.io/hsa-public/avocano-placeholder:latest"
 }

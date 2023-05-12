@@ -35,20 +35,20 @@ func TestSimpleExample(t *testing.T) {
 	example.DefineApply(func(assert *assert.Assertions) {
 		example.DefaultApply(assert)
 
-		// Use of this module as part of a Jump Start Solution triggers a URL
-		// request when terraform apply completes. This primes the Firebase Hosting
-		// CDN with a platform-supplied 404 page.
+		// This module deploys a 'placeholder' Firebase Hosting release early
+		// in the process, to prevent a "Site Not Found" displaying when Terraform
+		// has finished applying, but the deployment is not yet complete.
 		//
 		// This extension of apply is meant to emulate that behavior. We confirm
-		// the 404 behavior here to boost confidence that the frontend test in
-		// example.DefineVerify proves the 404 page is fixed.
+		// the placeholder behavior here to boost confidence that the frontend test in
+		// example.DefineVerify proves the placeholder page is replaced.
 		//
-		// If the check for "Site Not Found" is flaky, remove it in favor of
+		// If the check is flaky, remove it in favor of
 		// a simpler HTTP request.
 		//
 		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
-		assertErrorResponseContains(assert, firebase_url, http.StatusNotFound, "Site Not Found")
+		assertResponseContains(assert, firebase_url,  "Your application is still deploying")
 	})
 
 	example.DefineVerify(func(assert *assert.Assertions) {

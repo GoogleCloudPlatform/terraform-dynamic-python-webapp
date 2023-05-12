@@ -133,6 +133,7 @@ resource "google_compute_instance" "placeholder_init" {
 
 echo "Running placeholder deployment"
 gcloud beta run jobs execute ${google_cloud_run_v2_job.placeholder.name} --wait --project ${var.project_id} --region ${var.region}
+curl -X PURGE "${local.firebase_url}/"
 
 shutdown -h now
 EOT

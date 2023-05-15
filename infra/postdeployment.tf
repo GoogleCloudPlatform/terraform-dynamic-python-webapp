@@ -51,7 +51,7 @@ resource "google_compute_instance" "gce_init" {
   name           = var.random_suffix ? "head-start-initialize-${random_id.suffix.hex}" : "head-start-initialize"
   machine_type   = "n1-standard-1"
   zone           = var.zone
-  desired_status = "RUNNING"
+  desired_status = "RUNNING" # https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/pull/75#issuecomment-1547198414
 
   allow_stopping_for_update = true
 
@@ -104,7 +104,6 @@ resource "google_compute_instance" "placeholder_init" {
   name           = var.random_suffix ? "placeholder-initialize-${random_id.suffix.hex}" : "placeholder-initialize"
   machine_type   = "n1-standard-1"
   zone           = var.zone
-  desired_status = "RUNNING"
 
   allow_stopping_for_update = true
 

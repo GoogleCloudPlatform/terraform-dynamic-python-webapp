@@ -81,7 +81,7 @@ func TestSimpleExample(t *testing.T) {
 			// The data is populated by two Cloud Run jobs, so wait for the final job to finish before continuing.
 			// A job execution is completed if it has a completed time.
 			isJobFinished := func() (bool, error) {
-				clientJobExecs := gcloud.Run(t, "beta run jobs executions list ", gcloud.WithCommonArgs([]string{"--filter", "metadata.name~client", "--project", projectID, "--region", region, "--format", "json"})).Array()
+				clientJobExecs := gcloud.Run(t, "run jobs executions list ", gcloud.WithCommonArgs([]string{"--filter", "metadata.name~client", "--project", projectID, "--region", region, "--format", "json"})).Array()
 
 				if len(clientJobExecs) == 0 {
 					t.Log("Cloud Run job been executed. Retrying...")

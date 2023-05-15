@@ -5,4 +5,4 @@ set -e
 
 echo "Deploying placeholder to Firebase..."
 
-firebase deploy --project $PROJECT_ID --only hosting
+firebase deploy --project "$PROJECT_ID" --only hosting

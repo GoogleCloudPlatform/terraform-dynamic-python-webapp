@@ -54,7 +54,7 @@ func TestSimpleExample(t *testing.T) {
 		example.DefaultVerify(assert)
 
 		projectID := example.GetTFSetupStringOutput("project_id")
-		firebase_url := example.GetTFSetupStringOutput("firebase_url")
+		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
 
 		flagshipProduct := "Sparkly Avocado"
 		region := "us-central1"

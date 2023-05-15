@@ -55,6 +55,9 @@ func TestSimpleExample(t *testing.T) {
 		example.DefaultVerify(assert)
 
 		projectID := example.GetTFSetupStringOutput("project_id")
+		firebase_url := example.GetTFSetupStringOutput("firebase_url")
+
+		flagshipProduct := "Sparkly Avocado"
 		region := "us-central1"
 		t.Logf("Using Project ID %q", projectID)
 
@@ -108,12 +111,12 @@ func TestSimpleExample(t *testing.T) {
 			utils.Poll(t, isJobFinished, 10, time.Second*10)
 
 			// The API must return a list that includes our flagship product
-			assertResponseContains(assert, serviceURL+"/api/products/", "Sparkly Avocado")
+			assertResponseContains(assert, serviceURL+"/api/products/", flagshipProduct)
 		}
 		{
 			// Check that the Avocano front page is deployed to Firebase Hosting, and serving
-			firebaseURL := fmt.Sprintf("https://%s.web.app", projectID)
-			assertResponseContains(assert, firebaseURL, "<title>Avocano</title>")
+			t.Log("Firebase Hosting should be running at ", firebase_url)
+			assertResponseContains(assert, firebase_url, flagshipProduct)
 		}
 	})
 	example.Test()

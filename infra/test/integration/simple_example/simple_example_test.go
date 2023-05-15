@@ -115,7 +115,7 @@ func TestSimpleExample(t *testing.T) {
 		{
 			// Check that the Avocano front page is deployed to Firebase Hosting, and serving
 			t.Log("Firebase Hosting should be running at ", firebase_url)
-			assertResponseContains(assert, firebase_url, flagshipProduct)
+			assertResponseContains(assert, firebase_url, "<title>Avocano</title>")
 		}
 	})
 	example.Test()

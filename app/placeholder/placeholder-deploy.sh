@@ -1,6 +1,6 @@
 #!/bin/bash
-# Script to assist in Dockerfile-based deployments. 
-# any errors? exit immediately. 
+# Script to assist in Dockerfile-based deployments.
+# any errors? exit immediately.
 set -e
 
 echo "Deploying placeholder to Firebase..."

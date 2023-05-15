@@ -17,7 +17,7 @@
 steps:
   - id: build
     name: "gcr.io/cloud-builders/docker"
-    dir: client/placeholder
+    dir: app/placeholder
     args:
       [
         "build",

@@ -15,7 +15,6 @@
 package multiple_buckets
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"strings"

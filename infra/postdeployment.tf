@@ -101,9 +101,9 @@ resource "google_compute_instance" "placeholder_init" {
     google_cloud_run_v2_job.placeholder,
   ]
 
-  name           = var.random_suffix ? "placeholder-initialize-${random_id.suffix.hex}" : "placeholder-initialize"
-  machine_type   = "n1-standard-1"
-  zone           = var.zone
+  name         = var.random_suffix ? "placeholder-initialize-${random_id.suffix.hex}" : "placeholder-initialize"
+  machine_type = "n1-standard-1"
+  zone         = var.zone
 
   allow_stopping_for_update = true
 

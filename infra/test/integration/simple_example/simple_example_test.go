@@ -47,6 +47,7 @@ func TestSimpleExample(t *testing.T) {
 		//
 		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
+		t.Log("Firebase Hosting should be running at ", firebase_url)
 		assertResponseContains(assert, firebase_url,  "Your application is still deploying")
 	})
 

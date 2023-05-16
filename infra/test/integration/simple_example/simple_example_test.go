@@ -15,7 +15,6 @@
 package multiple_buckets
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -35,26 +34,29 @@ func TestSimpleExample(t *testing.T) {
 	example.DefineApply(func(assert *assert.Assertions) {
 		example.DefaultApply(assert)
 
-		// Use of this module as part of a Jump Start Solution triggers a URL
-		// request when terraform apply completes. This primes the Firebase Hosting
-		// CDN with a platform-supplied 404 page.
+		// This module deploys a 'placeholder' Firebase Hosting release early
+		// in the process, to prevent a "Site Not Found" displaying when Terraform
+		// has finished applying, but the deployment is not yet complete.
 		//
 		// This extension of apply is meant to emulate that behavior. We confirm
-		// the 404 behavior here to boost confidence that the frontend test in
-		// example.DefineVerify proves the 404 page is fixed.
+		// the placeholder behavior here to boost confidence that the frontend test in
+		// example.DefineVerify proves the placeholder page is replaced.
 		//
-		// If the check for "Site Not Found" is flaky, remove it in favor of
+		// If the check is flaky, remove it in favor of
 		// a simpler HTTP request.
 		//
 		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
-		assertErrorResponseContains(assert, firebase_url, http.StatusNotFound, "Site Not Found")
+		assertResponseContains(assert, firebase_url,  "Your application is still deploying")
 	})
 
 	example.DefineVerify(func(assert *assert.Assertions) {
 		example.DefaultVerify(assert)
 
 		projectID := example.GetTFSetupStringOutput("project_id")
+		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
+
+		flagshipProduct := "Sparkly Avocado"
 		region := "us-central1"
 		t.Logf("Using Project ID %q", projectID)
 
@@ -81,7 +83,7 @@ func TestSimpleExample(t *testing.T) {
 			// The data is populated by two Cloud Run jobs, so wait for the final job to finish before continuing.
 			// A job execution is completed if it has a completed time.
 			isJobFinished := func() (bool, error) {
-				clientJobExecs := gcloud.Run(t, "beta run jobs executions list ", gcloud.WithCommonArgs([]string{"--filter", "metadata.name~client", "--project", projectID, "--region", region, "--format", "json"})).Array()
+				clientJobExecs := gcloud.Run(t, "run jobs executions list ", gcloud.WithCommonArgs([]string{"--filter", "metadata.name~client", "--project", projectID, "--region", region, "--format", "json"})).Array()
 
 				if len(clientJobExecs) == 0 {
 					t.Log("Cloud Run job been executed. Retrying...")
@@ -108,12 +110,12 @@ func TestSimpleExample(t *testing.T) {
 			utils.Poll(t, isJobFinished, 10, time.Second*10)
 
 			// The API must return a list that includes our flagship product
-			assertResponseContains(assert, serviceURL+"/api/products/", "Sparkly Avocado")
+			assertResponseContains(assert, serviceURL+"/api/products/", flagshipProduct)
 		}
 		{
 			// Check that the Avocano front page is deployed to Firebase Hosting, and serving
-			firebaseURL := fmt.Sprintf("https://%s.web.app", projectID)
-			assertResponseContains(assert, firebaseURL, "<title>Avocano</title>")
+			t.Log("Firebase Hosting should be running at ", firebase_url)
+			assertResponseContains(assert, firebase_url, "<title>Avocano</title>")
 		}
 	})
 	example.Test()

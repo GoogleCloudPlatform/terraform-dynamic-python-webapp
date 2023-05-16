@@ -2,7 +2,7 @@
 
 This example illustrates how to use the `dynamic-python-webapp` module.
 
-This example uses a randomly generated suffix when naming resources to support multiple deployments per project. 
+This example uses a randomly generated suffix when naming resources to support multiple deployments per project.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

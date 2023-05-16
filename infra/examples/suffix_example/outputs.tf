@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-module "dynamic-python-webapp" {
-  source = "../.."
-  project_id = var.project_id
-  random_suffix = false
+output "usage" {
+  sensitive   = true
+  description = "Connection details for the project"
+  value       = module.dynamic-python-webapp.usage
+}
+
+output "firebase_url" {
+  description = "Firebase URL"
+  value       = module.dynamic-python-webapp.firebase_url
 }

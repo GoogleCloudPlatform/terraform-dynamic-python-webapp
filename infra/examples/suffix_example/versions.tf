@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-module "dynamic-python-webapp" {
-  source = "../.."
-  project_id = var.project_id
-  random_suffix = false
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 4.0"
+    }
+  }
+  required_version = ">= 0.13"
 }

@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-module "dynamic-python-webapp" {
-  source = "../.."
-  project_id = var.project_id
-  random_suffix = false
+variable "project_id" {
+  description = "The ID of the project in which to provision resources."
+  type        = string
 }

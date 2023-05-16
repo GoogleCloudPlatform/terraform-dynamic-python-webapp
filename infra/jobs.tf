@@ -158,6 +158,10 @@ resource "google_cloud_run_v2_job" "placeholder" {
           value = var.project_id
         }
 
+        env {
+          name  = "SUFFIX"
+          value = var.random_suffix ? random_id.suffix.hex : ""
+        }
       }
     }
   }

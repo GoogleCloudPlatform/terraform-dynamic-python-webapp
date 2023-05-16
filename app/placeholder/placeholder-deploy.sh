@@ -26,7 +26,6 @@ if [[ -n $SUFFIX ]]; then
     echo "{\"projects\": {}, \"targets\": {\"${PROJECT_ID}\": {\"hosting\": {\"${SUFFIX}\": [\"${PROJECT_ID}-${SUFFIX}\"]}}},\"etags\": {}}" | json > .firebaserc
     echo "Customised .firebaserc created to support site."
     cat .firebaserc
-    fi
 fi
 
 # If anything was updated, then export the output.

@@ -15,7 +15,7 @@
  */
 
 module "dynamic-python-webapp" {
-  source = "../.."
-  project_id = var.project_id
+  source        = "../.."
+  project_id    = var.project_id
   random_suffix = false
 }

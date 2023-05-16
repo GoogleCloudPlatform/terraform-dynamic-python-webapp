@@ -51,7 +51,7 @@ resource "google_compute_instance" "gce_init" {
   name           = var.random_suffix ? "head-start-initialize-${random_id.suffix.hex}" : "head-start-initialize"
   machine_type   = "n1-standard-1"
   zone           = var.zone
-  desired_status = "RUNNING"
+  desired_status = "RUNNING" # https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/pull/75#issuecomment-1547198414
 
   allow_stopping_for_update = true
 
@@ -87,6 +87,52 @@ curl -X PURGE "${local.firebase_url}/"
 
 echo "Warm up API"
 curl ${local.server_url}/api/products/?warmup
+
+shutdown -h now
+EOT
+}
+
+
+resource "google_compute_instance" "placeholder_init" {
+  count = var.init ? 1 : 0
+
+  depends_on = [
+    google_project_service.enabled,
+    google_cloud_run_v2_job.placeholder,
+  ]
+
+  name         = var.random_suffix ? "placeholder-initialize-${random_id.suffix.hex}" : "placeholder-initialize"
+  machine_type = "n1-standard-1"
+  zone         = var.zone
+
+  allow_stopping_for_update = true
+
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-11"
+    }
+  }
+
+  network_interface {
+    network    = google_compute_network.gce_init[0].self_link
+    subnetwork = google_compute_subnetwork.gce_init[0].self_link
+
+    access_config {
+      // Ephemeral public IP
+    }
+  }
+
+  service_account {
+    email  = google_service_account.compute[0].email
+    scopes = ["cloud-platform"] # TODO: Restrict??
+  }
+
+  metadata_startup_script = <<EOT
+#!/bin/bash
+
+echo "Running placeholder deployment"
+gcloud beta run jobs execute ${google_cloud_run_v2_job.placeholder.name} --wait --project ${var.project_id} --region ${var.region}
+curl -X PURGE "${local.firebase_url}/"
 
 shutdown -h now
 EOT

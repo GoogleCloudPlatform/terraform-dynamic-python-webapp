@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package multiple_buckets
+package simple_example
 
 import (
 	"io"
@@ -48,7 +48,7 @@ func TestSimpleExample(t *testing.T) {
 		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
 		t.Log("Firebase Hosting should be running at ", firebase_url)
-		assertResponseContains(assert, firebase_url,  "Your application is still deploying")
+		assertResponseContains(assert, firebase_url, "Your application is still deploying")
 	})
 
 	example.DefineVerify(func(assert *assert.Assertions) {

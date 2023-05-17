@@ -22,9 +22,13 @@ resource "google_firebase_project" "default" {
 }
 
 resource "google_firebase_hosting_site" "client" {
+
+  # By default, a firebase site will be named "project_id". Only create a custom site if using suffixes
+  count = var.random_suffix ? 1 : 0
+
   provider = google-beta
   project  = google_firebase_project.default.project
-  site_id  = var.random_suffix ? "${var.project_id}-${random_id.suffix.hex}" : var.project_id
+  site_id  = "${var.project_id}-${random_id.suffix.hex}"
 
   depends_on = [google_project_service.enabled]
 }

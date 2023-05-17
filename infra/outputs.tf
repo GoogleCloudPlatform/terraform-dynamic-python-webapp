@@ -16,7 +16,7 @@
 
 locals {
   server_url   = google_cloud_run_v2_service.server.uri
-  firebase_url = var.random_suffix ? google_firebase_hosting_site.client.default_url : "https://${var.project_id}.web.app"
+  firebase_url = var.random_suffix ? google_firebase_hosting_site.client[0].default_url : "https://${var.project_id}.web.app"
 }
 
 output "firebase_url" {

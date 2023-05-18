@@ -22,7 +22,8 @@ variable "project_id" {
 }
 
 variable "region" {
-  default     = "us-central1"
+  # temporary override from us-central1
+  default     = "asia-southeast1"
   type        = string
   description = "Google Cloud Region"
 }
@@ -30,9 +31,10 @@ variable "region" {
 # HSA
 
 variable "zone" {
+  # temporary override from us-central1-c
   type        = string
   description = "GCP zone for provisioning zonal resources."
-  default     = "us-central1-c"
+  default     = "asia-southeast1-a"
 }
 
 variable "labels" {

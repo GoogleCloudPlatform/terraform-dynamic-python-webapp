@@ -38,6 +38,12 @@ steps:
   dir: infra
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'cft test run TestSimpleExample --stage teardown --verbose']
+
+# TEMPORARY: Override build to a region with reported deploy failures.
+options:
+  env:
+  - 'TF_VAR_region=asia-southeast1'
+  - 'TF_VAR_zone=asia-southeast1-a'
 tags:
 - 'ci'
 - 'integration'

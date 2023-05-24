@@ -1,0 +1,66 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: blueprints.cloud.google.com/v1alpha1
+kind: BlueprintMetadata
+metadata:
+  name: terraform-dynamic-python-webapp-display
+spec:
+  info:
+    title: terraform-dynamic-python-webapp
+    source:
+      repo: https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp
+      sourceType: git
+  ui:
+    input:
+      variables:
+        client_image_host:
+          name: client_image_host
+          title: Client Image Host
+        database_name:
+          name: database_name
+          title: Database Name
+        database_username:
+          name: database_username
+          title: Database Username
+        image_version:
+          name: image_version
+          title: Image Version
+        init:
+          name: init
+          title: Init
+        instance_name:
+          name: instance_name
+          title: Instance Name
+        labels:
+          name: labels
+          title: Labels
+        project_id:
+          name: project_id
+          title: Project Id
+        random_suffix:
+          name: random_suffix
+          title: Random Suffix
+        region:
+          name: region
+          title: Region
+        server_image_host:
+          name: server_image_host
+          title: Server Image Host
+        service_name:
+          name: service_name
+          title: Service Name
+        zone:
+          name: zone
+          title: Zone

@@ -19,99 +19,113 @@ metadata:
   annotations:
     config.kubernetes.io/local-config: "true"
 spec:
-  title: terraform-dynamic-python-webapp
-  source:
-    repo: https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp.git
-    sourceType: git
-  actuationTool:
-    type: Terraform
-    version: '>= 0.13'
-  description:
-    tagline: This is an auto-generated module.
-    detailed: |-
-      The resources/services/activations/deletions that this module will create/trigger are:
-      - Cloud Run
-      - Cloud SQL
-      - Firebase Hosting
-      - Secret Manager
-      - IAM
-      - Cloud Storage
-    preDeploy: To deploy this blueprint you must have an active billing account and billing permissions.
-  documentation:
-  - title: Hosting a Static Website
-    url: https://cloud.google.com/storage/docs/hosting-static-website
-  examples:
-  - name: simple_example
-    location: examples/simple_example
-  variables:
-  - name: database_name
-    description: Cloud SQL database name
-    type: string
-    default: django
-    required: false
-  - name: database_username
-    description: Cloud SQL database name
-    type: string
-    default: server
-    required: false
-  - name: image_host_project
-    description: Google Cloud Project that hosts images
-    type: string
-    default: hsa-public/terraform-python-dynamic-webapp
-    required: false
-  - name: init
-    description: Initialize database?
-    type: bool
-    default: true
-    required: false
-  - name: instance_name
-    description: Cloud SQL Instance name
-    type: string
-    default: psql
-    required: false
-  - name: labels
-    description: A set of key/value label pairs to assign to the resources deployed by this blueprint.
-    type: map(string)
-    default: {}
-    required: false
-  - name: project_id
-    description: Google Cloud Project ID
-    type: string
-    required: true
-  - name: random_suffix
-    description: Add random suffix to VM name
-    type: string
-    default: true
-    required: false
-  - name: region
-    description: Google Cloud Region
-    type: string
-    default: us-central1
-    required: false
-  - name: service_name
-    description: Cloud Run service name
-    type: string
-    default: server
-    required: false
-  - name: zone
-    description: GCP zone for provisioning zonal resources.
-    type: string
-    default: us-central1-c
-    required: false
-  outputs:
-  - name: django_admin_password
-    description: Djando Admin password
-  - name: django_admin_url
-    description: Djando Admin URL
-  - name: firebase_url
-    description: Firebase URL
-  - name: usage
-    description: Next steps for usage
-  roles:
-  - level: Project
+  info:
+    title: terraform-dynamic-python-webapp
+    source:
+      repo: https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp
+      sourceType: git
+    actuationTool:
+      flavor: Terraform
+      version: '>= 0.13'
+    description:
+      tagline: This is an auto-generated module.
+      detailed: |-
+        The resources/services/activations/deletions that this module will create/trigger are:
+        - Cloud Run
+        - Cloud SQL
+        - Firebase Hosting
+        - Secret Manager
+        - IAM
+        - Cloud Storage
+      preDeploy: To deploy this blueprint you must have an active billing account and billing permissions.
+  content:
+    documentation:
+    - title: Hosting a Static Website
+      url: https://cloud.google.com/storage/docs/hosting-static-website
+    examples:
+    - name: simple_example
+      location: examples/simple_example
+  interfaces:
+    variables:
+    - name: client_image_host
+      description: Container Registry that hosts the client image (PROJECT_ID[/folder])
+      varType: string
+      defaultValue: hsa-public/terraform-python-dynamic-webapp
+    - name: database_name
+      description: Cloud SQL database name
+      varType: string
+      defaultValue: django
+    - name: database_username
+      description: Cloud SQL database name
+      varType: string
+      defaultValue: server
+    - name: image_version
+      description: Version of the Container Registry image to use
+      varType: string
+      defaultValue: v1.7.0
+    - name: init
+      description: Initialize database?
+      varType: bool
+      defaultValue: true
+    - name: instance_name
+      description: Cloud SQL Instance name
+      varType: string
+      defaultValue: psql
+    - name: labels
+      description: A set of key/value label pairs to assign to the resources deployed by this blueprint.
+      varType: map(string)
+      defaultValue: {}
+    - name: project_id
+      description: Google Cloud Project ID
+      varType: string
+      required: true
+    - name: random_suffix
+      description: Add random suffix to VM name
+      varType: string
+      defaultValue: true
+    - name: region
+      description: Google Cloud Region
+      varType: string
+      defaultValue: us-central1
+    - name: server_image_host
+      description: Container Registry that hosts the server image (PROJECT_ID[/folder])
+      varType: string
+      defaultValue: hsa-public/terraform-python-dynamic-webapp
+    - name: service_name
+      description: Cloud Run service name
+      varType: string
+      defaultValue: server
+    - name: zone
+      description: GCP zone for provisioning zonal resources.
+      varType: string
+      defaultValue: us-central1-c
+    outputs:
+    - name: django_admin_password
+      description: Djando Admin password
+    - name: django_admin_url
+      description: Djando Admin URL
+    - name: firebase_url
+      description: Firebase URL
+    - name: neos_toc_url
+      description: Neos Tutorial URL
+    - name: usage
+      description: Next steps for usage
+  requirements:
     roles:
-    - roles/owner
-  services:
-  - cloudresourcemanager.googleapis.com
-  - storage-api.googleapis.com
-  - serviceusage.googleapis.com
+    - level: Project
+      roles:
+      - roles/cloudsql.admin
+      - roles/compute.admin
+      - roles/compute.networkAdmin
+      - roles/firebase.managementServiceAgent
+      - roles/firebasehosting.admin
+      - roles/iam.serviceAccountAdmin
+      - roles/iam.serviceAccountUser
+      - roles/resourcemanager.projectIamAdmin
+      - roles/run.admin
+      - roles/secretmanager.admin
+      - roles/storage.admin
+    services:
+    - cloudresourcemanager.googleapis.com
+    - storage-api.googleapis.com
+    - serviceusage.googleapis.com

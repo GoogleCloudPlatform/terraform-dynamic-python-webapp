@@ -72,7 +72,7 @@ func TestSimpleExample(t *testing.T) {
 
 		{
 			// Check that the expected Cloud Run service is deployed, is serving, and accepts unauthenticated requests
-			cloudRunServices := gcloud.Run(t, "run services list", gcloud.WithCommonArgs([]string{"--filter", "metadata.name~" + server_service_name, "--project", projectID, "--format", "json"})).Array()
+			cloudRunServices := gcloud.Run(t, "run services list", gcloud.WithCommonArgs([]string{"--filter", "metadata.name=" + server_service_name, "--project", projectID, "--format", "json"})).Array()
 			nbServices := len(cloudRunServices)
 			assert.Equal(1, nbServices, "we expected a single Cloud Run service called %s to be deployed, found %d services", server_service_name, nbServices)
 			match := utils.GetFirstMatchResult(t, cloudRunServices, "kind", "Service")

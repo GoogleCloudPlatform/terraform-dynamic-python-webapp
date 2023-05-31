@@ -56,6 +56,8 @@ func TestSuffixExample(t *testing.T) {
 
 		projectID := example.GetTFSetupStringOutput("project_id")
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
+		server_service_name := terraform.OutputRequired(t, example.GetTFOptions(), "server_service_name")
+		client_job_name := terraform.OutputRequired(t, example.GetTFOptions(), "client_job_name")
 
 		flagshipProduct := "Sparkly Avocado"
 		region := "us-central1"
@@ -69,10 +71,10 @@ func TestSuffixExample(t *testing.T) {
 		}
 
 		{
-			// Check that the Cloud Run service is deployed, is serving, and accepts unauthenticated requests
-			cloudRunServices := gcloud.Run(t, "run services list", gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})).Array()
+			// Check that the expected Cloud Run service is deployed, is serving, and accepts unauthenticated requests
+			cloudRunServices := gcloud.Run(t, "run services list", gcloud.WithCommonArgs([]string{"--filter", "metadata.name~" + server_service_name, "--project", projectID, "--format", "json"})).Array()
 			nbServices := len(cloudRunServices)
-			assert.Equal(1, nbServices, "we expected a single Cloud Run service to be deployed, found %d services", nbServices)
+			assert.Equal(1, nbServices, "we expected a single Cloud Run service called %s to be deployed, found %d services", server_service_name, nbServices)
 			match := utils.GetFirstMatchResult(t, cloudRunServices, "kind", "Service")
 			serviceURL := match.Get("status.url").String()
 			assert.Truef(strings.HasSuffix(serviceURL, ".run.app"), "unexpected service URL %q", serviceURL)
@@ -84,7 +86,7 @@ func TestSuffixExample(t *testing.T) {
 			// The data is populated by two Cloud Run jobs, so wait for the final job to finish before continuing.
 			// A job execution is completed if it has a completed time.
 			isJobFinished := func() (bool, error) {
-				clientJobExecs := gcloud.Run(t, "run jobs executions list ", gcloud.WithCommonArgs([]string{"--filter", "metadata.name~client", "--project", projectID, "--region", region, "--format", "json"})).Array()
+				clientJobExecs := gcloud.Run(t, "run jobs executions list ", gcloud.WithCommonArgs([]string{"--filter", "metadata.name~" + client_job_name, "--project", projectID, "--region", region, "--format", "json"})).Array()
 
 				if len(clientJobExecs) == 0 {
 					t.Log("Cloud Run job been executed. Retrying...")

@@ -15,7 +15,9 @@ This example uses a randomly generated suffix when naming resources to support m
 
 | Name | Description |
 |------|-------------|
+| client\_job\_name | Client Cloud Run job name |
 | firebase\_url | Firebase URL |
+| server\_service\_name | Server Cloud Run service name |
 | usage | Connection details for the project |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -45,6 +45,8 @@ spec:
     examples:
     - name: simple_example
       location: examples/simple_example
+    - name: suffix_example
+      location: examples/suffix_example
   interfaces:
     variables:
     - name: client_image_host
@@ -100,6 +102,8 @@ spec:
       varType: string
       defaultValue: us-central1-c
     outputs:
+    - name: client_job_name
+      description: Name of the Cloud Run Job, deploying the front end
     - name: django_admin_password
       description: Djando Admin password
     - name: django_admin_url
@@ -108,6 +112,8 @@ spec:
       description: Firebase URL
     - name: neos_toc_url
       description: Neos Tutorial URL
+    - name: server_service_name
+      description: Name of the Cloud Run service, hosting the server API
     - name: usage
       description: Next steps for usage
   requirements:

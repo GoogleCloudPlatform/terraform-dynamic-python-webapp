@@ -24,3 +24,13 @@ output "firebase_url" {
   description = "Firebase URL"
   value       = module.dynamic-python-webapp.firebase_url
 }
+
+output "server_service_name" {
+  description = "Server Cloud Run service name"
+  value       = module.dynamic-python-webapp.server_service_name
+}
+
+output "client_job_name" {
+  description = "Client Cloud Run job name"
+  value       = module.dynamic-python-webapp.client_job_name
+}

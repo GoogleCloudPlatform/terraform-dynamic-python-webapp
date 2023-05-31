@@ -64,12 +64,12 @@ output "usage" {
     EOF
 }
 
-output "server_service_name" { 
+output "server_service_name" {
   description = "Name of the Cloud Run service, hosting the server API"
-  value = google_cloud_run_v2_service.server.name
+  value       = google_cloud_run_v2_service.server.name
 }
 
-output "client_job_name" { 
+output "client_job_name" {
   description = "Name of the Cloud Run Job, deploying the front end"
-  value = google_cloud_run_v2_job.client.name
+  value       = google_cloud_run_v2_job.client.name
 }

@@ -34,3 +34,4 @@ output "client_job_name" {
   description = "Client Cloud Run job name"
   value       = module.dynamic-python-webapp.client_job_name
 }
+

@@ -28,6 +28,7 @@ locals {
     "secretmanager.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "firebase.googleapis.com",
+    "firebasehosting.googleapis.com",
   ]
 }
 

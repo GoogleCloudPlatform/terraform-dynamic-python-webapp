@@ -18,4 +18,5 @@ ARG PROJECT_ID=YOURPROJECTID
 FROM gcr.io/$PROJECT_ID/firebase
 
 COPY . ./
+
 ENTRYPOINT ./placeholder-deploy.sh

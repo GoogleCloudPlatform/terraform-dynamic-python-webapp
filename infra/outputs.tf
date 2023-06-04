@@ -16,7 +16,7 @@
 
 locals {
   server_url   = google_cloud_run_v2_service.server.uri
-  firebase_url = "https://${var.project_id}.web.app"
+  firebase_url = var.random_suffix ? google_firebase_hosting_site.client[0].default_url : "https://${var.project_id}.web.app"
 }
 
 output "firebase_url" {
@@ -62,4 +62,14 @@ output "usage" {
     Username: admin
     Password: ${google_secret_manager_secret_version.django_admin_password.secret_data}
     EOF
+}
+
+output "server_service_name" {
+  description = "Name of the Cloud Run service, hosting the server API"
+  value       = google_cloud_run_v2_service.server.name
+}
+
+output "client_job_name" {
+  description = "Name of the Cloud Run Job, deploying the front end"
+  value       = google_cloud_run_v2_job.client.name
 }

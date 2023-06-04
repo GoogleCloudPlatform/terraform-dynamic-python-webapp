@@ -17,6 +17,24 @@
 # any errors? exit immediately.
 set -e
 
+# if deploying with a suffix (from infra/jobs.tf), adjust the config to suit the custom site
+# https://firebase.google.com/docs/hosting/multisites#set_up_deploy_targets
+if [[ -n $SUFFIX ]]; then
+    json -I -f firebase.json -e "this.hosting.target='$SUFFIX'"
+    UPDATED=true
+
+    # Use template file to generate configuration
+    envsubst  < firebaserc.tmpl > .firebaserc
+    echo "Customised .firebaserc created to support site."
+    cat .firebaserc
+fi
+
+# If anything was updated, then export the output.
+if [[ -n $UPDATED ]]; then
+    echo "Deploying with the following updated config: "
+    cat firebase.json
+fi
+
 echo "Deploying placeholder to Firebase..."
 
 firebase deploy --project "$PROJECT_ID" --only hosting

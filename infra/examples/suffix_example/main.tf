@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-output "usage" {
-  sensitive   = true
-  description = "Connection details for the project"
-  value       = module.dynamic-python-webapp.usage
-}
+module "dynamic-python-webapp" {
+  source = "../.."
 
-output "firebase_url" {
-  description = "Firebase URL"
-  value       = module.dynamic-python-webapp.firebase_url
-}
-
-output "server_service_name" {
-  description = "Server Cloud Run service name"
-  value       = module.dynamic-python-webapp.server_service_name
-}
-
-output "client_job_name" {
-  description = "Client Cloud Run job name"
-  value       = module.dynamic-python-webapp.client_job_name
+  project_id = var.project_id
 }

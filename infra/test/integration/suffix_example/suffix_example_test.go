@@ -20,6 +20,6 @@ import (
 	test "github.com/terraform-google-modules/dynamic-python-webapp/test/integration"
 )
 
-func TestSimpleExample(t *testing.T) {
+func TestSuffixExample(t *testing.T) {
 	test.AssertExample(t)
 }

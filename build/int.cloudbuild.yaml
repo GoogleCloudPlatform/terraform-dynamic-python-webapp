@@ -21,7 +21,7 @@ steps:
   env:
   - 'TF_VAR_org_id=$_ORG_ID'
   - 'TF_VAR_folder_id=$_FOLDER_ID'
-  - 'TF_VAR_billing_account=$_BILLING_ACCOUNT'
+  - 'TF_VAR_billing_account=$_LR_BILLING_ACCOUNT'
 
 # Initialize all tests, then run two parallel sets of tests.
 - id: init-all

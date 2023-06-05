@@ -15,6 +15,7 @@
  */
 
 # Base images supplied pre-built.
+   
 
 locals {
   server_image      = "gcr.io/${var.server_image_host}/server:${var.image_version}"

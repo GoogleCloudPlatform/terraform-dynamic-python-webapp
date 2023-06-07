@@ -16,6 +16,7 @@ This changelog is generated automatically based on [Conventional Commits](https:
 * adds metadata generation for the solution ([#81](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/81)) ([7364389](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/736438949814f18399985e12b70a3c36e3d580aa))
 * implement fast-follow placeholder website for firebase ([#75](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/75)) ([3c6704c](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/3c6704c93f337a7b449dca16ce330dbde0c6220e))
 * support multiple firebase sites ([#58](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/58)) ([8110284](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/8110284f544b17cff7c745d3b31200dd6100a3e3))
+* update avocano to v1.8.1 ([#250](https://github.com/GoogleCloudPlatform/avocano/pull/250))
 
 
 ### Bug Fixes

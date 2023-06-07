@@ -17,6 +17,8 @@
 ARG PROJECT_ID=YOURPROJECTID
 FROM gcr.io/$PROJECT_ID/firebase
 
+RUN apk add gettext
+RUN npm install -g json
 COPY . ./
 
 ENTRYPOINT ./placeholder-deploy.sh

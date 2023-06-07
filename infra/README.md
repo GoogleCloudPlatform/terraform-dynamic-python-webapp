@@ -47,7 +47,7 @@ Functional examples are included in the
 | client\_image\_host | Container Registry that hosts the client image (PROJECT\_ID[/folder]) | `string` | `"hsa-public/terraform-python-dynamic-webapp"` | no |
 | database\_name | Cloud SQL database name | `string` | `"django"` | no |
 | database\_username | Cloud SQL database name | `string` | `"server"` | no |
-| image\_version | Version of the Container Registry image to use | `string` | `"v1.7.0"` | no |
+| image\_version | Version of the Container Registry image to use | `string` | `"v1.8.1"` | no |
 | init | Initialize database? | `bool` | `true` | no |
 | instance\_name | Cloud SQL Instance name | `string` | `"psql"` | no |
 | labels | A set of key/value label pairs to assign to the resources deployed by this blueprint. | `map(string)` | `{}` | no |

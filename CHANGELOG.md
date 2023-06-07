@@ -8,6 +8,23 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.6.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.5.0...v0.6.0) (2023-06-07)
+
+
+### Features
+
+* adds metadata generation for the solution ([#81](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/81)) ([7364389](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/736438949814f18399985e12b70a3c36e3d580aa))
+* implement fast-follow placeholder website for firebase ([#75](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/75)) ([3c6704c](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/3c6704c93f337a7b449dca16ce330dbde0c6220e))
+* support multiple firebase sites ([#58](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/58)) ([8110284](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/8110284f544b17cff7c745d3b31200dd6100a3e3))
+
+
+### Bug Fixes
+
+* **deps:** update go modules ([#77](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/77)) ([53cc564](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/53cc56430c96bdb56d0bc7f54ea447625ceb2c69))
+* **deps:** update go modules ([#86](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/86)) ([2df6c66](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/2df6c661f395d4ff4530b1f11fee632dcd65ea04))
+* **deps:** update module github.com/gruntwork-io/terratest to v0.42.0 ([#80](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/80)) ([fd32492](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/fd3249276c1ecf7eeb0bc99144a8fe4bd2ce65c2))
+* restore missing dependencies ([#84](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/84)) ([3fbdd5e](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/3fbdd5e22c222595e01f45973aebf08d6cf05140))
+
 ## [0.5.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.4.1...v0.5.0) (2023-05-05)
 
 

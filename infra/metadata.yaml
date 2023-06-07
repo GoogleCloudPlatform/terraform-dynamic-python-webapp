@@ -24,6 +24,7 @@ spec:
     source:
       repo: https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp
       sourceType: git
+      dir: /infra
     actuationTool:
       flavor: Terraform
       version: '>= 0.13'
@@ -64,7 +65,7 @@ spec:
     - name: image_version
       description: Version of the Container Registry image to use
       varType: string
-      defaultValue: v1.7.0
+      defaultValue: v1.8.1
     - name: init
       description: Initialize database?
       varType: bool

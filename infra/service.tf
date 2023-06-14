@@ -50,6 +50,10 @@ resource "google_cloud_run_v2_service" "server" {
         name  = "OTEL_TRACES_EXPORTER"
         value = "gcp_trace"
       }
+      env {
+        name  = "OTEL_PYTHON_EXCLUDED_URLS"
+        value = "healthy"
+      }
       volume_mounts {
         name       = "cloudsql"
         mount_path = "/cloudsql"

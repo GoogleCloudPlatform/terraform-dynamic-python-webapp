@@ -18,7 +18,7 @@ resource "google_firebase_project" "default" {
   provider = google-beta
   project  = var.project_id
 
-  depends_on = [google_project_service.enabled]
+  depends_on = [module.project_services]
 }
 
 resource "google_firebase_hosting_site" "client" {
@@ -30,5 +30,5 @@ resource "google_firebase_hosting_site" "client" {
   project  = google_firebase_project.default.project
   site_id  = "${var.project_id}-${random_id.suffix.hex}"
 
-  depends_on = [google_project_service.enabled]
+  depends_on = [module.project_services]
 }

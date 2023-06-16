@@ -50,6 +50,10 @@ resource "google_cloud_run_v2_service" "server" {
         name  = "OTEL_TRACES_EXPORTER"
         value = "gcp_trace"
       }
+      env {
+        name  = "DEPLOYMENT_SUFFIX"
+        value = var.random_suffix ? random_id.suffix.hex : ""
+      }
       volume_mounts {
         name       = "cloudsql"
         mount_path = "/cloudsql"

@@ -51,6 +51,10 @@ resource "google_cloud_run_v2_service" "server" {
         value = "gcp_trace"
       }
       env {
+        name  = "OTEL_PYTHON_EXCLUDED_URLS"
+        value = "healthy"
+      }
+      env {
         name  = "DEPLOYMENT_SUFFIX"
         value = var.random_suffix ? random_id.suffix.hex : ""
       }

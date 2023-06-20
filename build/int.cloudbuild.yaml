@@ -71,6 +71,8 @@ steps:
   dir: infra
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'cft test run TestSuffixExample --stage teardown --verbose']
+options:
+  machineType: e2-highcpu-8
 tags:
 - 'ci'
 - 'integration'

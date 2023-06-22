@@ -47,6 +47,12 @@ variable "random_suffix" {
   default     = true
 }
 
+variable "enable_apis" {
+  type        = bool
+  description = "Whether or not to enable underlying apis in this solution."
+  default     = true
+}
+
 variable "init" {
   type        = bool
   description = "Initialize database?"

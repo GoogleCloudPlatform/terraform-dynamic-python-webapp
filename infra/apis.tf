@@ -14,28 +14,45 @@
  * limitations under the License.
  */
 
-# Google Cloud Services to enable
+# Google Cloud Services to enable.
+# This is done for local development.
+# Testing uses test/setup/main.tf.
 
-locals {
-  services = [
-    "run.googleapis.com",
-    "iam.googleapis.com",
-    "artifactregistry.googleapis.com",
-    "compute.googleapis.com",
+# Google Cloud Services to enable
+module "project_services" {
+  source                      = "terraform-google-modules/project-factory/google//modules/project_services"
+  version                     = "13.0.0"
+  disable_services_on_destroy = false
+  project_id                  = var.project_id
+  enable_apis                 = var.enable_apis
+
+  activate_apis = [
+    # Default new project services.
+    "bigquery.googleapis.com",
+    "bigquerymigration.googleapis.com",
+    "bigquerystorage.googleapis.com",
+    "clouddebugger.googleapis.com",
+    "cloudtrace.googleapis.com",
+    "datastore.googleapis.com",
+    "logging.googleapis.com",
+    "monitoring.googleapis.com",
+    "servicemanagement.googleapis.com",
+    "serviceusage.googleapis.com",
     "sql-component.googleapis.com",
-    "sqladmin.googleapis.com",
+    "storage.googleapis.com",
+    "storage-api.googleapis.com",
+    "storage-component.googleapis.com",
+
+    # Solution-specific services.
+    "artifactregistry.googleapis.com",
     "cloudbuild.googleapis.com",
-    "secretmanager.googleapis.com",
     "cloudresourcemanager.googleapis.com",
+    "compute.googleapis.com",
     "firebase.googleapis.com",
     "firebasehosting.googleapis.com",
+    "iam.googleapis.com",
+    "run.googleapis.com",
+    "secretmanager.googleapis.com",
+    "sqladmin.googleapis.com",
   ]
-}
-
-resource "google_project_service" "enabled" {
-  for_each                   = toset(local.services)
-  project                    = var.project_id
-  service                    = each.value
-  disable_dependent_services = true
-  disable_on_destroy         = false
 }

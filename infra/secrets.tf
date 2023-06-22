@@ -27,7 +27,7 @@ resource "google_secret_manager_secret" "django_admin_password" {
   replication {
     automatic = true
   }
-  depends_on = [google_project_service.enabled]
+  depends_on = [module.project_services]
 }
 
 resource "google_secret_manager_secret_iam_binding" "django_admin_password" {
@@ -52,7 +52,7 @@ resource "google_secret_manager_secret" "django_settings" {
   replication {
     automatic = true
   }
-  depends_on = [google_project_service.enabled]
+  depends_on = [module.project_services]
 }
 
 ## Django configuration settings

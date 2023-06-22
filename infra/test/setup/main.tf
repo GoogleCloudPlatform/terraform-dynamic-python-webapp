@@ -25,8 +25,32 @@ module "project" {
   billing_account   = var.billing_account
 
   activate_apis = [
-    "cloudresourcemanager.googleapis.com",
+    # Default new project services.
+    "bigquery.googleapis.com",
+    "bigquerymigration.googleapis.com",
+    "bigquerystorage.googleapis.com",
+    "clouddebugger.googleapis.com",
+    "cloudtrace.googleapis.com",
+    "datastore.googleapis.com",
+    "logging.googleapis.com",
+    "monitoring.googleapis.com",
+    "servicemanagement.googleapis.com",
+    "serviceusage.googleapis.com",
+    "sql-component.googleapis.com",
+    "storage.googleapis.com",
     "storage-api.googleapis.com",
-    "serviceusage.googleapis.com"
+    "storage-component.googleapis.com",
+
+    # Solution-specific services.
+    "artifactregistry.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "compute.googleapis.com",
+    "firebase.googleapis.com",
+    "firebasehosting.googleapis.com",
+    "iam.googleapis.com",
+    "run.googleapis.com",
+    "secretmanager.googleapis.com",
+    "sqladmin.googleapis.com",
   ]
 }

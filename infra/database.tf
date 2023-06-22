@@ -33,7 +33,7 @@ resource "google_sql_database_instance" "postgres" {
     tier        = "db-custom-2-4096" # 2 CPU, 4GB Memory
     user_labels = var.labels
   }
-  depends_on = [google_project_service.enabled]
+  depends_on = [module.project_services]
 
 }
 

@@ -24,7 +24,7 @@ resource "google_compute_network" "gce_init" {
   delete_default_routes_on_create = false
   mtu                             = 0
 
-  depends_on = [google_project_service.enabled]
+  depends_on = [module.project_services]
 }
 
 resource "google_compute_subnetwork" "gce_init" {
@@ -35,14 +35,14 @@ resource "google_compute_subnetwork" "gce_init" {
   ip_cidr_range = "10.10.10.0/24"
   region        = var.region
 
-  depends_on = [google_project_service.enabled]
+  depends_on = [module.project_services]
 }
 
 resource "google_compute_instance" "gce_init" {
   count = var.init ? 1 : 0
 
   depends_on = [
-    google_project_service.enabled,
+    module.project_services,
     google_sql_database_instance.postgres,
     google_cloud_run_v2_job.setup,
     google_cloud_run_v2_job.client,
@@ -97,7 +97,7 @@ resource "google_compute_instance" "placeholder_init" {
   count = var.init ? 1 : 0
 
   depends_on = [
-    google_project_service.enabled,
+    module.project_services,
     google_cloud_run_v2_job.placeholder,
   ]
 

@@ -37,6 +37,9 @@ spec:
         database_username:
           name: database_username
           title: Database Username
+        enable_apis:
+          name: enable_apis
+          title: Enable Apis
         image_version:
           name: image_version
           title: Image Version

@@ -110,9 +110,9 @@ spec:
     - name: client_job_name
       description: Name of the Cloud Run Job, deploying the front end
     - name: django_admin_password
-      description: Djando Admin password
+      description: Django Admin password
     - name: django_admin_url
-      description: Djando Admin URL
+      description: Django Admin URL
     - name: firebase_url
       description: Firebase URL
     - name: neos_toc_url

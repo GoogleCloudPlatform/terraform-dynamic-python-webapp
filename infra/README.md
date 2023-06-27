@@ -64,8 +64,8 @@ Functional examples are included in the
 | Name | Description |
 |------|-------------|
 | client\_job\_name | Name of the Cloud Run Job, deploying the front end |
-| django\_admin\_password | Djando Admin password |
-| django\_admin\_url | Djando Admin URL |
+| django\_admin\_password | Django Admin password |
+| django\_admin\_url | Django Admin URL |
 | firebase\_url | Firebase URL |
 | neos\_toc\_url | Neos Tutorial URL |
 | server\_service\_name | Name of the Cloud Run service, hosting the server API |

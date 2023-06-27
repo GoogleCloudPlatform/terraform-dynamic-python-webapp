@@ -41,12 +41,12 @@ output "neos_toc_url" {
 }
 
 output "django_admin_url" {
-  description = "Djando Admin URL"
+  description = "Django Admin URL"
   value       = "${local.server_url}/admin"
 }
 
 output "django_admin_password" {
-  description = "Djando Admin password"
+  description = "Django Admin password"
   sensitive   = true
   value       = google_secret_manager_secret_version.django_admin_password.secret_data
 }

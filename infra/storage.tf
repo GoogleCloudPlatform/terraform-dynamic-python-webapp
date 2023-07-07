@@ -21,6 +21,10 @@ resource "google_storage_bucket" "media" {
   storage_class = "REGIONAL"
   force_destroy = true
 
+  # Avoid conflict with constraints/storage.uniformBucketLevelAccess.
+  # This is recommended: https://cloud.google.com/storage/docs/uniform-bucket-level-access#should-you-use
+  uniform_bucket_level_access = true
+
   labels = var.labels
 }
 

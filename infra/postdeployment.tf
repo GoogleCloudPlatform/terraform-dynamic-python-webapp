@@ -49,7 +49,7 @@ resource "google_compute_instance" "gce_init" {
   ]
 
   name           = var.random_suffix ? "head-start-initialize-${random_id.suffix.hex}" : "head-start-initialize"
-  machine_type   = "n1-standard-1"
+  machine_type   = "e2-standard2"
   zone           = var.zone
   desired_status = "RUNNING" # https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/pull/75#issuecomment-1547198414
 

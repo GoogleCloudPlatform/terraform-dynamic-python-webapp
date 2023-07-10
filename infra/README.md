@@ -47,6 +47,7 @@ Functional examples are included in the
 | client\_image\_host | Container Registry that hosts the client image (PROJECT\_ID[/folder]) | `string` | `"hsa-public/terraform-python-dynamic-webapp"` | no |
 | database\_name | Cloud SQL database name | `string` | `"django"` | no |
 | database\_username | Cloud SQL database name | `string` | `"server"` | no |
+| enable\_apis | Whether or not to enable underlying apis in this solution. | `bool` | `true` | no |
 | image\_version | Version of the Container Registry image to use | `string` | `"v1.8.1"` | no |
 | init | Initialize database? | `bool` | `true` | no |
 | instance\_name | Cloud SQL Instance name | `string` | `"psql"` | no |
@@ -63,8 +64,8 @@ Functional examples are included in the
 | Name | Description |
 |------|-------------|
 | client\_job\_name | Name of the Cloud Run Job, deploying the front end |
-| django\_admin\_password | Djando Admin password |
-| django\_admin\_url | Djando Admin URL |
+| django\_admin\_password | Django Admin password |
+| django\_admin\_url | Django Admin URL |
 | firebase\_url | Firebase URL |
 | neos\_toc\_url | Neos Tutorial URL |
 | server\_service\_name | Name of the Cloud Run service, hosting the server API |

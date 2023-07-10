@@ -26,25 +26,25 @@ locals {
 resource "google_service_account" "server" {
   account_id   = var.random_suffix ? "api-backend-${random_id.suffix.hex}" : "api-backend"
   display_name = "API Backend service account"
-  depends_on   = [google_project_service.enabled]
+  depends_on   = [module.project_services]
 }
 
 resource "google_service_account" "client" {
   account_id   = var.random_suffix ? "client-frontend-${random_id.suffix.hex}" : "client-frontend"
   display_name = "Client Frontend service account"
-  depends_on   = [google_project_service.enabled]
+  depends_on   = [module.project_services]
 }
 
 resource "google_service_account" "automation" {
   account_id   = var.random_suffix ? "automation-${random_id.suffix.hex}" : "automation"
   display_name = "Automation service account"
-  depends_on   = [google_project_service.enabled]
+  depends_on   = [module.project_services]
 }
 
 resource "google_service_account" "compute" {
   account_id   = var.random_suffix ? "compute-startup-${random_id.suffix.hex}" : "compute-startup"
   display_name = "Head Start App Compute Instance SA"
-  depends_on   = [google_project_service.enabled]
+  depends_on   = [module.project_services]
   count        = var.init ? 1 : 0
 }
 

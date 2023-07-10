@@ -62,6 +62,10 @@ spec:
       description: Cloud SQL database name
       varType: string
       defaultValue: server
+    - name: enable_apis
+      description: Whether or not to enable underlying apis in this solution.
+      varType: bool
+      defaultValue: true
     - name: image_version
       description: Version of the Container Registry image to use
       varType: string
@@ -106,9 +110,9 @@ spec:
     - name: client_job_name
       description: Name of the Cloud Run Job, deploying the front end
     - name: django_admin_password
-      description: Djando Admin password
+      description: Django Admin password
     - name: django_admin_url
-      description: Djando Admin URL
+      description: Django Admin URL
     - name: firebase_url
       description: Firebase URL
     - name: neos_toc_url
@@ -133,6 +137,27 @@ spec:
       - roles/secretmanager.admin
       - roles/storage.admin
     services:
-    - cloudresourcemanager.googleapis.com
-    - storage-api.googleapis.com
+    - bigquery.googleapis.com
+    - bigquerymigration.googleapis.com
+    - bigquerystorage.googleapis.com
+    - clouddebugger.googleapis.com
+    - cloudtrace.googleapis.com
+    - datastore.googleapis.com
+    - logging.googleapis.com
+    - monitoring.googleapis.com
+    - servicemanagement.googleapis.com
     - serviceusage.googleapis.com
+    - sql-component.googleapis.com
+    - storage.googleapis.com
+    - storage-api.googleapis.com
+    - storage-component.googleapis.com
+    - artifactregistry.googleapis.com
+    - cloudbuild.googleapis.com
+    - cloudresourcemanager.googleapis.com
+    - compute.googleapis.com
+    - firebase.googleapis.com
+    - firebasehosting.googleapis.com
+    - iam.googleapis.com
+    - run.googleapis.com
+    - secretmanager.googleapis.com
+    - sqladmin.googleapis.com

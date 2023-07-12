@@ -25,8 +25,13 @@ resource "random_password" "django_admin_password" {
 resource "google_secret_manager_secret" "django_admin_password" {
   secret_id = var.random_suffix ? "django_admin_password-${random_id.suffix.hex}" : "django_admin_password"
   replication {
-    automatic = true
-    location = var.region
+    # Avoid conflict with constraints/gcp.resourceLocations for Secret Manager.
+    # https://cloud.google.com/secret-manager/docs/choosing-replication
+    user_managed {
+      replicas {
+        location = var.region
+      }
+    }
   }
   depends_on = [module.project_services]
 }

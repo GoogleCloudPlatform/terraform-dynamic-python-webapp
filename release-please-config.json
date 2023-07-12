@@ -1,0 +1,16 @@
+{
+  "changelog-sections": [
+        {"type": "feat",    "section": "🥑 Features" },
+        {"type": "feature", "section": "🥑 Features" },
+        {"type": "fix",     "section": "🐞 Bug Fixes" },
+        {"type": "perf",    "section": "💪 Performance Improvements" },
+        {"type": "revert",  "section": "↩️ Reverts"},
+        {"type": "docs",    "section": "📑 Documentation" },
+        {"type": "style",   "section": "🎨 Style" },
+        {"type": "chore",   "section": "🧹 Chores" },
+        {"type": "ci",      "section": "🛠️ Automation" },
+        {"type": "test",    "section": "🛠️ Automation" },
+        {"type": "testing", "section": "🛠️ Automation" },
+        {"type": "build",   "section": "🛠️ Automation" }
+    ]
+}

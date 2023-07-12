@@ -26,6 +26,7 @@ resource "google_secret_manager_secret" "django_admin_password" {
   secret_id = var.random_suffix ? "django_admin_password-${random_id.suffix.hex}" : "django_admin_password"
   replication {
     automatic = true
+    location = var.region
   }
   depends_on = [module.project_services]
 }

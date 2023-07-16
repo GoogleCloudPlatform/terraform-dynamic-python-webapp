@@ -54,6 +54,11 @@ resource "google_cloud_run_v2_service" "server" {
         name  = "OTEL_PYTHON_EXCLUDED_URLS"
         value = "healthy"
       }
+      # Supply the custom suffix, if used, to support automated CSRF code in application settings
+      env {
+        name  = "DEPLOYMENT_SUFFIX"
+        value = var.random_suffix ? random_id.suffix.hex : ""
+      }
       volume_mounts {
         name       = "cloudsql"
         mount_path = "/cloudsql"

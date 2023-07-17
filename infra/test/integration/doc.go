@@ -12,14 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Package integration is used by cloud-foundation-toolkit to run integration tests.
+//
+// discover_test.go identifies tests defined in test case subdirectories, which
+// are named to match the example module usage at infra/examples.
+//
+// integration_test.go provide common test implementation for all test cases.
 package integration
-
-import (
-	"testing"
-
-	"github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test/pkg/tft"
-)
-
-func TestAll(t *testing.T) {
-	tft.AutoDiscoverAndTest(t)
-}

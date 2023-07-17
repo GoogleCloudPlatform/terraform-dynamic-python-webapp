@@ -17,9 +17,9 @@ package simple_example
 import (
 	"testing"
 
-	test "github.com/terraform-google-modules/dynamic-python-webapp/test/integration"
+	"github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/test/integration"
 )
 
 func TestSimpleExample(t *testing.T) {
-	test.AssertExample(t)
+	integration.AssertExample(t)
 }

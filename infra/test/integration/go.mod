@@ -1,9 +1,9 @@
-module github.com/terraform-google-modules/dynamic-python-webapp/test/integration
+module github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/test/integration
 
 go 1.20
 
 require (
-	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.6.1
+	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.6.2-0.20230714180445-9b5aed3e2e8e
 	github.com/gruntwork-io/terratest v0.43.6
 	github.com/stretchr/testify v1.8.4
 )

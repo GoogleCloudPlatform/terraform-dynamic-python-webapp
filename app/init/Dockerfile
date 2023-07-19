@@ -12,13 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-# Execute with "docker run --build-arg PROJECT_ID=$PROJECT_ID ..."
-ARG PROJECT_ID=YOURPROJECTID
-FROM gcr.io/$PROJECT_ID/firebase
-
-RUN apk add gettext curl
-RUN npm install -g json
-COPY . ./
-
-ENTRYPOINT ./placeholder-deploy.sh
+FROM gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+COPY init-execute.sh .
+ENTRYPOINT ./init-execute.sh

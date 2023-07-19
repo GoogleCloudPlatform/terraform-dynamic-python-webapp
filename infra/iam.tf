@@ -41,9 +41,9 @@ resource "google_service_account" "automation" {
   depends_on   = [module.project_services]
 }
 
-resource "google_service_account" "compute" {
-  account_id   = var.random_suffix ? "compute-startup-${random_id.suffix.hex}" : "compute-startup"
-  display_name = "Head Start App Compute Instance SA"
+resource "google_service_account" "init" {
+  account_id   = var.random_suffix ? "init-startup-${random_id.suffix.hex}" : "init-startup"
+  display_name = "Jump Start App Init SA"
   depends_on   = [module.project_services]
   count        = var.init ? 1 : 0
 }
@@ -88,12 +88,12 @@ resource "google_project_iam_member" "client_permissions" {
   depends_on = [google_service_account.client]
 }
 
-# GCE instance needs access to start Jobs
-resource "google_project_iam_member" "computestartup_permissions" {
+# Init process needs access to start Jobs
+resource "google_project_iam_member" "initstartup_permissions" {
   project    = var.project_id
   role       = "roles/run.developer"
-  member     = "serviceAccount:${google_service_account.compute[0].email}"
-  depends_on = [google_service_account.compute]
+  member     = "serviceAccount:${google_service_account.init[0].email}"
+  depends_on = [google_service_account.init]
   count      = var.init ? 1 : 0
 }
 

@@ -14,126 +14,130 @@
  * limitations under the License.
  */
 
-resource "google_compute_network" "gce_init" {
-  count = var.init ? 1 : 0
 
-  name                            = var.random_suffix ? "gce-init-network-${random_id.suffix.hex}" : "gce-init-network"
-  auto_create_subnetworks         = false
-  routing_mode                    = "GLOBAL"
-  project                         = var.project_id
-  delete_default_routes_on_create = false
-  mtu                             = 0
-
-  depends_on = [module.project_services]
+# used to collect access token, for authenticated POST commands
+data "google_client_config" "current" {
 }
 
-resource "google_compute_subnetwork" "gce_init" {
-  count = var.init ? 1 : 0
+# Job that uses pre-built docker image to deploy a placeholder website. 
+resource "google_cloud_run_v2_job" "placeholder" {
+  name     = var.random_suffix ? "placeholder-${random_id.suffix.hex}" : "placeholder"
+  location = var.region
 
-  name          = var.random_suffix ? "subnet-gce-init-${random_id.suffix.hex}" : "subnet-gce-init"
-  network       = google_compute_network.gce_init[0].id
-  ip_cidr_range = "10.10.10.0/24"
-  region        = var.region
+  labels = var.labels
 
-  depends_on = [module.project_services]
-}
+  template {
+    template {
+      service_account = google_service_account.client.email
+      max_retries     = 1
+      containers {
+        image = local.placeholder_image
 
-resource "google_compute_instance" "gce_init" {
-  count = var.init ? 1 : 0
+        # Variables consumed by /app/placeholder/placeholder-deploy.sh
+        env {
+          name  = "PROJECT_ID"
+          value = var.project_id
+        }
+        env {
+          name  = "SUFFIX"
+          value = var.random_suffix ? random_id.suffix.hex : ""
+        }
+        env {
+          name  = "FIREBASE_URL"
+          value = local.firebase_url
+        }
+      }
+    }
+  }
 
   depends_on = [
-    module.project_services,
-    google_sql_database_instance.postgres,
-    google_cloud_run_v2_job.setup,
-    google_cloud_run_v2_job.client,
+    module.project_services
   ]
-
-  name           = var.random_suffix ? "head-start-initialize-${random_id.suffix.hex}" : "head-start-initialize"
-  machine_type   = "n1-standard-1"
-  zone           = var.zone
-  desired_status = "RUNNING" # https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/pull/75#issuecomment-1547198414
-
-  allow_stopping_for_update = true
-
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-11"
-    }
-  }
-
-  network_interface {
-    network    = google_compute_network.gce_init[0].self_link
-    subnetwork = google_compute_subnetwork.gce_init[0].self_link
-
-    access_config {
-      // Ephemeral public IP
-    }
-  }
-
-  service_account {
-    email  = google_service_account.compute[0].email
-    scopes = ["cloud-platform"] # TODO: Restrict??
-  }
-
-  metadata_startup_script = <<EOT
-#!/bin/bash
-
-echo "Running init database migration"
-gcloud beta run jobs execute ${google_cloud_run_v2_job.setup.name} --wait --project ${var.project_id} --region ${var.region}
-
-echo "Running client deploy"
-gcloud beta run jobs execute ${google_cloud_run_v2_job.client.name} --wait --project ${var.project_id} --region ${var.region}
-curl -X PURGE "${local.firebase_url}/"
-
-echo "Warm up API"
-curl ${local.server_url}/api/products/?warmup
-
-shutdown -h now
-EOT
 }
 
 
-resource "google_compute_instance" "placeholder_init" {
-  count = var.init ? 1 : 0
+# execute the job by calling the API directly. 
+data "http" "execute_placeholder_job" {
+  url    = "https://${var.region}-run.googleapis.com/v2/projects/${var.project_id}/locations/${var.region}/jobs/${google_cloud_run_v2_job.placeholder.name}:run"
+  method = "POST"
+  request_headers = {
+    Accept = "application/json"
+  Authorization = "Bearer ${data.google_client_config.current.access_token}" }
 
   depends_on = [
     module.project_services,
     google_cloud_run_v2_job.placeholder,
   ]
+}
 
-  name         = var.random_suffix ? "placeholder-initialize-${random_id.suffix.hex}" : "placeholder-initialize"
-  machine_type = "n1-standard-1"
-  zone         = var.zone
 
-  allow_stopping_for_update = true
+resource "google_cloud_run_v2_job" "init" {
+  name     = var.random_suffix ? "init-${random_id.suffix.hex}" : "init"
+  location = var.region
 
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-11"
+  labels = var.labels
+
+  template {
+    template {
+      service_account = google_service_account.init[0].email
+      max_retries     = 1
+      containers {
+        image = local.init_image
+
+        # Variables consumed by /app/init/init-execute.sh
+        env {
+          name  = "PROJECT_ID"
+          value = var.project_id
+        }
+        env {
+          name  = "SUFFIX"
+          value = var.random_suffix ? random_id.suffix.hex : ""
+        }
+        env {
+          name  = "REGION"
+          value = var.region
+        }
+        env {
+          name  = "SETUP_JOB"
+          value = google_cloud_run_v2_job.setup.name
+        }
+        env {
+          name  = "CLIENT_JOB"
+          value = google_cloud_run_v2_job.client.name
+        }
+        env {
+          name  = "FIREBASE_URL"
+          value = local.firebase_url
+        }
+        env {
+          name  = "SERVER_URL"
+          value = google_cloud_run_v2_service.server.uri
+        }
+
+      }
     }
   }
 
-  network_interface {
-    network    = google_compute_network.gce_init[0].self_link
-    subnetwork = google_compute_subnetwork.gce_init[0].self_link
+  depends_on = [
+    module.project_services
+  ]
+}
 
-    access_config {
-      // Ephemeral public IP
-    }
-  }
 
-  service_account {
-    email  = google_service_account.compute[0].email
-    scopes = ["cloud-platform"] # TODO: Restrict??
-  }
+# execute the job, once it and other dependencies exit. 
+data "http" "execute_init_job" {
+  count = var.init ? 1 : 0
 
-  metadata_startup_script = <<EOT
-#!/bin/bash
-
-echo "Running placeholder deployment"
-gcloud beta run jobs execute ${google_cloud_run_v2_job.placeholder.name} --wait --project ${var.project_id} --region ${var.region}
-curl -X PURGE "${local.firebase_url}/"
-
-shutdown -h now
-EOT
+  url    = "https://${var.region}-run.googleapis.com/v2/projects/${var.project_id}/locations/${var.region}/jobs/${google_cloud_run_v2_job.init.name}:run"
+  method = "POST"
+  request_headers = {
+    Accept = "application/json"
+  Authorization = "Bearer ${data.google_client_config.current.access_token}" }
+  depends_on = [
+    google_cloud_run_v2_job.init,
+    google_cloud_run_v2_job.setup,
+    google_cloud_run_v2_job.client,
+    module.project_services,
+    google_sql_database_instance.postgres,
+  ]
 }

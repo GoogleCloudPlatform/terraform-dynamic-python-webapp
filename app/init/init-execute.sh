@@ -44,10 +44,10 @@ echo "SERVER URL:   $SERVER_URL"
 echo ""
 
 echo "Running init database migration..."
-gcloud run jobs execute $SETUP_JOB --wait --project $PROJECT_ID --region $REGION
+gcloud run jobs execute "$SETUP_JOB" --wait --project "$PROJECT_ID" --region "$REGION"
 
 echo "Running client deploy..."
-gcloud run jobs execute $CLIENT_JOB --wait --project $PROJECT_ID --region $REGION
+gcloud run jobs execute "$CLIENT_JOB" --wait --project "$PROJECT_ID" --region "$REGION"
 
 echo "Purge Firebase cache"
 echo curl -X PURGE "${FIREBASE_URL}/"

@@ -19,7 +19,7 @@
 data "google_client_config" "current" {
 }
 
-# Job that uses pre-built docker image to deploy a placeholder website. 
+# Job that uses pre-built docker image to deploy a placeholder website.
 resource "google_cloud_run_v2_job" "placeholder" {
   name     = var.random_suffix ? "placeholder-${random_id.suffix.hex}" : "placeholder"
   location = var.region
@@ -56,7 +56,7 @@ resource "google_cloud_run_v2_job" "placeholder" {
 }
 
 
-# execute the job by calling the API directly. 
+# execute the job by calling the API directly.
 data "http" "execute_placeholder_job" {
   url    = "https://${var.region}-run.googleapis.com/v2/projects/${var.project_id}/locations/${var.region}/jobs/${google_cloud_run_v2_job.placeholder.name}:run"
   method = "POST"
@@ -124,7 +124,7 @@ resource "google_cloud_run_v2_job" "init" {
 }
 
 
-# execute the job, once it and other dependencies exit. 
+# execute the job, once it and other dependencies exit.
 data "http" "execute_init_job" {
   count = var.init ? 1 : 0
 

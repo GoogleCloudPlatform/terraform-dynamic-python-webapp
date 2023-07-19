@@ -25,7 +25,7 @@ fi
 
 # Only run the placeholder script if the site has been deployed before.
 # Check if the firebase url has "Site Not Found" (the pre-deployment state)
-if curl $FIREBASE_URL | grep -q "Site Not Found"; then
+if curl "$FIREBASE_URL" | grep -q "Site Not Found"; then
     echo "Firebase site $FIREBASE_URL hasn't been deployed before, so it needs a placeholder."
 else
     echo "Firebase site $FIREBASE_URL has been deployed before. Not going to deploy placeholder. Exiting."

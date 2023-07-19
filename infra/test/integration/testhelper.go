@@ -60,9 +60,9 @@ func AssertExample(t *testing.T) {
 		client_job_name := terraform.OutputRequired(t, example.GetTFOptions(), "client_job_name")
 
 		flagshipProduct := "Sparkly Avocado"
-		region := example.GetTFOptions().Vars["region"].(string)
 		// Temporary: Logging to inspect vars.
 		t.Log(example.GetTFOptions().Vars)
+		region := example.GetTFOptions().Vars["region"].(string)
 
 		t.Logf("Using Project ID %q", projectID)
 

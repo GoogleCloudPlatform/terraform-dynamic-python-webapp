@@ -56,7 +56,8 @@ resource "google_cloud_run_v2_job" "placeholder" {
 }
 
 
-# execute the job by calling the API directly.
+# execute the job by calling the API directly. Intended side-effect
+# tflint-ignore: terraform_unused_declarations
 data "http" "execute_placeholder_job" {
   url    = "https://${var.region}-run.googleapis.com/v2/projects/${var.project_id}/locations/${var.region}/jobs/${google_cloud_run_v2_job.placeholder.name}:run"
   method = "POST"
@@ -124,7 +125,8 @@ resource "google_cloud_run_v2_job" "init" {
 }
 
 
-# execute the job, once it and other dependencies exit.
+# execute the job, once it and other dependencies exit. Intended side-effect.
+# tflint-ignore: terraform_unused_declarations
 data "http" "execute_init_job" {
   count = var.init ? 1 : 0
 

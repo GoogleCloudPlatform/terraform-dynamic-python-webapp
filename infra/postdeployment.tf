@@ -29,7 +29,6 @@ resource "google_cloud_run_v2_job" "placeholder" {
   template {
     template {
       service_account = google_service_account.client.email
-      max_retries     = 1
       containers {
         image = local.placeholder_image
 
@@ -81,7 +80,6 @@ resource "google_cloud_run_v2_job" "init" {
   template {
     template {
       service_account = google_service_account.init[0].email
-      max_retries     = 1
       containers {
         image = local.init_image
 

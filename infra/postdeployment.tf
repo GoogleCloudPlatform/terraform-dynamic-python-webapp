@@ -52,6 +52,11 @@ resource "google_cloud_run_v2_job" "placeholder" {
   depends_on = [
     module.project_services
   ]
+
+  # work around, b/292021282
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 
@@ -120,6 +125,11 @@ resource "google_cloud_run_v2_job" "init" {
   depends_on = [
     module.project_services
   ]
+
+  # work around, b/292021282
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 

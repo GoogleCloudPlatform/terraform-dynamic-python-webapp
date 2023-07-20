@@ -29,6 +29,7 @@ variable "region" {
 
 # HSA
 
+# tflint-ignore: terraform_unused_declarations
 variable "zone" {
   type        = string
   description = "GCP zone for provisioning zonal resources."

@@ -50,7 +50,7 @@ echo "Running client deploy..."
 gcloud run jobs execute "$CLIENT_JOB" --wait --project "$PROJECT_ID" --region "$REGION"
 
 echo "Purge Firebase cache"
-echo curl -X PURGE "${FIREBASE_URL}/"
+curl -X PURGE "${FIREBASE_URL}/"
 
 echo "Warm up API"
 curl "${SERVER_URL}/api/products/?warmup"

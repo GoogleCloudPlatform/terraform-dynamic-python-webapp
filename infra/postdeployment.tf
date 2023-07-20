@@ -19,127 +19,118 @@
 data "google_client_config" "current" {
 }
 
-# Job that uses pre-built docker image to deploy a placeholder website.
-resource "google_cloud_run_v2_job" "placeholder" {
-  name     = var.random_suffix ? "placeholder-${random_id.suffix.hex}" : "placeholder"
-  location = var.region
+# topic that is never used in practice, except as a configuration type for Cloud Build Triggers
+resource "google_pubsub_topic" "faux" {
+  name = "faux-topic"
+}
 
-  labels = var.labels
+## Placeholder - deploys a placeholder website - uses prebuilt image in /app/placeholder
+locals {
+  random_suffix_value = var.random_suffix ? random_id.suffix.hex : ""
+}
 
-  template {
-    template {
-      service_account = google_service_account.client.email
-      max_retries     = 1
-      containers {
-        image = local.placeholder_image
+resource "google_cloudbuild_trigger" "placeholder" {
+  name     = "placeholder"
+  location = "us-central1"
 
-        # Variables consumed by /app/placeholder/placeholder-deploy.sh
-        env {
-          name  = "PROJECT_ID"
-          value = var.project_id
-        }
-        env {
-          name  = "SUFFIX"
-          value = var.random_suffix ? random_id.suffix.hex : ""
-        }
-        env {
-          name  = "FIREBASE_URL"
-          value = local.firebase_url
-        }
-      }
-    }
+  description = "Deploy a placeholder Firebase website"
+
+  service_account = google_service_account.client.id
+
+  pubsub_config {
+    topic = google_pubsub_topic.faux.id
   }
 
-  depends_on = [
-    module.project_services
-  ]
-}
+  build {
+    step {
+      name = "gcr.io/${var.project_id}/placeholder" # TODO(glasnt) revert when fixed local.placeholder_image
+      env = [
+        "PROJECT_ID=${var.project_id}",
+        "SUFFIX=${local.random_suffix_value}",
+        "FIREBASE_URL=${local.firebase_url}",
+      ]
+    }
 
-
-# execute the job by calling the API directly. Intended side-effect
-# tflint-ignore: terraform_unused_declarations
-data "http" "execute_placeholder_job" {
-  url    = "https://${var.region}-run.googleapis.com/v2/projects/${var.project_id}/locations/${var.region}/jobs/${google_cloud_run_v2_job.placeholder.name}:run"
-  method = "POST"
-  request_headers = {
-    Accept = "application/json"
-  Authorization = "Bearer ${data.google_client_config.current.access_token}" }
-
-  depends_on = [
-    module.project_services,
-    google_cloud_run_v2_job.placeholder,
-  ]
-}
-
-
-resource "google_cloud_run_v2_job" "init" {
-  name     = var.random_suffix ? "init-${random_id.suffix.hex}" : "init"
-  location = var.region
-
-  labels = var.labels
-
-  template {
-    template {
-      service_account = google_service_account.init[0].email
-      max_retries     = 1
-      containers {
-        image = local.init_image
-
-        # Variables consumed by /app/init/init-execute.sh
-        env {
-          name  = "PROJECT_ID"
-          value = var.project_id
-        }
-        env {
-          name  = "SUFFIX"
-          value = var.random_suffix ? random_id.suffix.hex : ""
-        }
-        env {
-          name  = "REGION"
-          value = var.region
-        }
-        env {
-          name  = "SETUP_JOB"
-          value = google_cloud_run_v2_job.setup.name
-        }
-        env {
-          name  = "CLIENT_JOB"
-          value = google_cloud_run_v2_job.client.name
-        }
-        env {
-          name  = "FIREBASE_URL"
-          value = local.firebase_url
-        }
-        env {
-          name  = "SERVER_URL"
-          value = google_cloud_run_v2_service.server.uri
-        }
-
-      }
+    options {
+      logging = "CLOUD_LOGGING_ONLY"
     }
   }
-
-  depends_on = [
-    module.project_services
-  ]
 }
 
 
-# execute the job, once it and other dependencies exit. Intended side-effect.
+# execute the trigger, once it and other dependencies exist. Intended side-effect.
 # tflint-ignore: terraform_unused_declarations
-data "http" "execute_init_job" {
+data "http" "execute_placeholder_trigger" {
   count = var.init ? 1 : 0
 
-  url    = "https://${var.region}-run.googleapis.com/v2/projects/${var.project_id}/locations/${var.region}/jobs/${google_cloud_run_v2_job.init.name}:run"
+  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.placeholder.id}:run"
   method = "POST"
   request_headers = {
-    Accept = "application/json"
-  Authorization = "Bearer ${data.google_client_config.current.access_token}" }
+    Authorization = "Bearer ${data.google_client_config.current.access_token}"
+  }
   depends_on = [
-    google_cloud_run_v2_job.init,
-    google_cloud_run_v2_job.setup,
-    google_cloud_run_v2_job.client,
+    module.project_services,
+    google_cloudbuild_trigger.placeholder
+  ]
+}
+
+
+## Initalization trigger
+resource "google_cloudbuild_trigger" "init" {
+  name     = "init-application"
+  location = "us-central1"
+
+  description = "Perform initialization setup for server and client"
+
+  pubsub_config {
+    topic = google_pubsub_topic.faux.id
+  }
+
+  service_account = google_service_account.init[0].id
+
+  build {
+    #step {
+    #  id      = "server-setup"
+    #  name    = local.server_image
+    #  entrypoint = "setup"
+    #}
+    step {
+      id   = "client-setup"
+      name = local.client_image
+      env = [
+        "PROJECT_ID=${var.project_id}",
+        "SUFFIX=${var.random_suffix ? random_id.suffix.hex : ""}",
+        "REGION=${var.region}",
+        "FIREBASE_URL=${local.firebase_url}",
+      ]
+    }
+    step {
+      id     = "purge-firebase"
+      name   = "gcr.io/distroless/static-debian11"
+      script = "curl -X PURGE \"${local.firebase_url}/\""
+    }
+    step {
+      id     = "warmup-api"
+      name   = "gcr.io/distroless/static-debian11"
+      script = "curl \"${google_cloud_run_v2_service.server.uri}/api/products/?warmup\""
+    }
+
+  }
+}
+
+# execute the trigger, once it and other dependencies exist. Intended side-effect.
+# tflint-ignore: terraform_unused_declarations
+data "http" "execute_init_trigger" {
+  count = var.init ? 1 : 0
+
+  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.init.id}:run"
+  method = "POST"
+  request_headers = {
+    Authorization = "Bearer ${data.google_client_config.current.access_token}"
+  }
+  depends_on = [
     module.project_services,
     google_sql_database_instance.postgres,
+    google_cloudbuild_trigger.init,
   ]
 }

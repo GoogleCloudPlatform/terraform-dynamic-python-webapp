@@ -21,6 +21,7 @@ locals {
   automation_SA = "serviceAccount:${google_service_account.automation.email}"
   server_SA     = "serviceAccount:${google_service_account.server.email}"
   client_SA     = "serviceAccount:${google_service_account.client.email}"
+  init_SA       = "serviceAccount:${google_service_account.init[0].email}"
 }
 
 resource "google_service_account" "server" {
@@ -88,11 +89,38 @@ resource "google_project_iam_member" "client_permissions" {
   depends_on = [google_service_account.client]
 }
 
+
+locals { 
+  cloudbuild_roles = ["roles/logging.logWriter","roles/cloudbuild.builds.builder",
+  "roles/iam.serviceAccountUser","roles/run.developer"]
+}
+# client account needs permissions to invoke cloud build triggers
+resource "google_project_iam_member" "client_cloudbuild" {
+  project    = var.project_id
+
+  for_each = toset(local.cloudbuild_roles)
+
+  role       = each.key
+  member     = local.client_SA
+  depends_on = [google_service_account.client]
+}
+
+# init account needs permissions to invoke cloud build triggers
+resource "google_project_iam_member" "init_cloudbuild" {
+  project    = var.project_id
+
+  for_each = toset(local.cloudbuild_roles)
+
+  role       = each.key
+  member     = local.init_SA
+  depends_on = [google_service_account.client]
+}
+
 # Init process needs access to start Jobs
 resource "google_project_iam_member" "initstartup_permissions" {
   project    = var.project_id
   role       = "roles/run.developer"
-  member     = "serviceAccount:${google_service_account.init[0].email}"
+  member     = local.init_SA
   depends_on = [google_service_account.init]
   count      = var.init ? 1 : 0
 }

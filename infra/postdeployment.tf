@@ -70,14 +70,14 @@ resource "google_cloudbuild_trigger" "placeholder" {
 data "http" "execute_placeholder_trigger" {
   count = var.init ? 1 : 0
 
-  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.placeholder.id}:run"
+  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.placeholder[0].id}:run"
   method = "POST"
   request_headers = {
     Authorization = "Bearer ${data.google_client_config.current.access_token}"
   }
   depends_on = [
     module.project_services,
-    google_cloudbuild_trigger.placeholder
+    google_cloudbuild_trigger.placeholder[0]
   ]
 }
 
@@ -182,7 +182,7 @@ EOT
 data "http" "execute_init_trigger" {
   count = var.init ? 1 : 0
 
-  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.init.id}:run"
+  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.init[0].id}:run"
   method = "POST"
   request_headers = {
     Authorization = "Bearer ${data.google_client_config.current.access_token}"
@@ -190,6 +190,6 @@ data "http" "execute_init_trigger" {
   depends_on = [
     module.project_services,
     google_sql_database_instance.postgres,
-    google_cloudbuild_trigger.init,
+    google_cloudbuild_trigger.init[0],
   ]
 }

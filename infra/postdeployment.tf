@@ -35,12 +35,14 @@ resource "google_pubsub_topic" "faux" {
 
 ## Placeholder - deploys a placeholder website - uses prebuilt image in /app/placeholder
 resource "google_cloudbuild_trigger" "placeholder" {
+  count = var.init ? 1 : 0
+
   name     = "placeholder${local.random_suffix_append}"
   location = "us-central1"
 
   description = "Deploy a placeholder Firebase website"
 
-  service_account = google_service_account.client.id
+  service_account = google_service_account.init[0].id
 
   pubsub_config {
     topic = google_pubsub_topic.faux.id
@@ -82,6 +84,8 @@ data "http" "execute_placeholder_trigger" {
 
 ## Initalization trigger
 resource "google_cloudbuild_trigger" "init" {
+  count = var.init ? 1 : 0
+
   name     = "init-application${local.random_suffix_append}"
   location = var.region
 

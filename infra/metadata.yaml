@@ -125,6 +125,7 @@ spec:
     roles:
     - level: Project
       roles:
+      - roles/cloudbuild.builds.editor
       - roles/cloudsql.admin
       - roles/compute.admin
       - roles/compute.networkAdmin

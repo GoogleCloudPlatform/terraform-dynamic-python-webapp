@@ -89,6 +89,7 @@ The following dependencies must be available:
 A service account with the following roles must be used to provision
 the resources of this module:
 
+- roles/cloudbuild.builds.editor
 - roles/cloudsql.admin
 - roles/compute.admin
 - roles/compute.networkAdmin

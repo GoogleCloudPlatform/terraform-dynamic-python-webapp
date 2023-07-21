@@ -16,6 +16,7 @@
 
 locals {
   int_required_roles = [
+    "roles/cloudbuild.builds.editor",
     "roles/cloudsql.admin",
     "roles/compute.admin",
     "roles/compute.networkAdmin",

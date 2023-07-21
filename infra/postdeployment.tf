@@ -18,11 +18,10 @@ locals {
   random_suffix_value  = var.random_suffix ? random_id.suffix.hex : ""       # literal value  (NNNN)
   random_suffix_append = var.random_suffix ? "-${random_id.suffix.hex}" : "" # appended value (-NNNN)
 
-  setup_job_name = "setup${local.random_suffix_append}"
+  setup_job_name  = "setup${local.random_suffix_append}"
   client_job_name = "client${local.random_suffix_append}"
 
   gcloud_step_container = "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
-  curl_step_container   = "gcr.io/distroless/static-debian11"
 }
 
 # used to collect access token, for authenticated POST commands
@@ -155,19 +154,17 @@ EOT
       script = "gcloud run jobs execute ${local.client_job_name} --wait --region ${var.region} --project ${var.project_id}"
     }
 
-    ## Setup and priming tasks
     # Ensure any cached versions of the application are purged
-    step {
-      id     = "purge-firebase"
-      name   = local.curl_step_container
-      script = "curl -X PURGE \"${local.firebase_url}/\""
-    }
-
     # Preemptively warm up the server API
     step {
-      id     = "warmup-api"
-      name   = local.curl_step_container
-      script = "curl \"${google_cloud_run_v2_service.server.uri}/api/products/?warmup\""
+      id     = "purge-and-warmfirebase"
+      name   = "ubuntu"
+      script = <<EOT
+#!/bin/bash
+apt-get update && apt-get install curl -y
+curl -X PURGE "${local.firebase_url}/"
+curl "${google_cloud_run_v2_service.server.uri}/api/products/?warmup"
+EOT
     }
 
     options {

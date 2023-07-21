@@ -54,45 +54,4 @@ resource "google_cloud_run_v2_job" "migrate" {
   ]
 }
 
-# Job to apply client application updates
-resource "google_cloud_run_v2_job" "client" {
-
-  name     = var.random_suffix ? "client-${random_id.suffix.hex}" : "client"
-  location = var.region
-
-  labels = var.labels
-
-  template {
-    template {
-      service_account = google_service_account.client.email
-      containers {
-        image = local.client_image
-
-        # Variables used to customise Firebase configuration on deployment
-        # https://github.com/GoogleCloudPlatform/avocano/blob/main/client/docker-deploy.sh
-        env {
-          name  = "SUFFIX"
-          value = var.random_suffix ? random_id.suffix.hex : ""
-        }
-        env {
-          name  = "SERVICE_NAME"
-          value = google_cloud_run_v2_service.server.name
-        }
-        env {
-          name  = "REGION"
-          value = var.region
-        }
-        env {
-          name  = "PROJECT_ID"
-          value = var.project_id
-        }
-
-      }
-    }
-  }
-
-  depends_on = [
-    module.project_services
-  ]
-}
-
+# Other jobs defined in postdeployment.tf

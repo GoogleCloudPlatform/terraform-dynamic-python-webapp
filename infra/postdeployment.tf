@@ -138,6 +138,8 @@ EOT
     ## Client/frontend processing
     step {
       # Check if a job already exists under the exact name. If it doesn't, create it.
+      # Environment variables used to customise Firebase configuration on deployment
+      # https://github.com/GoogleCloudPlatform/avocano/blob/main/client/docker-deploy.sh
       id     = "create-client-job"
       name   = local.gcloud_step_container
       script = <<EOT

@@ -50,7 +50,7 @@ resource "google_cloudbuild_trigger" "placeholder" {
 
   build {
     step {
-      id = "deploy-placeholder"
+      id   = "deploy-placeholder"
       name = local.placeholder_image
       env = [
         "PROJECT_ID=${var.project_id}",

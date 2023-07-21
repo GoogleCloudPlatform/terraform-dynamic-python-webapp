@@ -152,9 +152,9 @@ if [[ -z $SETUP_JOB ]]; then
     --image ${local.client_image} \
     --service-account ${google_service_account.client.email} \
     --set-env-vars PROJECT_ID=${var.project_id} \
-    --set-env-vars SUFFIX=${var.random_suffix ? random_id.suffix.hex : ""} \
+    --set-env-vars SUFFIX=${local.random_suffix_value} \
     --set-env-vars REGION=${var.region} \
-    --set-env-vars FIREBASE_URL=${local.firebase_url}
+    --set-env-vars SERVICE_NAME=${google_cloud_run_v2_service.server.name}
 else
   echo "Cloud Run Job ${local.client_job_name} already exists."
 fi

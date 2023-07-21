@@ -51,8 +51,8 @@ resource "google_cloudbuild_trigger" "activategcb" {
 
   build {
     step {
-      id   = "no-op"
-      name = "ubuntu"
+      id     = "no-op"
+      name   = "ubuntu"
       script = "echo 'Hello Cloud Build'"
     }
 

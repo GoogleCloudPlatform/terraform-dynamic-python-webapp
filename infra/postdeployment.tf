@@ -187,7 +187,6 @@ EOT
 
   depends_on = [
     google_sql_database_instance.postgres,
-    google_cloud_run_v2_job.client,
     google_cloud_run_v2_job.migrate
   ]
 }

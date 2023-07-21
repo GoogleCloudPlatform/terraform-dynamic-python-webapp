@@ -33,6 +33,55 @@ resource "google_pubsub_topic" "faux" {
   name = "faux-topic${local.random_suffix_append}"
 }
 
+
+## Failing Build - help get Cloud Build ready for work
+resource "google_cloudbuild_trigger" "activategcb" {
+  count = var.init ? 1 : 0
+
+  name     = "activategcb${local.random_suffix_append}"
+  location = var.region
+
+  description = "Get Cloud Build ready for work. This build is expected to fail."
+
+  pubsub_config {
+    topic = google_pubsub_topic.faux.id
+  }
+
+  service_account = google_service_account.init[0].id
+
+  build {
+    step {
+      id   = "no-op"
+      name = "ubuntu"
+      script = "echo 'Hello Cloud Build'"
+    }
+
+    options {
+      logging = "CLOUD_LOGGING_ONLY"
+    }
+  }
+
+  depends_on = [
+    time_sleep.init_permissions_propagation
+  ]
+}
+
+# execute the trigger, once it and other dependencies exist. Intended side-effect.
+# tflint-ignore: terraform_unused_declarations
+data "http" "execute_gcbactivate_trigger" {
+  count = var.init ? 1 : 0
+
+  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.activategcb[0].id}:run"
+  method = "POST"
+  request_headers = {
+    Authorization = "Bearer ${data.google_client_config.current.access_token}"
+  }
+  depends_on = [
+    google_cloudbuild_trigger.activategcb[0]
+  ]
+}
+
+
 # ## Placeholder - deploys a placeholder website - uses prebuilt image in /app/placeholder
 # resource "google_cloudbuild_trigger" "placeholder" {
 #   count = var.init ? 1 : 0
@@ -72,8 +121,8 @@ resource "google_pubsub_topic" "faux" {
 
 
 
-# execute the trigger, once it and other dependencies exist. Intended side-effect.
-# tflint-ignore: terraform_unused_declarations
+# # execute the trigger, once it and other dependencies exist. Intended side-effect.
+# # tflint-ignore: terraform_unused_declarations
 # data "http" "execute_placeholder_trigger" {
 #   count = var.init ? 1 : 0
 

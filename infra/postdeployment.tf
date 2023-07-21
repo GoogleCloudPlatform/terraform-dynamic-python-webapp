@@ -151,10 +151,10 @@ if [[ -z $SETUP_JOB ]]; then
   gcloud run jobs create ${local.client_job_name} --region ${var.region} \
     --image ${local.client_image} \
     --service-account ${google_service_account.client.email} \
-    --set-env_var PROJECT_ID=${var.project_id} \
-    --set-env_var SUFFIX=${var.random_suffix ? random_id.suffix.hex : ""} \
-    --set-env_var REGION=${var.region} \
-    --set-env_var FIREBASE_URL=${local.firebase_url}
+    --set-env-var PROJECT_ID=${var.project_id} \
+    --set-env-var SUFFIX=${var.random_suffix ? random_id.suffix.hex : ""} \
+    --set-env-var REGION=${var.region} \
+    --set-env-var FIREBASE_URL=${local.firebase_url}
 else
   echo "Cloud Run Job ${local.client_job_name} already exists."
 fi

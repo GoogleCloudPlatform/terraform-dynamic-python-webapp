@@ -32,7 +32,8 @@ locals {
     "roles/logging.logWriter",
     "roles/cloudbuild.builds.builder",
     "roles/iam.serviceAccountUser",
-    "roles/run.developer"
+    "roles/run.developer",
+    "roles/firebasehosting.admin"
   ]
 }
 

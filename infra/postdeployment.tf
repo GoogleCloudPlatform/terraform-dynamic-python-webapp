@@ -105,36 +105,6 @@ resource "google_cloudbuild_trigger" "init" {
   service_account = google_service_account.init[0].id
 
   build {
-    ## Server/API processing
-    step {
-      # Check if a job already exists under the exact name. If it doesn't, create it.
-      id     = "create-setup-job"
-      name   = local.gcloud_step_container
-      script = <<EOT
-#!/bin/bash
-SETUP_JOB=$(gcloud run jobs list --filter "metadata.name~${local.setup_job_name}$" --format "value(metadata.name)" --region ${var.region})
-
-if [[ -z $SETUP_JOB ]]; then
-  echo "Creating ${local.setup_job_name} Cloud Run Job"
-  gcloud run jobs create ${local.setup_job_name} --region ${var.region} \
-    --command setup \
-    --image ${local.server_image} \
-    --service-account ${google_service_account.automation.email} \
-    --set-secrets DJANGO_ENV=${google_secret_manager_secret.django_settings.secret_id}:latest \
-    --set-secrets DJANGO_SUPERUSER_PASSWORD=${google_secret_manager_secret.django_admin_password.secret_id}:latest \
-    --set-cloudsql-instances ${google_sql_database_instance.postgres.connection_name}
-else
-  echo "Cloud Run Job ${local.setup_job_name} already exists."
-fi
-EOT
-    }
-    # Now that the job definitely exists, execute it.
-    step {
-      id     = "execute-setup-job"
-      name   = local.gcloud_step_container
-      script = "gcloud run jobs execute ${local.setup_job_name} --wait --region ${var.region} --project ${var.project_id}"
-    }
-
     ## Client/frontend processing
     step {
       # Check if a job already exists under the exact name. If it doesn't, create it.
@@ -160,7 +130,38 @@ else
 fi
 EOT
     }
-    # Now that the job definitely exists, execute it.
+
+    ## Server/API processing
+    step {
+      # Check if a job already exists under the exact name. If it doesn't, create it.
+      id     = "create-setup-job"
+      name   = local.gcloud_step_container
+      script = <<EOT
+#!/bin/bash
+SETUP_JOB=$(gcloud run jobs list --filter "metadata.name~${local.setup_job_name}$" --format "value(metadata.name)" --region ${var.region})
+
+if [[ -z $SETUP_JOB ]]; then
+  echo "Creating ${local.setup_job_name} Cloud Run Job"
+  gcloud run jobs create ${local.setup_job_name} --region ${var.region} \
+    --command setup \
+    --image ${local.server_image} \
+    --service-account ${google_service_account.automation.email} \
+    --set-secrets DJANGO_ENV=${google_secret_manager_secret.django_settings.secret_id}:latest \
+    --set-secrets DJANGO_SUPERUSER_PASSWORD=${google_secret_manager_secret.django_admin_password.secret_id}:latest \
+    --set-cloudsql-instances ${google_sql_database_instance.postgres.connection_name}
+else
+  echo "Cloud Run Job ${local.setup_job_name} already exists."
+fi
+EOT
+    }
+
+    # Now that the jobs definitely exist, execute them.
+    step {
+      id     = "execute-setup-job"
+      name   = local.gcloud_step_container
+      script = "gcloud run jobs execute ${local.setup_job_name} --wait --region ${var.region} --project ${var.project_id}"
+    }
+
     step {
       id     = "execute-client-job"
       name   = local.gcloud_step_container

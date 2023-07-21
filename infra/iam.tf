@@ -98,3 +98,15 @@ resource "google_project_iam_member" "init_permissions" {
   role    = local.init_iam_members[count.index]
   member  = "serviceAccount:${google_service_account.init[0].email}"
 }
+
+# Ensure google_service_account.init is not used before permissions are available.
+# Introduced to allow for IAM policy propagation delay. Time selected to allow:
+# propagation delay + ~2 minute firebase hosting deploy < 5 minutes.
+# Shortest delay preferred.
+resource "time_sleep" "init_permissions_propagation" {
+  depends_on = [
+    google_project_iam_member.init_permissions
+  ]
+
+  create_duration = "120s"
+}

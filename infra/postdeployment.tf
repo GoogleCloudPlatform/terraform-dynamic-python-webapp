@@ -65,11 +65,11 @@ resource "google_cloudbuild_trigger" "placeholder" {
   }
 
   depends_on = [
-    # Depends on permission assignment to the init service account.
-    # If there are IAM propagation delays, define an intermediary time_sleep resource.
-    google_project_iam_member.init_permissions
+    time_sleep.init_permissions_propagation
   ]
 }
+
+
 
 
 # execute the trigger, once it and other dependencies exist. Intended side-effect.
@@ -187,7 +187,9 @@ EOT
 
   depends_on = [
     google_sql_database_instance.postgres,
-    google_cloud_run_v2_job.migrate
+    google_cloud_run_v2_job.migrate,
+    # Expected to be shorter than database provisioning.
+    time_sleep.init_permissions_propagation
   ]
 }
 

@@ -42,7 +42,7 @@ resource "time_sleep" "wait_for_iam" {
     google_service_account.init[0],
     google_service_account.client,
     google_project_iam_member.init_cloudbuild,
-    google_project_iam_member.google_project_iam_member.client_permissions
+    google_project_iam_member.client_permissions
   ]
 }
 

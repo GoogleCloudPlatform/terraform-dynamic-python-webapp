@@ -85,6 +85,10 @@ func AssertExample(t *testing.T) {
 			assert.Truef(strings.HasSuffix(serviceURL, ".run.app"), "unexpected service URL %q", serviceURL)
 			t.Log("Cloud Run service is running at", serviceURL)
 
+			// TODO: Replace by polling for Cloud Run readiness.
+			t.Log("Delaying 1 minute to give Cloud Run time to stat serving traffic")
+			time.Sleep(1 * time.Minute)
+
 			// The Cloud Run service is the app's API backend (it does not serve the Avocano homepage)
 			assertResponseContains(assert, serviceURL, "/api", "/admin")
 

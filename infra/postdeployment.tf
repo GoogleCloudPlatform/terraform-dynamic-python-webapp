@@ -33,19 +33,6 @@ resource "google_pubsub_topic" "faux" {
   name = "faux-topic${local.random_suffix_append}"
 }
 
-# wait for early IAM commands to settle before trying to create/execute the early placeholder
-resource "time_sleep" "wait_for_iam" {
-  create_duration = "60s"
-
-  depends_on = [
-    module.project_services,
-    google_service_account.init[0],
-    google_service_account.client,
-    google_project_iam_member.init_cloudbuild,
-    google_project_iam_member.client_permissions
-  ]
-}
-
 ## Placeholder - deploys a placeholder website - uses prebuilt image in /app/placeholder
 resource "google_cloudbuild_trigger" "placeholder" {
   count = var.init ? 1 : 0
@@ -78,7 +65,10 @@ resource "google_cloudbuild_trigger" "placeholder" {
   }
 
   depends_on = [
-    time_sleep.wait_for_iam
+    # This trigger doesn't depend on this service
+    # However, IAM eventual consistency takes a while, and as the other trigger
+    # which has to fire later has more dependencies, this will always fire and finish first.
+    google_sql_database_instance.postgres,
   ]
 }
 
@@ -192,6 +182,12 @@ EOT
       logging = "CLOUD_LOGGING_ONLY"
     }
   }
+
+  depends_on = [
+    google_sql_database_instance.postgres,
+    google_cloud_run_v2_job.client,
+    google_cloud_run_v2_job.migrate
+  ]
 }
 
 # execute the trigger, once it and other dependencies exist. Intended side-effect.
@@ -205,8 +201,6 @@ data "http" "execute_init_trigger" {
     Authorization = "Bearer ${data.google_client_config.current.access_token}"
   }
   depends_on = [
-    module.project_services,
-    google_sql_database_instance.postgres,
     google_cloudbuild_trigger.init[0],
   ]
 }

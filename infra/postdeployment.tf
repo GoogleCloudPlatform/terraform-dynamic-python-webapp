@@ -181,7 +181,7 @@ EOT
     }
 
     options {
-      logging = "LOGGING_ONLY"
+      logging = "CLOUD_LOGGING_ONLY"
     }
   }
 

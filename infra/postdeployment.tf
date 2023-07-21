@@ -15,13 +15,13 @@
  */
 
 locals {
-  random_suffix_value = var.random_suffix ? random_id.suffix.hex : ""          # literal value  (NNNN)
-  random_suffix_append =  var.random_suffix ? "-${random_id.suffix.hex}" : ""  # appended value (-NNNN)
+  random_suffix_value  = var.random_suffix ? random_id.suffix.hex : ""       # literal value  (NNNN)
+  random_suffix_append = var.random_suffix ? "-${random_id.suffix.hex}" : "" # appended value (-NNNN)
 
   setup_job_name = "setup${local.random_suffix_append}"
 
   gcloud_step_container = "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
-  curl_step_container = "gcr.io/distroless/static-debian11"
+  curl_step_container   = "gcr.io/distroless/static-debian11"
 }
 
 # used to collect access token, for authenticated POST commands
@@ -117,9 +117,9 @@ fi
 EOT
     }
     # Now that the job definitely exists, execute it.
-    step { 
-      id = "execute-setup-job"
-      name = local.gcloud_step_container
+    step {
+      id     = "execute-setup-job"
+      name   = local.gcloud_step_container
       script = "gcloud run jobs execute ${local.setup_job_name} --wait --region ${var.region} --project ${var.project_id}"
     }
 

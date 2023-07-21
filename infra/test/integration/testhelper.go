@@ -54,6 +54,10 @@ func AssertExample(t *testing.T) {
 	example.DefineVerify(func(assert *assert.Assertions) {
 		example.DefaultVerify(assert)
 
+		// Delay to give deploy longer time to complete before app testing.
+        t.Log("Delaying 2 minutes to give deploy process time to complete.")
+        time.Sleep(2 * time.Minute)
+
 		projectID := example.GetTFSetupStringOutput("project_id")
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
 		server_service_name := terraform.OutputRequired(t, example.GetTFOptions(), "server_service_name")

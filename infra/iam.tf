@@ -89,32 +89,16 @@ resource "google_project_iam_member" "client_permissions" {
   depends_on = [google_service_account.client]
 }
 
-
-locals {
-  cloudbuild_roles = ["roles/logging.logWriter", "roles/cloudbuild.builds.builder",
-  "roles/iam.serviceAccountUser", "roles/run.developer"]
-}
-
-# client account needs permissions to invoke cloud build triggers
-resource "google_project_iam_member" "client_cloudbuild" {
-  project = var.project_id
-
-  for_each = toset(local.cloudbuild_roles)
-
-  role       = each.key
-  member     = local.client_SA
-  depends_on = [google_service_account.client]
-}
-
 # init account needs permissions to invoke cloud build triggers
 resource "google_project_iam_member" "init_cloudbuild" {
   project = var.project_id
 
-  for_each = toset(local.cloudbuild_roles)
+  for_each = toset(["roles/logging.logWriter", "roles/cloudbuild.builds.builder",
+  "roles/iam.serviceAccountUser", "roles/run.developer"])
 
   role       = each.key
   member     = local.init_SA
-  depends_on = [google_service_account.client]
+  depends_on = [google_service_account.init]
 }
 
 # Init process needs access to start Jobs

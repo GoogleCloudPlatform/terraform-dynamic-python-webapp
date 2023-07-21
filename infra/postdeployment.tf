@@ -65,7 +65,8 @@ resource "google_cloudbuild_trigger" "placeholder" {
   }
 
   depends_on = [
-    google_service_account.init[0]
+    google_service_account.init[0],           # service account exists
+    google_project_iam_member.init_cloudbuild # permissions assigned
   ]
 }
 

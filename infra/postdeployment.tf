@@ -38,18 +38,19 @@ resource "google_cloudbuild_trigger" "placeholder" {
   count = var.init ? 1 : 0
 
   name     = "placeholder${local.random_suffix_append}"
-  location = "us-central1"
+  location = var.region
 
   description = "Deploy a placeholder Firebase website"
-
-  service_account = google_service_account.init[0].id
 
   pubsub_config {
     topic = google_pubsub_topic.faux.id
   }
 
+  service_account = google_service_account.init[0].id
+
   build {
     step {
+      id = "deploy-placeholder"
       name = local.placeholder_image
       env = [
         "PROJECT_ID=${var.project_id}",

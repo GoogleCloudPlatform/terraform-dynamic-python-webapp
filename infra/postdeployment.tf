@@ -95,7 +95,7 @@ resource "google_cloudbuild_trigger" "init" {
 
   build {
     step {
-      # Check if a job already exists under the exact name. If it doesn't, create it. 
+      # Check if a job already exists under the exact name. If it doesn't, create it.
       id     = "create-setup-job"
       name   = local.gcloud_step_container
       script = <<EOT
@@ -123,9 +123,9 @@ EOT
       script = "gcloud run jobs execute ${local.setup_job_name} --wait --region ${var.region} --project ${var.project_id}"
     }
 
-    # Instead of creating a client job then executing it, execute the container itself. 
+    # Instead of creating a client job then executing it, execute the container itself.
     # This container doesn't require additional Cloud SQL configurations like the server container, so it can be run directly
-    # rather than creating a job first. 
+    # rather than creating a job first.
     step {
       id   = "client-setup"
       name = local.client_image
@@ -137,7 +137,7 @@ EOT
       ]
     }
 
-    # Ensure any cached versions of the application are purged 
+    # Ensure any cached versions of the application are purged
     step {
       id     = "purge-firebase"
       name   = local.curl_step_container

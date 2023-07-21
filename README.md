@@ -75,6 +75,7 @@ the resources of this module:
 - roles/firebasehosting.admin
 - roles/iam.serviceAccountAdmin
 - roles/iam.serviceAccountUser
+- roles/pubsub.editor
 - roles/resourcemanager.projectIamAdmin
 - roles/run.admin
 - roles/secretmanager.admin

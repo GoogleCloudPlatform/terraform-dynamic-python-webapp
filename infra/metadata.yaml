@@ -132,6 +132,7 @@ spec:
       - roles/firebasehosting.admin
       - roles/iam.serviceAccountAdmin
       - roles/iam.serviceAccountUser
+      - roles/pubsub.editor
       - roles/resourcemanager.projectIamAdmin
       - roles/run.admin
       - roles/secretmanager.admin
@@ -158,6 +159,7 @@ spec:
     - firebase.googleapis.com
     - firebasehosting.googleapis.com
     - iam.googleapis.com
+    - pubsub.googleapis.com
     - run.googleapis.com
     - secretmanager.googleapis.com
     - sqladmin.googleapis.com

@@ -103,10 +103,12 @@ resource "google_project_iam_member" "init_permissions" {
 # Introduced to allow for IAM policy propagation delay. Time selected to allow:
 # propagation delay + ~2 minute firebase hosting deploy <= 5 minutes.
 # Shortest delay preferred.
+# Warning: Trying to meet IAM propagation delay on roles/logging.logWriter.
+# Exceeded safe limit to avoid race conditions between placeholder and init process.
 resource "time_sleep" "init_permissions_propagation" {
   depends_on = [
     google_project_iam_member.init_permissions
   ]
 
-  create_duration = "180s"
+  create_duration = "240s"
 }

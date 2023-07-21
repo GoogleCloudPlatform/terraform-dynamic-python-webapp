@@ -14,23 +14,28 @@
  * limitations under the License.
  */
 
+locals {
+  random_suffix_value = var.random_suffix ? random_id.suffix.hex : ""          # literal value  (NNNN)
+  random_suffix_append =  var.random_suffix ? "-${random_id.suffix.hex}" : ""  # appended value (-NNNN)
+
+  setup_job_name = "setup${local.random_suffix_append}"
+
+  gcloud_step_container = "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+  curl_step_container = "gcr.io/distroless/static-debian11"
+}
 
 # used to collect access token, for authenticated POST commands
 data "google_client_config" "current" {
 }
 
-# topic that is never used in practice, except as a configuration type for Cloud Build Triggers
+# topic that is never used, except as a configuration type for Cloud Build Triggers
 resource "google_pubsub_topic" "faux" {
-  name = "faux-topic"
+  name = "faux-topic${local.random_suffix_append}"
 }
 
 ## Placeholder - deploys a placeholder website - uses prebuilt image in /app/placeholder
-locals {
-  random_suffix_value = var.random_suffix ? random_id.suffix.hex : ""
-}
-
 resource "google_cloudbuild_trigger" "placeholder" {
-  name     = "placeholder"
+  name     = "placeholder${local.random_suffix_append}"
   location = "us-central1"
 
   description = "Deploy a placeholder Firebase website"
@@ -77,8 +82,8 @@ data "http" "execute_placeholder_trigger" {
 
 ## Initalization trigger
 resource "google_cloudbuild_trigger" "init" {
-  name     = "init-application"
-  location = "us-central1"
+  name     = "init-application${local.random_suffix_append}"
+  location = var.region
 
   description = "Perform initialization setup for server and client"
 
@@ -89,11 +94,38 @@ resource "google_cloudbuild_trigger" "init" {
   service_account = google_service_account.init[0].id
 
   build {
-    #step {
-    #  id      = "server-setup"
-    #  name    = local.server_image
-    #  entrypoint = "setup"
-    #}
+    step {
+      # Check if a job already exists under the exact name. If it doesn't, create it. 
+      id     = "create-setup-job"
+      name   = local.gcloud_step_container
+      script = <<EOT
+#!/bin/bash
+SETUP_JOB=$(gcloud run jobs list --filter "metadata.name~${local.setup_job_name}$" --format "value(metadata.name)" --region ${var.region})
+
+if [[ -z $SETUP_JOB ]]; then
+  echo "Creating ${local.setup_job_name} Cloud Run Job"
+gcloud run jobs create ${local.setup_job_name} --region ${var.region} \
+ --command migrate \
+ --image ${local.server_image} \
+ --service-account ${google_service_account.automation.email} \
+ --set-secrets DJANGO_ENV=${google_secret_manager_secret.django_settings.secret_id}:latest \
+ --set-secrets DJANGO_SUPERUSER_PASSWORD=${google_secret_manager_secret.django_admin_password.secret_id}:latest \
+ --set-cloudsql-instances ${google_sql_database_instance.postgres.connection_name}
+else
+  echo "Cloud Run Job ${local.setup_job_name} already exists."
+fi
+EOT
+    }
+    # Now that the job definitely exists, execute it.
+    step { 
+      id = "execute-setup-job"
+      name = local.gcloud_step_container
+      script = "gcloud run jobs execute ${local.setup_job_name} --wait --region ${var.region} --project ${var.project_id}"
+    }
+
+    # Instead of creating a client job then executing it, execute the container itself. 
+    # This container doesn't require additional Cloud SQL configurations like the server container, so it can be run directly
+    # rather than creating a job first. 
     step {
       id   = "client-setup"
       name = local.client_image
@@ -104,17 +136,24 @@ resource "google_cloudbuild_trigger" "init" {
         "FIREBASE_URL=${local.firebase_url}",
       ]
     }
+
+    # Ensure any cached versions of the application are purged 
     step {
       id     = "purge-firebase"
-      name   = "gcr.io/distroless/static-debian11"
+      name   = local.curl_step_container
       script = "curl -X PURGE \"${local.firebase_url}/\""
     }
+
+    # Preemptively warm up the server API
     step {
       id     = "warmup-api"
-      name   = "gcr.io/distroless/static-debian11"
+      name   = local.curl_step_container
       script = "curl \"${google_cloud_run_v2_service.server.uri}/api/products/?warmup\""
     }
 
+    options {
+      logging = "CLOUD_LOGGING_ONLY"
+    }
   }
 }
 

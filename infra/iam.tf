@@ -94,6 +94,7 @@ locals {
   cloudbuild_roles = ["roles/logging.logWriter","roles/cloudbuild.builds.builder",
   "roles/iam.serviceAccountUser","roles/run.developer"]
 }
+
 # client account needs permissions to invoke cloud build triggers
 resource "google_project_iam_member" "client_cloudbuild" {
   project    = var.project_id

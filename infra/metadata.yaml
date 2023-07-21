@@ -69,7 +69,7 @@ spec:
     - name: image_version
       description: Version of the Container Registry image to use
       varType: string
-      defaultValue: v1.8.2
+      defaultValue: v1.9.0
     - name: init
       description: Initialize database?
       varType: bool

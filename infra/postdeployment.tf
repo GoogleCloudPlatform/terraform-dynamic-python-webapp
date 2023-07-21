@@ -65,10 +65,9 @@ resource "google_cloudbuild_trigger" "placeholder" {
   }
 
   depends_on = [
-    # This trigger doesn't depend on this service
-    # However, IAM eventual consistency takes a while, and as the other trigger
-    # which has to fire later has more dependencies, this will always fire and finish first.
-    google_sql_database_instance.postgres,
+    # Depends on permission assignment to the init service account.
+    # If there are IAM propagation delays, define an intermediary time_sleep resource.
+    google_project_iam_member.init_permissions
   ]
 }
 

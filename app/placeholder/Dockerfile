@@ -20,6 +20,6 @@ WORKDIR /app
 
 RUN apk add gettext curl
 RUN npm install -g json
-COPY . ./
+COPY . /app/
 
 ENTRYPOINT ["/app/placeholder-deploy.sh"]

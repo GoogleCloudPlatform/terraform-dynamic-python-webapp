@@ -17,6 +17,9 @@
 # any errors? exit immediately.
 set -e
 
+# Ensure we got to the right directory. Cloud Build may start us in /workspace
+cd /app
+
 # escape if firebase_url not defined (mandatory, required later)
 if [[ -z $FIREBASE_URL ]]; then
     echo "FIREBASE_URL not defined. Cannot deploy. Exiting."

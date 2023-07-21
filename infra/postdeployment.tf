@@ -63,6 +63,10 @@ resource "google_cloudbuild_trigger" "placeholder" {
       logging = "CLOUD_LOGGING_ONLY"
     }
   }
+
+  depends_on = [
+    google_service_account.init[0]
+  ]
 }
 
 

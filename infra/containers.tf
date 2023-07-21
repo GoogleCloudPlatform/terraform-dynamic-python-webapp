@@ -19,5 +19,5 @@
 locals {
   server_image      = "gcr.io/${var.server_image_host}/server:${var.image_version}"
   client_image      = "gcr.io/${var.client_image_host}/client:${var.image_version}"
-  placeholder_image = "gcr.io/hsa-public/avocano-placeholder:postjsscurl" # TODO(glasnt): revert to tag "latest"
+  placeholder_image = "gcr.io/hsa-public/avocano-placeholder:postjsstrigger" # TODO(glasnt): revert to tag "latest"
 }

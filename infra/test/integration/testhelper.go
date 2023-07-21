@@ -112,6 +112,9 @@ func AssertExample(t *testing.T) {
 
 				return false, nil
 			}
+
+			// Delay to give deploy longer time to complete.
+			time.Sleep(time.Minute)
 			utils.Poll(t, isJobFinished, 10, time.Second*10)
 
 			// The API must return a list that includes our flagship product

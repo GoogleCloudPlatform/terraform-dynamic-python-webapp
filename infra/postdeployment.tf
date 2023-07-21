@@ -46,7 +46,7 @@ resource "google_cloudbuild_trigger" "placeholder" {
     topic = google_pubsub_topic.faux.id
   }
 
-  service_account = google_service_account.init[0].id
+  # service_account = google_service_account.init[0].id
 
   build {
     step {
@@ -101,7 +101,7 @@ resource "google_cloudbuild_trigger" "init" {
     topic = google_pubsub_topic.faux.id
   }
 
-  service_account = google_service_account.init[0].id
+  #service_account = google_service_account.init[0].id
 
   build {
     ## Client/frontend processing

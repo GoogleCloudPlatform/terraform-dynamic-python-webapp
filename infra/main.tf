@@ -25,3 +25,7 @@ provider "google-beta" {
   project = var.project_id
   region  = var.region
 }
+
+data "google_project" "default" {
+  project_id = var.project_id
+}

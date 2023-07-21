@@ -29,8 +29,9 @@ locals {
     "roles/cloudsql.client"
   ]
   init_iam_members = [
-    "roles/logging.logWriter",
-    "roles/cloudbuild.builds.builder",
+    # Leaning on default service account for this.
+    #"roles/logging.logWriter",
+    #"roles/cloudbuild.builds.builder",
     "roles/iam.serviceAccountUser",
     "roles/run.developer",
     "roles/firebasehosting.admin"
@@ -57,13 +58,12 @@ resource "google_service_account" "automation" {
   depends_on   = [module.project_services]
 }
 
-
-resource "google_service_account" "init" {
-  account_id   = var.random_suffix ? "init-startup-${random_id.suffix.hex}" : "init-startup"
-  display_name = "Jump Start App Init SA"
-  depends_on   = [module.project_services]
-  count        = var.init ? 1 : 0
-}
+# resource "google_service_account" "init" {
+#   account_id   = var.random_suffix ? "init-startup-${random_id.suffix.hex}" : "init-startup"
+#   display_name = "Jump Start App Init SA"
+#   depends_on   = [module.project_services]
+#   count        = var.init ? 1 : 0
+# }
 
 # Permissions
 
@@ -91,12 +91,19 @@ resource "google_project_iam_member" "automation_permissions" {
   member  = "serviceAccount:${google_service_account.automation.email}"
 }
 
-resource "google_project_iam_member" "init_permissions" {
-  count = length(local.init_iam_members)
+# resource "google_project_iam_member" "init_permissions" {
+#   count = length(local.init_iam_members)
 
-  project = var.project_id
+#   project = var.project_id
+#   role    = local.init_iam_members[count.index]
+#   member  = "serviceAccount:${google_service_account.init[0].email}"
+# }
+
+resource "google_project_iam_member" "init_permissions" {
+  count   = length(local.init_iam_members)
   role    = local.init_iam_members[count.index]
-  member  = "serviceAccount:${google_service_account.init[0].email}"
+  member  = "serviceAccount:${data.google_project.default.number}@cloudbuild.gserviceaccount.com"
+  project = var.project_id
 }
 
 # Ensure google_service_account.init is not used before permissions are available.

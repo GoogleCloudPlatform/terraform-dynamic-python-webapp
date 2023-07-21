@@ -62,7 +62,8 @@ resource "google_cloudbuild_trigger" "activategcb" {
   }
 
   depends_on = [
-    time_sleep.init_permissions_propagation
+    # This is waiting for IAM to update but skipping the delay for IAM propagation.
+    google_project_iam_member.init_permissions
   ]
 }
 

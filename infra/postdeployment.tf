@@ -48,7 +48,7 @@ resource "google_cloudbuild_trigger" "placeholder" {
 
   build {
     step {
-      name = "gcr.io/${var.project_id}/placeholder" # TODO(glasnt) revert when fixed local.placeholder_image
+      name = local.placeholder_image
       env = [
         "PROJECT_ID=${var.project_id}",
         "SUFFIX=${local.random_suffix_value}",

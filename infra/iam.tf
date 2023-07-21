@@ -104,6 +104,9 @@ resource "google_project_iam_member" "init_permissions" {
   role    = local.init_iam_members[count.index]
   member  = "serviceAccount:${data.google_project.default.number}@cloudbuild.gserviceaccount.com"
   project = var.project_id
+  depends_on = [
+    time_sleep.services_enabled_delay
+  ]
 }
 
 # Ensure google_service_account.init is not used before permissions are available.
@@ -118,4 +121,12 @@ resource "time_sleep" "init_permissions_propagation" {
   ]
 
   create_duration = "120s"
+}
+
+resource "time_sleep" "services_enabled_delay" {
+  depends_on = [
+    module.project_services
+  ]
+
+  create_duration = "20s"
 }

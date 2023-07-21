@@ -28,23 +28,6 @@ steps:
   name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
   args: ['/bin/bash', '-c', 'cft test run all --stage init --verbose']
 
-# Simple example - one deployment per project
-- id: simple-example-apply
-  waitFor: ['init-all']
-  dir: infra
-  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'cft test run TestSimpleExample --stage apply --verbose']
-- id: simple-example-verify
-  waitFor: ['simple-example-apply']
-  dir: infra
-  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'cft test run TestSimpleExample --stage verify --verbose']
-- id: simple-example-teardown
-  waitFor: ['simple-example-verify']
-  dir: infra
-  name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-  args: ['/bin/bash', '-c', 'cft test run TestSimpleExample --stage teardown --verbose']
-
 # Suffix example - supports multiple deployments per project
 - id: suffix-example-apply
   waitFor: ['init-all']

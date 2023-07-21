@@ -19,6 +19,7 @@ locals {
   random_suffix_append = var.random_suffix ? "-${random_id.suffix.hex}" : "" # appended value (-NNNN)
 
   setup_job_name = "setup${local.random_suffix_append}"
+  client_job_name = "client${local.random_suffix_append}"
 
   gcloud_step_container = "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
   curl_step_container   = "gcr.io/distroless/static-debian11"
@@ -94,6 +95,7 @@ resource "google_cloudbuild_trigger" "init" {
   service_account = google_service_account.init[0].id
 
   build {
+    ## Server/API processing
     step {
       # Check if a job already exists under the exact name. If it doesn't, create it.
       id     = "create-setup-job"
@@ -104,13 +106,13 @@ SETUP_JOB=$(gcloud run jobs list --filter "metadata.name~${local.setup_job_name}
 
 if [[ -z $SETUP_JOB ]]; then
   echo "Creating ${local.setup_job_name} Cloud Run Job"
-gcloud run jobs create ${local.setup_job_name} --region ${var.region} \
- --command migrate \
- --image ${local.server_image} \
- --service-account ${google_service_account.automation.email} \
- --set-secrets DJANGO_ENV=${google_secret_manager_secret.django_settings.secret_id}:latest \
- --set-secrets DJANGO_SUPERUSER_PASSWORD=${google_secret_manager_secret.django_admin_password.secret_id}:latest \
- --set-cloudsql-instances ${google_sql_database_instance.postgres.connection_name}
+  gcloud run jobs create ${local.setup_job_name} --region ${var.region} \
+    --command setup \
+    --image ${local.server_image} \
+    --service-account ${google_service_account.automation.email} \
+    --set-secrets DJANGO_ENV=${google_secret_manager_secret.django_settings.secret_id}:latest \
+    --set-secrets DJANGO_SUPERUSER_PASSWORD=${google_secret_manager_secret.django_admin_password.secret_id}:latest \
+    --set-cloudsql-instances ${google_sql_database_instance.postgres.connection_name}
 else
   echo "Cloud Run Job ${local.setup_job_name} already exists."
 fi
@@ -123,20 +125,37 @@ EOT
       script = "gcloud run jobs execute ${local.setup_job_name} --wait --region ${var.region} --project ${var.project_id}"
     }
 
-    # Instead of creating a client job then executing it, execute the container itself.
-    # This container doesn't require additional Cloud SQL configurations like the server container, so it can be run directly
-    # rather than creating a job first.
+    ## Client/frontend processing
     step {
-      id   = "client-setup"
-      name = local.client_image
-      env = [
-        "PROJECT_ID=${var.project_id}",
-        "SUFFIX=${var.random_suffix ? random_id.suffix.hex : ""}",
-        "REGION=${var.region}",
-        "FIREBASE_URL=${local.firebase_url}",
-      ]
+      # Check if a job already exists under the exact name. If it doesn't, create it.
+      id     = "create-client-job"
+      name   = local.gcloud_step_container
+      script = <<EOT
+#!/bin/bash
+SETUP_JOB=$(gcloud run jobs list --filter "metadata.name~${local.client_job_name}$" --format "value(metadata.name)" --region ${var.region})
+
+if [[ -z $SETUP_JOB ]]; then
+  echo "Creating ${local.client_job_name} Cloud Run Job"
+  gcloud run jobs create ${local.client_job_name} --region ${var.region} \
+    --image ${local.client_image} \
+    --service-account ${google_service_account.client.email} \
+    --set-env_var PROJECT_ID=${var.project_id} \
+    --set-env_var SUFFIX=${var.random_suffix ? random_id.suffix.hex : ""} \
+    --set-env_var REGION=${var.region} \
+    --set-env_var FIREBASE_URL=${local.firebase_url}
+else
+  echo "Cloud Run Job ${local.client_job_name} already exists."
+fi
+EOT
+    }
+    # Now that the job definitely exists, execute it.
+    step {
+      id     = "execute-client-job"
+      name   = local.gcloud_step_container
+      script = "gcloud run jobs execute ${local.client_job_name} --wait --region ${var.region} --project ${var.project_id}"
     }
 
+    ## Setup and priming tasks
     # Ensure any cached versions of the application are purged
     step {
       id     = "purge-firebase"

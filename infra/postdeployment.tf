@@ -69,7 +69,7 @@ resource "google_cloudbuild_trigger" "activategcb" {
 
 # execute the trigger, once it and other dependencies exist. Intended side-effect.
 # tflint-ignore: terraform_unused_declarations
-data "http" "execute_gcbactivate_trigger" {
+data "http" "execute_activategcb_trigger" {
   count = var.init ? 1 : 0
 
   url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.activategcb[0].id}:run"
@@ -83,59 +83,61 @@ data "http" "execute_gcbactivate_trigger" {
 }
 
 
-# ## Placeholder - deploys a placeholder website - uses prebuilt image in /app/placeholder
-# resource "google_cloudbuild_trigger" "placeholder" {
-#   count = var.init ? 1 : 0
+## Placeholder - deploys a placeholder website - uses prebuilt image in /app/placeholder
+resource "google_cloudbuild_trigger" "placeholder" {
+  count = var.init ? 1 : 0
 
-#   name     = "placeholder${local.random_suffix_append}"
-#   location = var.region
+  name     = "placeholder${local.random_suffix_append}"
+  location = var.region
 
-#   description = "Deploy a placeholder Firebase website"
+  description = "Deploy a placeholder Firebase website"
 
-#   pubsub_config {
-#     topic = google_pubsub_topic.faux.id
-#   }
+  pubsub_config {
+    topic = google_pubsub_topic.faux.id
+  }
 
-#   service_account = google_service_account.init[0].id
+  service_account = google_service_account.init[0].id
 
-#   build {
-#     step {
-#       id   = "deploy-placeholder"
-#       name = local.placeholder_image
-#       env = [
-#         "PROJECT_ID=${var.project_id}",
-#         "SUFFIX=${local.random_suffix_value}",
-#         "FIREBASE_URL=${local.firebase_url}",
-#       ]
-#     }
+  build {
+    step {
+      id   = "deploy-placeholder"
+      name = local.placeholder_image
+      env = [
+        "PROJECT_ID=${var.project_id}",
+        "SUFFIX=${local.random_suffix_value}",
+        "FIREBASE_URL=${local.firebase_url}",
+      ]
+    }
 
-#     options {
-#       logging = "CLOUD_LOGGING_ONLY"
-#     }
-#   }
+    options {
+      logging = "CLOUD_LOGGING_ONLY"
+    }
+  }
 
-#   depends_on = [
-#     time_sleep.init_permissions_propagation
-#   ]
-# }
+  depends_on = [
+    time_sleep.init_permissions_propagation
+
+  ]
+}
 
 
+# execute the trigger, once it and other dependencies exist. Intended side-effect.
+# tflint-ignore: terraform_unused_declarations
+data "http" "execute_placeholder_trigger" {
+  count = var.init ? 1 : 0
 
-
-# # execute the trigger, once it and other dependencies exist. Intended side-effect.
-# # tflint-ignore: terraform_unused_declarations
-# data "http" "execute_placeholder_trigger" {
-#   count = var.init ? 1 : 0
-
-#   url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.placeholder[0].id}:run"
-#   method = "POST"
-#   request_headers = {
-#     Authorization = "Bearer ${data.google_client_config.current.access_token}"
-#   }
-#   depends_on = [
-#     google_cloudbuild_trigger.placeholder[0]
-#   ]
-# }
+  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.placeholder[0].id}:run"
+  method = "POST"
+  request_headers = {
+    Authorization = "Bearer ${data.google_client_config.current.access_token}"
+  }
+  depends_on = [
+    google_cloudbuild_trigger.placeholder[0],
+    # Do not trigger placeholder build before activategcb build.
+    # activategcb exists to be run first.
+    data.http.execute_activategcb_trigger[0]
+  ]
+}
 
 
 ## Initalization trigger

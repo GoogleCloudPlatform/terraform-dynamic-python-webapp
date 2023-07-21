@@ -14,15 +14,7 @@
  * limitations under the License.
  */
 
-# Service Accounts
-
 locals {
-  # Helpers for the clunky formatting of these values
-  automation_SA = "serviceAccount:${google_service_account.automation.email}"
-  server_SA     = "serviceAccount:${google_service_account.server.email}"
-  client_SA     = "serviceAccount:${google_service_account.client.email}"
-  init_SA       = "serviceAccount:${google_service_account.init[0].email}"
-
   # Lists of required roles
   server_iam_members = [
     "roles/cloudsql.client",

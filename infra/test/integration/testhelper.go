@@ -56,8 +56,9 @@ func AssertExample(t *testing.T) {
 	example.DefineVerify(func(assert *assert.Assertions) {
 		example.DefaultVerify(assert)
 		// Delay to give deploy longer time to complete before app testing.
-		t.Log("Delaying 2 minutes to give deploy process time to complete.")
-		time.Sleep(2 * time.Minute)
+		// TODO: Replace hard-coded time limit with polling for Cloud Run service readiness.
+		t.Log("Delaying 4 minutes to give deploy process time to complete.")
+		time.Sleep(4 * time.Minute)
 
 		projectID := example.GetTFSetupStringOutput("project_id")
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
@@ -84,10 +85,6 @@ func AssertExample(t *testing.T) {
 			serviceURL := match.Get("status.url").String()
 			assert.Truef(strings.HasSuffix(serviceURL, ".run.app"), "unexpected service URL %q", serviceURL)
 			t.Log("Cloud Run service is running at", serviceURL)
-
-			// TODO: Replace by polling for Cloud Run readiness.
-			t.Log("Delaying 1 minute to give Cloud Run time to stat serving traffic")
-			time.Sleep(1 * time.Minute)
 
 			// The Cloud Run service is the app's API backend (it does not serve the Avocano homepage)
 			assertResponseContains(assert, serviceURL, "/api", "/admin")

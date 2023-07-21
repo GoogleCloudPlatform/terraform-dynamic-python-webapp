@@ -35,12 +35,14 @@ resource "google_pubsub_topic" "faux" {
 
 # wait for early IAM commands to settle before trying to create/execute the early placeholder
 resource "time_sleep" "wait_for_iam" {
-  create_duration = "30s"
+  create_duration = "60s"
 
   depends_on = [
-    module.project_services,                  # apis enabled
-    google_service_account.init[0],           # service account exists
-    google_project_iam_member.init_cloudbuild # permissions assigned
+    module.project_services,
+    google_service_account.init[0],
+    google_service_account.client,
+    google_project_iam_member.init_cloudbuild,
+    client_permissions.client_permissions
   ]
 }
 
@@ -57,7 +59,7 @@ resource "google_cloudbuild_trigger" "placeholder" {
     topic = google_pubsub_topic.faux.id
   }
 
-  service_account = google_service_account.init[0].id
+  service_account = google_service_account.client.id
 
   build {
     step {

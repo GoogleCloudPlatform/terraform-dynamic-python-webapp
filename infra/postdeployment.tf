@@ -33,6 +33,17 @@ resource "google_pubsub_topic" "faux" {
   name = "faux-topic${local.random_suffix_append}"
 }
 
+# wait for early IAM commands to settle before trying to create/execute the early placeholder
+resource "time_sleep" "wait_for_iam" {
+  create_duration = "30s"
+
+  depends_on = [
+    module.project_services,                  # apis enabled
+    google_service_account.init[0],           # service account exists
+    google_project_iam_member.init_cloudbuild # permissions assigned
+  ]
+}
+
 ## Placeholder - deploys a placeholder website - uses prebuilt image in /app/placeholder
 resource "google_cloudbuild_trigger" "placeholder" {
   count = var.init ? 1 : 0
@@ -65,8 +76,7 @@ resource "google_cloudbuild_trigger" "placeholder" {
   }
 
   depends_on = [
-    google_service_account.init[0],           # service account exists
-    google_project_iam_member.init_cloudbuild # permissions assigned
+    time_sleep.wait_for_iam
   ]
 }
 
@@ -82,7 +92,6 @@ data "http" "execute_placeholder_trigger" {
     Authorization = "Bearer ${data.google_client_config.current.access_token}"
   }
   depends_on = [
-    module.project_services,
     google_cloudbuild_trigger.placeholder[0]
   ]
 }

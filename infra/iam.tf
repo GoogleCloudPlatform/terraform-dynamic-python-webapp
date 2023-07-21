@@ -110,5 +110,5 @@ resource "time_sleep" "init_permissions_propagation" {
     google_project_iam_member.init_permissions
   ]
 
-  create_duration = "240s"
+  create_duration = "120s"
 }

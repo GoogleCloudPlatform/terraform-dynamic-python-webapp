@@ -60,7 +60,7 @@ resource "google_cloudbuild_trigger" "placeholder" {
     }
 
     options {
-      logging = "GCS_ONLY"
+      logging = "NONE"
     }
   }
 
@@ -181,7 +181,7 @@ EOT
     }
 
     options {
-      logging = "GCS_ONLY"
+      logging = "LOGGING_ONLY"
     }
   }
 

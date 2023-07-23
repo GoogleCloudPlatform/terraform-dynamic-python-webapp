@@ -47,10 +47,9 @@ func AssertExample(t *testing.T) {
 		//
 		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
 
-		// TEMPORARY: Disable placeholder site testing.
-		// firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
-		// t.Log("Firebase Hosting should be running at ", firebase_url)
-		// assertResponseContains(assert, firebase_url, "Your application is still deploying")
+		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
+		t.Log("Firebase Hosting should be running at ", firebase_url)
+		assertResponseContains(assert, firebase_url, "Your application is still deploying")
 	})
 
 	example.DefineVerify(func(assert *assert.Assertions) {

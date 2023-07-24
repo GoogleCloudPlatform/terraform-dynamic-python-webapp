@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # Apply the placeholder Firebase Hosting website
-# 
+#
 # 1. If the job already exists, delete and wait for the delete to finish
 # 2. Create the job
 # 3. Execute the job
@@ -44,7 +44,7 @@
               seconds: 10
     except:
       # It's okay if the delete fails, we don't raise an error, and we don't have to wait.
-      as: e 
+      as: e
 
 - create_job:
     call: googleapis.run.v1.namespaces.jobs.create
@@ -63,7 +63,7 @@
                 spec:
                   containers:
                     image: $${image_name}
-                    env: 
+                    env:
                       - name: PROJECT_ID
                         value: $${project_id}
                       - name: SUFFIX

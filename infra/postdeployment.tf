@@ -47,6 +47,8 @@ resource "google_workflows_workflow" "placeholder" {
     suffix          = local.random_suffix_value
     firebase_url    = local.firebase_url
   })
+
+  depends_on = [module.project_services]
 }
 
 # execute the trigger, once it and other dependencies exist. Intended side-effect.
@@ -97,6 +99,12 @@ resource "google_workflows_workflow" "init" {
     service_name              = google_cloud_run_v2_service.server.name
     service_url               = google_cloud_run_v2_service.server.uri
   })
+
+  depends_on = [
+    module.project_services,
+    google_sql_database_instance.postgres
+  ]
+
 }
 
 

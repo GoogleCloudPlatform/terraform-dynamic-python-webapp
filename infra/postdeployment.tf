@@ -65,7 +65,7 @@ data "http" "run_placeholder_workflow" {
 }
 
 
-## Init - sets up the api, deploys the application. 
+## Init - sets up the api, deploys the application.
 resource "google_workflows_workflow" "init" {
   count = var.init ? 1 : 0
 

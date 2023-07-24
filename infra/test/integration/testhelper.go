@@ -133,6 +133,10 @@ func assertResponseContains(t *testing.T, assert *assert.Assertions, url string,
 			t.Logf("Failed HTTP Request: Status Code %d", code)
 		case retry && err != nil:
 			t.Logf("Failed HTTP Request: %v", err)
+		default:
+			// In Verbose mode with success, the asserts below are a "silent pass" during test output.
+			// Facilitates real-time evaluation during long test process.
+			t.Log("Successful HTTP Request")
 		}
 		return retry, nil
 	}

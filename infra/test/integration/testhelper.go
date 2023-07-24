@@ -49,15 +49,11 @@ func AssertExample(t *testing.T) {
 
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
 		t.Log("Firebase Hosting should be running at ", firebase_url)
-		assertResponseContains(assert, firebase_url, "Your application is still deploying")
+		assertResponseContains(t, assert, firebase_url, "Your application is still deploying")
 	})
 
 	example.DefineVerify(func(assert *assert.Assertions) {
 		example.DefaultVerify(assert)
-		// Delay to give deploy longer time to complete before app testing.
-		// TODO: Replace hard-coded time limit with polling for Cloud Run service readiness.
-		t.Log("Delaying 4 minutes to give deploy process time to complete.")
-		time.Sleep(4 * time.Minute)
 
 		projectID := example.GetTFSetupStringOutput("project_id")
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
@@ -67,6 +63,11 @@ func AssertExample(t *testing.T) {
 		flagshipProduct := "Sparkly Avocado"
 		region := "us-central1"
 		t.Logf("Using Project ID %q", projectID)
+
+		// Delay to give deploy longer time to complete before app testing.
+		// TODO: Replace hard-coded time limit with polling for Cloud Run service readiness.
+		t.Log("Delaying to give deploy time to complete.")
+		delayUntilServiceDeploy(t, projectID, server_service_name)
 
 		{
 			// Check that the Cloud Storage API is enabled
@@ -86,7 +87,7 @@ func AssertExample(t *testing.T) {
 			t.Log("Cloud Run service is running at", serviceURL)
 
 			// The Cloud Run service is the app's API backend (it does not serve the Avocano homepage)
-			assertResponseContains(assert, serviceURL, "/api", "/admin")
+			assertResponseContains(t, assert, serviceURL, "/api", "/admin")
 
 			// The data is populated by two Cloud Run jobs, so wait for the final job to finish before continuing.
 			// A job execution is completed if it has a completed time.
@@ -118,19 +119,30 @@ func AssertExample(t *testing.T) {
 			utils.Poll(t, isJobFinished, 10, time.Second*10)
 
 			// The API must return a list that includes our flagship product
-			assertResponseContains(assert, serviceURL+"/api/products/", flagshipProduct)
+			assertResponseContains(t, assert, serviceURL+"/api/products/", flagshipProduct)
 		}
 		{
 			// Check that the Avocano front page is deployed to Firebase Hosting, and serving
 			t.Log("Firebase Hosting should be running at ", firebase_url)
-			assertResponseContains(assert, firebase_url, "<title>Avocano</title>")
+			assertResponseContains(t, assert, firebase_url, "<title>Avocano</title>")
 		}
 	})
 	example.Test()
 }
 
-func assertResponseContains(assert *assert.Assertions, url string, text ...string) {
-	code, responseBody, err := httpGetRequest(url)
+func assertResponseContains(t *testing.T, assert *assert.Assertions, url string, text ...string) {
+	t.Helper()
+	var code int
+	var responseBody string
+	var err error
+
+	fn := func() (bool, error) {
+		code, responseBody, err = httpGetRequest(url)
+		return code != 200, nil
+	}
+	utils.Poll(t, fn, 36, 10)
+
+	// Assert expectations of the last checked response.
 	assert.Nil(err)
 	assert.GreaterOrEqual(code, 200)
 	assert.LessOrEqual(code, 299)
@@ -139,7 +151,9 @@ func assertResponseContains(assert *assert.Assertions, url string, text ...strin
 	}
 }
 
-func assertErrorResponseContains(assert *assert.Assertions, url string, wantCode int, text string) {
+func assertErrorResponseContains(t *testing.T, assert *assert.Assertions, url string, wantCode int, text string) {
+	t.Helper()
+
 	code, responseBody, err := httpGetRequest(url)
 	assert.Nil(err)
 	assert.Equal(code, wantCode)
@@ -155,4 +169,15 @@ func httpGetRequest(url string) (statusCode int, body string, err error) {
 
 	buffer, err := io.ReadAll(res.Body)
 	return res.StatusCode, string(buffer), err
+}
+
+// delayUntilServiceDeploy gives a 1 minute delay, then polls until Cloud Run service deploy.
+// The application may still be starting on completion of this delay.
+func delayUntilServiceDeploy(t *testing.T, projectID string, serviceName string) {
+	time.Sleep(time.Minute)
+	fn := func() (bool, error) {
+		percent := gcloud.Run(t, "run services list", gcloud.WithCommonArgs([]string{"--filter", "metadata.name=" + serviceName, "--project", projectID, "--format", "value(status.traffic.percent)"})).Int()
+		return percent != 100, nil
+	}
+	utils.Poll(t, fn, 24, 10)
 }

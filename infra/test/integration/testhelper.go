@@ -42,11 +42,7 @@ func AssertExample(t *testing.T) {
 		// the placeholder behavior here to boost confidence that the frontend test in
 		// example.DefineVerify proves the placeholder page is replaced.
 		//
-		// If the check is flaky, remove it in favor of
-		// a simpler HTTP request.
-		//
 		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
-
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
 		t.Log("Firebase Hosting should be running at ", firebase_url)
 		assertResponseContains(t, assert, firebase_url, "Your application is still deploying")
@@ -129,8 +125,16 @@ func assertResponseContains(t *testing.T, assert *assert.Assertions, url string,
 	var err error
 
 	fn := func() (bool, error) {
+		t.Logf("HTTP Request - GET %s", url)
 		code, responseBody, err = httpGetRequest(url)
-		return code != 200, nil
+		retry := err != nil || code < 200 || code > 299
+		switch {
+		case retry && err == nil:
+			t.Logf("Failed HTTP Request: Status Code %d", code)
+		case retry && err != nil:
+			t.Logf("Failed HTTP Request: %v", err)
+		}
+		return retry, nil
 	}
 	utils.Poll(t, fn, 36, 10*time.Second)
 
@@ -166,6 +170,8 @@ func httpGetRequest(url string) (statusCode int, body string, err error) {
 // delayUntilServiceDeploy gives a 1 minute delay, then polls until Cloud Run service deploy.
 // The application may still be starting on completion of this delay.
 func delayUntilServiceDeploy(t *testing.T, projectID string, serviceName string) {
+	t.Helper()
+
 	time.Sleep(time.Minute)
 	fn := func() (bool, error) {
 		percent := gcloud.Run(t, "run services list", gcloud.WithCommonArgs([]string{"--filter", "metadata.name=" + serviceName, "--project", projectID, "--format", "value(status.traffic.percent)"})).Int()

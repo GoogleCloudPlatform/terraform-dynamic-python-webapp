@@ -31,7 +31,7 @@ locals {
   init_iam_members = [
     "roles/logging.logWriter",
     "roles/iam.serviceAccountUser",
-    "roles/run.developer",
+    "roles/run.admin",
   ]
 }
 

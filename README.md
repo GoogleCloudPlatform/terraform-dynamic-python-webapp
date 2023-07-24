@@ -68,7 +68,6 @@ The following dependencies must be available:
 A service account with the following roles must be used to provision
 the resources of this module:
 
-- roles/cloudbuild.builds.editor
 - roles/cloudsql.admin
 - roles/compute.admin
 - roles/compute.networkAdmin
@@ -76,11 +75,11 @@ the resources of this module:
 - roles/firebasehosting.admin
 - roles/iam.serviceAccountAdmin
 - roles/iam.serviceAccountUser
-- roles/pubsub.editor
 - roles/resourcemanager.projectIamAdmin
 - roles/run.admin
 - roles/secretmanager.admin
 - roles/storage.admin
+- roles/workflows.editor
 
 
 The [Project Factory module][project-factory-module] and the
@@ -103,6 +102,7 @@ resources of this module:
 - config.googleapis.com
 - cloudresourcemanager.googleapis.com
 - sqladmin.googleapis.com
+- workflows.googleapis.com
 
 
 The [Project Factory module][project-factory-module] can be used to

@@ -52,5 +52,6 @@ module "project" {
     "run.googleapis.com",
     "secretmanager.googleapis.com",
     "sqladmin.googleapis.com",
+    "workflows.googleapis.com",
   ]
 }

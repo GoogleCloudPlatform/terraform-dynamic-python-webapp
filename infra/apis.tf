@@ -45,6 +45,7 @@ module "project_services" {
 
     # Solution-specific services.
     "artifactregistry.googleapis.com",
+    "cloudbuild.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "compute.googleapis.com",
     "firebase.googleapis.com",

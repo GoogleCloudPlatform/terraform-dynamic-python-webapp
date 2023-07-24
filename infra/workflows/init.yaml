@@ -22,7 +22,6 @@
     assign:
       - project_id: ${project_id}
       - region: ${region}
-      - service_account: ${service_account}
       - suffix: ${suffix}
       - suffix_append: ${suffix_append}
       - django_env: ${django_env}

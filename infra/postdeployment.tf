@@ -43,7 +43,7 @@ resource "google_workflows_workflow" "placeholder" {
     job_location    = var.region
     job_name        = local.placeholder_job_name
     image_name      = local.placeholder_image
-    service_account = google_service_account.init[0].email
+    service_account = google_service_account.client.email
     suffix          = local.random_suffix_value
     firebase_url    = local.firebase_url
   })
@@ -80,7 +80,6 @@ resource "google_workflows_workflow" "init" {
   source_contents = templatefile("${path.module}/workflows/init.yaml", {
     project_id      = var.project_id
     region          = var.region
-    service_account = google_service_account.init[0].email
     suffix          = local.random_suffix_value
     suffix_append   = local.random_suffix_append
 

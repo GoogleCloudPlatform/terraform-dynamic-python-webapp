@@ -132,7 +132,7 @@ func assertResponseContains(t *testing.T, assert *assert.Assertions, url string,
 		code, responseBody, err = httpGetRequest(url)
 		return code != 200, nil
 	}
-	utils.Poll(t, fn, 36, 10)
+	utils.Poll(t, fn, 36, 10*time.Second)
 
 	// Assert expectations of the last checked response.
 	assert.Nil(err)
@@ -171,5 +171,5 @@ func delayUntilServiceDeploy(t *testing.T, projectID string, serviceName string)
 		percent := gcloud.Run(t, "run services list", gcloud.WithCommonArgs([]string{"--filter", "metadata.name=" + serviceName, "--project", projectID, "--format", "value(status.traffic.percent)"})).Int()
 		return percent != 100, nil
 	}
-	utils.Poll(t, fn, 24, 10)
+	utils.Poll(t, fn, 24, 10*time.Second)
 }

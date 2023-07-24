@@ -78,10 +78,10 @@ resource "google_workflows_workflow" "init" {
   description = "Setup API and deploy client application"
 
   source_contents = templatefile("${path.module}/workflows/init.yaml", {
-    project_id      = var.project_id
-    region          = var.region
-    suffix          = local.random_suffix_value
-    suffix_append   = local.random_suffix_append
+    project_id    = var.project_id
+    region        = var.region
+    suffix        = local.random_suffix_value
+    suffix_append = local.random_suffix_append
 
     client_image           = local.client_image
     client_service_account = google_service_account.client.email

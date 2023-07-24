@@ -49,6 +49,7 @@ module "project" {
     "firebase.googleapis.com",
     "firebasehosting.googleapis.com",
     "iam.googleapis.com",
+    "pubsub.googleapis.com",
     "run.googleapis.com",
     "secretmanager.googleapis.com",
     "sqladmin.googleapis.com",

@@ -51,6 +51,7 @@ resource "google_workflows_workflow" "placeholder" {
   depends_on = [
     module.project_services,
     google_project_iam_member.init_permissions,
+    google_sql_database_instance.postgres # TODO(glasnt): artificial delay
   ]
 }
 

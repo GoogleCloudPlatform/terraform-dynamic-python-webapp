@@ -23,6 +23,7 @@ locals {
   ]
   client_iam_members = [
     "roles/run.viewer",
+    "roles/run.admin", #TODO(glasnt): may not be correct
     "roles/firebasehosting.admin",
   ]
   automation_iam_members = [

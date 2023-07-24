@@ -48,7 +48,10 @@ resource "google_workflows_workflow" "placeholder" {
     firebase_url    = local.firebase_url
   })
 
-  depends_on = [module.project_services]
+  depends_on = [
+    module.project_services,
+    google_project_iam_member.init_permissions,
+  ]
 }
 
 # execute the trigger, once it and other dependencies exist. Intended side-effect.
@@ -62,7 +65,8 @@ data "http" "run_placeholder_workflow" {
     Authorization = "Bearer ${data.google_client_config.current.access_token}"
   }
   depends_on = [
-    google_workflows_workflow.placeholder
+    google_workflows_workflow.placeholder,
+    google_project_iam_member.client_permissions,
   ]
 }
 
@@ -101,7 +105,8 @@ resource "google_workflows_workflow" "init" {
 
   depends_on = [
     module.project_services,
-    google_sql_database_instance.postgres
+    google_sql_database_instance.postgres,
+    google_project_iam_member.init_permissions,
   ]
 
 }
@@ -118,6 +123,8 @@ data "http" "run_init_workflow" {
     Authorization = "Bearer ${data.google_client_config.current.access_token}"
   }
   depends_on = [
-    google_workflows_workflow.init
+    google_workflows_workflow.init,
+    google_project_iam_member.client_permissions,
+    google_project_iam_member.automation_permissions,
   ]
 }

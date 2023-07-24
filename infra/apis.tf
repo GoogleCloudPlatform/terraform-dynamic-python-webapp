@@ -45,12 +45,11 @@ module "project_services" {
 
     # Solution-specific services.
     "artifactregistry.googleapis.com",
-    "cloudbuild.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "compute.googleapis.com",
     "firebase.googleapis.com",
     "firebasehosting.googleapis.com",
-    "pubsub.googleapis.com",
+    "workflows.googleapis.com",
     "iam.googleapis.com",
     "run.googleapis.com",
     "secretmanager.googleapis.com",

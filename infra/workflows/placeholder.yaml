@@ -1,0 +1,69 @@
+# Apply the placeholder Firebase Hosting website
+# 
+# 1. If the job already exists, delete and wait for the delete to finish
+# 2. Create the job
+# 3. Execute the job
+
+- init:
+    assign:
+      - project_id: ${project_id}
+      - service_account: ${service_account}
+      - job_name: ${job_name}
+      - job_location: ${job_location}
+      - image_name: ${image_name}
+      - firebase_url: ${firebase_url}
+      - suffix: ${suffix}
+
+- delete_job:
+    try:
+      steps:
+        # Delete the job
+        - delete_job_call:
+            call: googleapis.run.v1.namespaces.jobs.delete
+            args:
+              name: $${"namespaces/" + project_id + "/jobs/" + job_name}
+              location: $${job_location}
+        # If success, wait for the delete to complete
+        - wait_for_delete:
+            call: sys.sleep
+            args:
+              seconds: 10
+    except:
+      # It's okay if the delete fails, we don't raise an error, and we don't have to wait.
+      as: e 
+
+- create_job:
+    call: googleapis.run.v1.namespaces.jobs.create
+    args:
+      parent: $${"namespaces/" + project_id}
+      location: $${job_location}
+      body:
+        apiVersion: run.googleapis.com/v1
+        kind: Job
+        metadata:
+          name: $${job_name}
+        spec:
+          template:
+            spec:
+              template:
+                spec:
+                  containers:
+                    image: $${image_name}
+                    env: 
+                      - name: PROJECT_ID
+                        value: $${project_id}
+                      - name: SUFFIX
+                        value: $${suffix}
+                      - name: FIREBASE_URL
+                        value: $${firebase_url}
+                  serviceAccountName: $${service_account}
+
+- run_job:
+    call: googleapis.run.v1.namespaces.jobs.run
+    args:
+      name: $${"namespaces/" + project_id + "/jobs/" + job_name}
+      location: $${job_location}
+    result: job_execution
+
+- finish:
+    return: $${job_execution}

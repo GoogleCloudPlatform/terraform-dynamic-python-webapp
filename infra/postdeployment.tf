@@ -18,191 +18,99 @@ locals {
   random_suffix_value  = var.random_suffix ? random_id.suffix.hex : ""       # literal value  (NNNN)
   random_suffix_append = var.random_suffix ? "-${random_id.suffix.hex}" : "" # appended value (-NNNN)
 
-  setup_job_name  = "setup${local.random_suffix_append}"
-  client_job_name = "client${local.random_suffix_append}"
-
-  gcloud_step_container = "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+  setup_job_name       = "setup${local.random_suffix_append}"
+  client_job_name      = "client${local.random_suffix_append}"
+  placeholder_job_name = "placeholder${local.random_suffix_append}"
+  init_job_name        = "init${local.random_suffix_append}"
 }
 
 # used to collect access token, for authenticated POST commands
 data "google_client_config" "current" {
 }
 
-# topic that is never used, except as a configuration type for Cloud Build Triggers
-resource "google_pubsub_topic" "faux" {
-  name = "faux-topic${local.random_suffix_append}"
-}
-
 ## Placeholder - deploys a placeholder website - uses prebuilt image in /app/placeholder
-resource "google_cloudbuild_trigger" "placeholder" {
+resource "google_workflows_workflow" "placeholder" {
   count = var.init ? 1 : 0
 
-  name     = "placeholder${local.random_suffix_append}"
-  location = var.region
+  name            = local.placeholder_job_name
+  region          = var.region
+  service_account = google_service_account.init[0].id
 
   description = "Deploy a placeholder Firebase website"
 
-  pubsub_config {
-    topic = google_pubsub_topic.faux.id
-  }
-
-  service_account = google_service_account.init[0].id
-
-  build {
-    step {
-      id   = "deploy-placeholder"
-      name = local.placeholder_image
-      env = [
-        "PROJECT_ID=${var.project_id}",
-        "SUFFIX=${local.random_suffix_value}",
-        "FIREBASE_URL=${local.firebase_url}",
-      ]
-    }
-
-    options {
-      logging = "CLOUD_LOGGING_ONLY"
-    }
-  }
-
-  depends_on = [
-    # This trigger doesn't depend on this service
-    # However, IAM eventual consistency takes a while, and as the other trigger
-    # which has to fire later has more dependencies, this will always fire and finish first.
-    google_sql_database_instance.postgres,
-  ]
+  source_contents = templatefile("${path.module}/workflows/placeholder.yaml", {
+    project_id      = var.project_id
+    job_location    = var.region
+    job_name        = local.placeholder_job_name
+    image_name      = local.placeholder_image
+    service_account = google_service_account.init[0].email
+    suffix          = local.random_suffix_value
+    firebase_url    = local.firebase_url
+  })
 }
-
 
 # execute the trigger, once it and other dependencies exist. Intended side-effect.
 # tflint-ignore: terraform_unused_declarations
-data "http" "execute_placeholder_trigger" {
+data "http" "run_placeholder_workflow" {
   count = var.init ? 1 : 0
 
-  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.placeholder[0].id}:run"
+  url    = "https://workflowexecutions.googleapis.com/v1/${google_workflows_workflow.placeholder[0].id}/executions"
   method = "POST"
   request_headers = {
     Authorization = "Bearer ${data.google_client_config.current.access_token}"
   }
   depends_on = [
-    google_cloudbuild_trigger.placeholder[0]
+    google_workflows_workflow.placeholder
   ]
 }
 
 
-## Initalization trigger
-resource "google_cloudbuild_trigger" "init" {
+## Init - sets up the api, deploys the application. 
+resource "google_workflows_workflow" "init" {
   count = var.init ? 1 : 0
 
-  name     = "init-application${local.random_suffix_append}"
-  location = var.region
-
-  description = "Perform initialization setup for server and client"
-
-  pubsub_config {
-    topic = google_pubsub_topic.faux.id
-  }
-
+  name            = local.init_job_name
+  region          = var.region
   service_account = google_service_account.init[0].id
 
-  build {
-    ## Client/frontend processing
-    step {
-      # Check if a job already exists under the exact name. If it doesn't, create it.
-      # Environment variables used to customise Firebase configuration on deployment
-      # https://github.com/GoogleCloudPlatform/avocano/blob/main/client/docker-deploy.sh
-      id     = "create-client-job"
-      name   = local.gcloud_step_container
-      script = <<EOT
-#!/bin/bash
-SETUP_JOB=$(gcloud run jobs list --filter "metadata.name~${local.client_job_name}$" --format "value(metadata.name)" --region ${var.region})
+  description = "Setup API and deploy client application"
 
-if [[ -z $SETUP_JOB ]]; then
-  echo "Creating ${local.client_job_name} Cloud Run Job"
-  gcloud run jobs create ${local.client_job_name} --region ${var.region} \
-    --image ${local.client_image} \
-    --service-account ${google_service_account.client.email} \
-    --set-env-vars PROJECT_ID=${var.project_id} \
-    --set-env-vars SUFFIX=${local.random_suffix_value} \
-    --set-env-vars REGION=${var.region} \
-    --set-env-vars SERVICE_NAME=${google_cloud_run_v2_service.server.name}
-else
-  echo "Cloud Run Job ${local.client_job_name} already exists."
-fi
-EOT
-    }
+  source_contents = templatefile("${path.module}/workflows/init.yaml", {
+    project_id      = var.project_id
+    region          = var.region
+    service_account = google_service_account.init[0].email
+    suffix          = local.random_suffix_value
+    suffix_append   = local.random_suffix_append
 
-    ## Server/API processing
-    step {
-      # Check if a job already exists under the exact name. If it doesn't, create it.
-      id     = "create-setup-job"
-      name   = local.gcloud_step_container
-      script = <<EOT
-#!/bin/bash
-SETUP_JOB=$(gcloud run jobs list --filter "metadata.name~${local.setup_job_name}$" --format "value(metadata.name)" --region ${var.region})
+    client_image           = local.client_image
+    client_service_account = google_service_account.client.email
+    client_job_name        = local.client_job_name
 
-if [[ -z $SETUP_JOB ]]; then
-  echo "Creating ${local.setup_job_name} Cloud Run Job"
-  gcloud run jobs create ${local.setup_job_name} --region ${var.region} \
-    --command setup \
-    --image ${local.server_image} \
-    --service-account ${google_service_account.automation.email} \
-    --set-secrets DJANGO_ENV=${google_secret_manager_secret.django_settings.secret_id}:latest \
-    --set-secrets DJANGO_SUPERUSER_PASSWORD=${google_secret_manager_secret.django_admin_password.secret_id}:latest \
-    --set-cloudsql-instances ${google_sql_database_instance.postgres.connection_name}
-else
-  echo "Cloud Run Job ${local.setup_job_name} already exists."
-fi
-EOT
-    }
+    setup_image           = local.server_image
+    setup_service_account = google_service_account.automation.email
+    setup_job_name        = local.setup_job_name
 
-    # Now that the jobs definitely exist, execute them.
-    step {
-      id     = "execute-setup-job"
-      name   = local.gcloud_step_container
-      script = "gcloud run jobs execute ${local.setup_job_name} --wait --region ${var.region} --project ${var.project_id}"
-    }
-
-    step {
-      id     = "execute-client-job"
-      name   = local.gcloud_step_container
-      script = "gcloud run jobs execute ${local.client_job_name} --wait --region ${var.region} --project ${var.project_id}"
-    }
-
-    # Ensure any cached versions of the application are purged
-    # Preemptively warm up the server API
-    step {
-      id     = "purge-and-warmfirebase"
-      name   = "ubuntu"
-      script = <<EOT
-#!/bin/bash
-apt-get update && apt-get install curl -y
-curl -X PURGE "${local.firebase_url}/"
-curl "${google_cloud_run_v2_service.server.uri}/api/products/?warmup"
-EOT
-    }
-
-    options {
-      logging = "CLOUD_LOGGING_ONLY"
-    }
-  }
-
-  depends_on = [
-    google_sql_database_instance.postgres,
-    google_cloud_run_v2_job.migrate
-  ]
+    django_env                = google_secret_manager_secret.django_settings.secret_id
+    django_superuser_password = google_secret_manager_secret.django_admin_password.secret_id
+    cloudsql_instance         = google_sql_database_instance.postgres.connection_name
+    firebase_url              = local.firebase_url
+    service_name              = google_cloud_run_v2_service.server.name
+    service_url               = google_cloud_run_v2_service.server.uri
+  })
 }
+
 
 # execute the trigger, once it and other dependencies exist. Intended side-effect.
 # tflint-ignore: terraform_unused_declarations
-data "http" "execute_init_trigger" {
+data "http" "run_init_workflow" {
   count = var.init ? 1 : 0
 
-  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.init[0].id}:run"
+  url    = "https://workflowexecutions.googleapis.com/v1/${google_workflows_workflow.init[0].id}/executions"
   method = "POST"
   request_headers = {
     Authorization = "Bearer ${data.google_client_config.current.access_token}"
   }
   depends_on = [
-    google_cloudbuild_trigger.init[0],
+    google_workflows_workflow.init
   ]
 }

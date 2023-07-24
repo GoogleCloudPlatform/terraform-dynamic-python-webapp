@@ -1,0 +1,151 @@
+# Initialize the application
+#
+# 1. Create (deleting if it already exists), and execute the setup job
+# 2. Create (deleting if it already exists), and execute the client job
+# 3. Prime the API and purge the Firebase cache
+
+- init:
+    assign:
+      - project_id: ${project_id}
+      - region: ${region}
+      - service_account: ${service_account}
+      - suffix: ${suffix}
+      - suffix_append: ${suffix_append}
+      - django_env: ${django_env}
+      - django_superuser_password: ${django_superuser_password}
+      - cloudsql_instance: ${cloudsql_instance}
+      - firebase_url: ${firebase_url}
+      - service_url: ${service_url}
+      - client_job_name: ${client_job_name}
+      - client_image: ${client_image}
+      - client_service_account: ${client_service_account}
+      - setup_job_name: ${setup_job_name}
+      - setup_image: ${setup_image}
+      - setup_service_account: ${setup_service_account}
+      - service_name: ${service_name}
+
+#### Client Job
+
+- delete_client_job:
+    try:
+      steps:
+        # Delete the job
+        - delete_client_job_call:
+            call: googleapis.run.v1.namespaces.jobs.delete
+            args:
+              name: $${"namespaces/" + project_id + "/jobs/" + client_job_name}
+              location: $${region}
+        # If success, wait for the delete to complete
+        - wait_for_client_job_delete:
+            call: sys.sleep
+            args:
+              seconds: 10
+    except:
+      # It's okay if the delete fails, we don't raise an error, and we don't have to wait.
+      as: e
+
+- create_client_job:
+    call: googleapis.run.v1.namespaces.jobs.create
+    args:
+      parent: $${"namespaces/" + project_id}
+      location: $${region}
+      body:
+        apiVersion: run.googleapis.com/v1
+        kind: Job
+        metadata:
+          name: $${client_job_name}
+        spec:
+          template:
+            spec:
+              template:
+                spec:
+                  containers:
+                    image: $${client_image}
+                    env:
+                      - name: PROJECT_ID
+                        value: $${project_id}
+                      - name: REGION
+                        value: $${region}
+                      - name: SERVICE_NAME
+                        value: $${service_name}
+                      - name: SUFFIX
+                        value: $${suffix}
+                  serviceAccountName: $${client_service_account}
+
+## Setup Job
+
+- delete_setup_job:
+    try:
+      steps:
+        # Delete the job
+        - delete_setup_job_call:
+            call: googleapis.run.v1.namespaces.jobs.delete
+            args:
+              name: $${"namespaces/" + project_id + "/jobs/" + setup_job_name}
+              location: ${region}
+        # If success, wait for the delete to complete
+        - wait_for_setup_job_delete:
+            call: sys.sleep
+            args:
+              seconds: 10
+    except:
+      # It's okay if the delete fails, we don't raise an error, and we don't have to wait.
+      as: e
+
+- create_setup_job:
+    call: googleapis.run.v1.namespaces.jobs.create
+    args:
+      parent: $${"namespaces/" + project_id}
+      location: $${region}
+      body:
+        apiVersion: run.googleapis.com/v1
+        kind: Job
+        metadata:
+          name: $${setup_job_name}
+        spec:
+          template:
+            metadata:
+              annotations:
+                run.googleapis.com/cloudsql-instances: $${cloudsql_instance}
+            spec:
+              template:
+                spec:
+                  containers:
+                    image: $${setup_image}
+                    command: setup
+                    env:
+                      - name: DJANGO_ENV
+                        valueFrom:
+                          secretKeyRef:
+                            key: latest
+                            name: $${django_env}
+
+                      - name: DJANGO_SUPERUSER_PASSWORD
+                        valueFrom:
+                          secretKeyRef:
+                            key: latest
+                            name: $${django_superuser_password}
+                  serviceAccountName: $${setup_service_account}
+
+- run_setup_job:
+    call: googleapis.run.v1.namespaces.jobs.run
+    args:
+      name: $${"namespaces/" + project_id + "/jobs/" + setup_job_name}
+      location: ${region}
+
+- run_client_job:
+    call: googleapis.run.v1.namespaces.jobs.run
+    args:
+      name: $${"namespaces/" + project_id + "/jobs/" + client_job_name}
+      location: $${region}
+
+- purge_firebase:
+    call: http.request
+    args:
+      url: $${firebase_url}
+      method: PURGE
+
+- warm_api:
+    call: http.get
+    args:
+      url: $${ service_url + "/api/products/?warmup"}

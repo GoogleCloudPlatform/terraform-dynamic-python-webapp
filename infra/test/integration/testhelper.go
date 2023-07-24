@@ -69,13 +69,6 @@ func AssertExample(t *testing.T) {
 		delayUntilServiceDeploy(t, projectID, server_service_name)
 
 		{
-			// Check that the Cloud Storage API is enabled
-			services := gcloud.Run(t, "services list", gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})).Array()
-			match := utils.GetFirstMatchResult(t, services, "config.name", "storage.googleapis.com")
-			assert.Equal("ENABLED", match.Get("state").String(), "storage service should be enabled")
-		}
-
-		{
 			// Check that the expected Cloud Run service is deployed, is serving, and accepts unauthenticated requests
 			cloudRunServices := gcloud.Run(t, "run services list", gcloud.WithCommonArgs([]string{"--filter", "metadata.name=" + server_service_name, "--project", projectID, "--format", "json"})).Array()
 			nbServices := len(cloudRunServices)

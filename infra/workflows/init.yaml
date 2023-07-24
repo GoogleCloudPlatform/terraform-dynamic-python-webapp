@@ -152,12 +152,6 @@
       name: $${"namespaces/" + project_id + "/jobs/" + client_job_name}
       location: $${region}
 
-- purge_firebase:
-    call: http.request
-    args:
-      url: $${firebase_url}
-      method: PURGE
-
 - warm_api:
     call: http.get
     args:

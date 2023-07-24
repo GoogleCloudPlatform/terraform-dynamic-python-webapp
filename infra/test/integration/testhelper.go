@@ -65,8 +65,7 @@ func AssertExample(t *testing.T) {
 		t.Logf("Using Project ID %q", projectID)
 
 		// Delay to give deploy longer time to complete before app testing.
-		// TODO: Replace hard-coded time limit with polling for Cloud Run service readiness.
-		t.Log("Delaying to give deploy time to complete.")
+		t.Log("Delaying to give deploy time to complete. Not always needed.")
 		delayUntilServiceDeploy(t, projectID, server_service_name)
 
 		{

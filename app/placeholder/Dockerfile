@@ -16,9 +16,10 @@
 # Execute with "docker run --build-arg PROJECT_ID=$PROJECT_ID ..."
 ARG PROJECT_ID=YOURPROJECTID
 FROM gcr.io/$PROJECT_ID/firebase
+WORKDIR /app
 
-RUN apk add gettext
+RUN apk add gettext curl
 RUN npm install -g json
-COPY . ./
+COPY . /app/
 
-ENTRYPOINT ./placeholder-deploy.sh
+ENTRYPOINT ["/app/placeholder-deploy.sh"]

@@ -42,13 +42,10 @@ func AssertExample(t *testing.T) {
 		// the placeholder behavior here to boost confidence that the frontend test in
 		// example.DefineVerify proves the placeholder page is replaced.
 		//
-		// If the check is flaky, remove it in favor of
-		// a simpler HTTP request.
-		//
 		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
 		t.Log("Firebase Hosting should be running at ", firebase_url)
-		assertResponseContains(assert, firebase_url, "Your application is still deploying")
+		assertResponseContains(t, assert, firebase_url, "Your application is still deploying")
 	})
 
 	example.DefineVerify(func(assert *assert.Assertions) {
@@ -63,12 +60,9 @@ func AssertExample(t *testing.T) {
 		region := "us-central1"
 		t.Logf("Using Project ID %q", projectID)
 
-		{
-			// Check that the Cloud Storage API is enabled
-			services := gcloud.Run(t, "services list", gcloud.WithCommonArgs([]string{"--project", projectID, "--format", "json"})).Array()
-			match := utils.GetFirstMatchResult(t, services, "config.name", "storage.googleapis.com")
-			assert.Equal("ENABLED", match.Get("state").String(), "storage service should be enabled")
-		}
+		// Delay to give deploy longer time to complete before app testing.
+		t.Log("Delaying to give deploy time to complete. Not always needed.")
+		delayUntilServiceDeploy(t, projectID, server_service_name)
 
 		{
 			// Check that the expected Cloud Run service is deployed, is serving, and accepts unauthenticated requests
@@ -78,10 +72,10 @@ func AssertExample(t *testing.T) {
 			match := utils.GetFirstMatchResult(t, cloudRunServices, "kind", "Service")
 			serviceURL := match.Get("status.url").String()
 			assert.Truef(strings.HasSuffix(serviceURL, ".run.app"), "unexpected service URL %q", serviceURL)
-			t.Log("Cloud Run service is running at", serviceURL)
+			t.Log("Cloud Run service URL:", serviceURL)
 
 			// The Cloud Run service is the app's API backend (it does not serve the Avocano homepage)
-			assertResponseContains(assert, serviceURL, "/api", "/admin")
+			assertResponseContains(t, assert, serviceURL, "/api", "/admin")
 
 			// The data is populated by two Cloud Run jobs, so wait for the final job to finish before continuing.
 			// A job execution is completed if it has a completed time.
@@ -113,19 +107,42 @@ func AssertExample(t *testing.T) {
 			utils.Poll(t, isJobFinished, 10, time.Second*10)
 
 			// The API must return a list that includes our flagship product
-			assertResponseContains(assert, serviceURL+"/api/products/", flagshipProduct)
+			assertResponseContains(t, assert, serviceURL+"/api/products/", flagshipProduct)
 		}
 		{
 			// Check that the Avocano front page is deployed to Firebase Hosting, and serving
 			t.Log("Firebase Hosting should be running at ", firebase_url)
-			assertResponseContains(assert, firebase_url, "<title>Avocano</title>")
+			assertResponseContains(t, assert, firebase_url, "<title>Avocano</title>")
 		}
 	})
 	example.Test()
 }
 
-func assertResponseContains(assert *assert.Assertions, url string, text ...string) {
-	code, responseBody, err := httpGetRequest(url)
+func assertResponseContains(t *testing.T, assert *assert.Assertions, url string, text ...string) {
+	t.Helper()
+	var code int
+	var responseBody string
+	var err error
+
+	fn := func() (bool, error) {
+		t.Logf("HTTP Request - GET %s", url)
+		code, responseBody, err = httpGetRequest(url)
+		retry := err != nil || code < 200 || code > 299
+		switch {
+		case retry && err == nil:
+			t.Logf("Failed HTTP Request: Status Code %d", code)
+		case retry && err != nil:
+			t.Logf("Failed HTTP Request: %v", err)
+		default:
+			// In Verbose mode with success, the asserts below are a "silent pass" during test output.
+			// Facilitates real-time evaluation during long test process.
+			t.Log("Successful HTTP Request")
+		}
+		return retry, nil
+	}
+	utils.Poll(t, fn, 36, 10*time.Second)
+
+	// Assert expectations of the last checked response.
 	assert.Nil(err)
 	assert.GreaterOrEqual(code, 200)
 	assert.LessOrEqual(code, 299)
@@ -134,7 +151,9 @@ func assertResponseContains(assert *assert.Assertions, url string, text ...strin
 	}
 }
 
-func assertErrorResponseContains(assert *assert.Assertions, url string, wantCode int, text string) {
+func assertErrorResponseContains(t *testing.T, assert *assert.Assertions, url string, wantCode int, text string) {
+	t.Helper()
+
 	code, responseBody, err := httpGetRequest(url)
 	assert.Nil(err)
 	assert.Equal(code, wantCode)
@@ -150,4 +169,17 @@ func httpGetRequest(url string) (statusCode int, body string, err error) {
 
 	buffer, err := io.ReadAll(res.Body)
 	return res.StatusCode, string(buffer), err
+}
+
+// delayUntilServiceDeploy gives a 1 minute delay, then polls until Cloud Run service deploy.
+// The application may still be starting on completion of this delay.
+func delayUntilServiceDeploy(t *testing.T, projectID string, serviceName string) {
+	t.Helper()
+
+	time.Sleep(time.Minute)
+	fn := func() (bool, error) {
+		percent := gcloud.Run(t, "run services list", gcloud.WithCommonArgs([]string{"--filter", "metadata.name=" + serviceName, "--project", projectID, "--format", "value(status.traffic.percent)"})).Int()
+		return percent != 100, nil
+	}
+	utils.Poll(t, fn, 24, 10*time.Second)
 }

@@ -39,7 +39,7 @@ resource "google_secret_manager_secret" "django_admin_password" {
 resource "google_secret_manager_secret_iam_binding" "django_admin_password" {
   secret_id = google_secret_manager_secret.django_admin_password.id
   role      = "roles/secretmanager.secretAccessor"
-  members   = [local.automation_SA]
+  members   = ["serviceAccount:${google_service_account.automation.email}"]
 }
 
 resource "google_secret_manager_secret_version" "django_admin_password" {
@@ -56,7 +56,13 @@ resource "random_password" "django_secret_key" {
 resource "google_secret_manager_secret" "django_settings" {
   secret_id = var.random_suffix ? "django_settings-${random_id.suffix.hex}" : "django_settings"
   replication {
-    automatic = true
+    # Avoid conflict with constraints/gcp.resourceLocations for Secret Manager.
+    # https://cloud.google.com/secret-manager/docs/choosing-replication
+    user_managed {
+      replicas {
+        location = var.region
+      }
+    }
   }
   depends_on = [module.project_services]
 }
@@ -74,5 +80,8 @@ EOF
 resource "google_secret_manager_secret_iam_binding" "django_settings" {
   secret_id = google_secret_manager_secret.django_settings.id
   role      = "roles/secretmanager.secretAccessor"
-  members   = [local.server_SA, local.automation_SA]
+  members = [
+    "serviceAccount:${google_service_account.server.email}",
+    "serviceAccount:${google_service_account.automation.email}"
+  ]
 }

@@ -29,6 +29,7 @@ variable "region" {
 
 # HSA
 
+# tflint-ignore: terraform_unused_declarations
 variable "zone" {
   type        = string
   description = "GCP zone for provisioning zonal resources."
@@ -61,7 +62,7 @@ variable "init" {
 
 variable "image_version" {
   type        = string
-  default     = "v1.8.2"
+  default     = "v1.9.0"
   description = "Version of the Container Registry image to use"
 }
 

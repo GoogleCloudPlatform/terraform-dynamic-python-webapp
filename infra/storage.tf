@@ -26,12 +26,12 @@ resource "google_storage_bucket" "media" {
 
 resource "google_storage_bucket_iam_member" "server" {
   bucket = google_storage_bucket.media.name
-  member = local.server_SA
+  member = "serviceAccount:${google_service_account.server.email}"
   role   = "roles/storage.admin"
 }
 
 resource "google_storage_bucket_iam_member" "automation" {
   bucket = google_storage_bucket.media.name
-  member = local.automation_SA
+  member = "serviceAccount:${google_service_account.automation.email}"
   role   = "roles/storage.admin"
 }

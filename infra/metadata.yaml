@@ -69,7 +69,7 @@ spec:
     - name: image_version
       description: Version of the Container Registry image to use
       varType: string
-      defaultValue: v1.8.2
+      defaultValue: v1.9.0
     - name: init
       description: Initialize database?
       varType: bool
@@ -125,6 +125,7 @@ spec:
     roles:
     - level: Project
       roles:
+      - roles/cloudbuild.builds.editor
       - roles/cloudsql.admin
       - roles/compute.admin
       - roles/compute.networkAdmin
@@ -132,6 +133,7 @@ spec:
       - roles/firebasehosting.admin
       - roles/iam.serviceAccountAdmin
       - roles/iam.serviceAccountUser
+      - roles/pubsub.editor
       - roles/resourcemanager.projectIamAdmin
       - roles/run.admin
       - roles/secretmanager.admin
@@ -158,6 +160,7 @@ spec:
     - firebase.googleapis.com
     - firebasehosting.googleapis.com
     - iam.googleapis.com
+    - pubsub.googleapis.com
     - run.googleapis.com
     - secretmanager.googleapis.com
     - sqladmin.googleapis.com

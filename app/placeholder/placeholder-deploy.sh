@@ -17,6 +17,24 @@
 # any errors? exit immediately.
 set -e
 
+# Ensure we got to the right directory. Cloud Build may start us in /workspace
+cd /app
+
+# escape if firebase_url not defined (mandatory, required later)
+if [[ -z $FIREBASE_URL ]]; then
+    echo "FIREBASE_URL not defined. Cannot deploy. Exiting."
+    exit 1
+fi
+
+# Only run the placeholder script if the site has been deployed before.
+# Check if the firebase url has "Site Not Found" (the pre-deployment state)
+if curl "$FIREBASE_URL" | grep -q "Site Not Found"; then
+    echo "Firebase site $FIREBASE_URL hasn't been deployed before, so it needs a placeholder."
+else
+    echo "Firebase site $FIREBASE_URL has been deployed before. Not going to deploy placeholder. Exiting."
+    exit 0
+fi
+
 # if deploying with a suffix (from infra/jobs.tf), adjust the config to suit the custom site
 # https://firebase.google.com/docs/hosting/multisites#set_up_deploy_targets
 if [[ -n $SUFFIX ]]; then
@@ -24,7 +42,7 @@ if [[ -n $SUFFIX ]]; then
     UPDATED=true
 
     # Use template file to generate configuration
-    envsubst  < firebaserc.tmpl > .firebaserc
+    envsubst <firebaserc.tmpl >.firebaserc
     echo "Customised .firebaserc created to support site."
     cat .firebaserc
 fi
@@ -35,6 +53,10 @@ if [[ -n $UPDATED ]]; then
     cat firebase.json
 fi
 
+# Finally, deploy the application
 echo "Deploying placeholder to Firebase..."
-
 firebase deploy --project "$PROJECT_ID" --only hosting
+
+# Setup for greater chances of success by explicitly purging cache
+echo "Purging firebase cache"
+curl -X PURGE "${FIREBASE_URL}/"

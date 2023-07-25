@@ -14,14 +14,30 @@
  * limitations under the License.
  */
 
-# Service Accounts
-
 locals {
-  # Helpers for the clunky formatting of these values
-  automation_SA = "serviceAccount:${google_service_account.automation.email}"
-  server_SA     = "serviceAccount:${google_service_account.server.email}"
-  client_SA     = "serviceAccount:${google_service_account.client.email}"
+  # Lists of required roles
+  server_iam_members = [
+    "roles/cloudsql.client",
+    "roles/run.viewer",
+    "roles/cloudtrace.agent"
+  ]
+  client_iam_members = [
+    "roles/run.viewer",
+    "roles/firebasehosting.admin",
+  ]
+  automation_iam_members = [
+    "roles/cloudsql.client"
+  ]
+  init_iam_members = [
+    "roles/logging.logWriter",
+    "roles/cloudbuild.builds.builder",
+    "roles/iam.serviceAccountUser",
+    "roles/run.developer",
+    "roles/firebasehosting.admin"
+  ]
 }
+
+# Accounts
 
 resource "google_service_account" "server" {
   account_id   = var.random_suffix ? "api-backend-${random_id.suffix.hex}" : "api-backend"
@@ -41,66 +57,58 @@ resource "google_service_account" "automation" {
   depends_on   = [module.project_services]
 }
 
-resource "google_service_account" "compute" {
-  account_id   = var.random_suffix ? "compute-startup-${random_id.suffix.hex}" : "compute-startup"
-  display_name = "Head Start App Compute Instance SA"
+
+resource "google_service_account" "init" {
+  account_id   = var.random_suffix ? "init-startup-${random_id.suffix.hex}" : "init-startup"
+  display_name = "Jump Start App Init SA"
   depends_on   = [module.project_services]
   count        = var.init ? 1 : 0
 }
 
-# The Cloud Run server can access the database
+# Permissions
+
 resource "google_project_iam_member" "server_permissions" {
-  project    = var.project_id
-  role       = "roles/cloudsql.client"
-  member     = local.server_SA
-  depends_on = [google_service_account.server]
+  count = length(local.server_iam_members)
+
+  project = var.project_id
+  role    = local.server_iam_members[count.index]
+  member  = "serviceAccount:${google_service_account.server.email}"
 }
 
-# Cloud Build can access the database
-resource "google_project_iam_member" "build_permissions" {
-  project    = var.project_id
-  role       = "roles/cloudsql.client"
-  member     = local.automation_SA
-  depends_on = [google_service_account.automation]
-}
-
-# Server needs introspection permissions
-resource "google_project_iam_member" "server_introspection" {
-  project    = var.project_id
-  role       = "roles/run.viewer"
-  member     = local.server_SA
-  depends_on = [google_service_account.server]
-}
-
-# Client needs introspection permissions
-resource "google_project_iam_member" "client_introspection" {
-  project    = var.project_id
-  role       = "roles/run.viewer"
-  member     = local.client_SA
-  depends_on = [google_service_account.client]
-}
-
-# Client may need permission to deploy the front end
 resource "google_project_iam_member" "client_permissions" {
-  project    = var.project_id
-  role       = "roles/firebasehosting.admin"
-  member     = local.client_SA
-  depends_on = [google_service_account.client]
+  count = length(local.client_iam_members)
+
+  project = var.project_id
+  role    = local.client_iam_members[count.index]
+  member  = "serviceAccount:${google_service_account.client.email}"
 }
 
-# GCE instance needs access to start Jobs
-resource "google_project_iam_member" "computestartup_permissions" {
-  project    = var.project_id
-  role       = "roles/run.developer"
-  member     = "serviceAccount:${google_service_account.compute[0].email}"
-  depends_on = [google_service_account.compute]
-  count      = var.init ? 1 : 0
+resource "google_project_iam_member" "automation_permissions" {
+  count = length(local.automation_iam_members)
+
+  project = var.project_id
+  role    = local.automation_iam_members[count.index]
+  member  = "serviceAccount:${google_service_account.automation.email}"
 }
 
-# Server needs to write to Cloud Trace
-resource "google_project_iam_member" "server_traceagent" {
-  project    = var.project_id
-  role       = "roles/cloudtrace.agent"
-  member     = local.server_SA
-  depends_on = [google_service_account.server]
+resource "google_project_iam_member" "init_permissions" {
+  count = length(local.init_iam_members)
+
+  project = var.project_id
+  role    = local.init_iam_members[count.index]
+  member  = "serviceAccount:${google_service_account.init[0].email}"
+}
+
+# Ensure google_service_account.init is not used before permissions are available.
+# Introduced to allow for IAM policy propagation delay. Time selected to allow:
+# propagation delay + ~2 minute firebase hosting deploy <= 5 minutes.
+# Shortest delay preferred.
+# Warning: Trying to meet IAM propagation delay on roles/logging.logWriter.
+# Exceeded safe limit to avoid race conditions between placeholder and init process.
+resource "time_sleep" "init_permissions_propagation" {
+  depends_on = [
+    google_project_iam_member.init_permissions
+  ]
+
+  create_duration = "60s"
 }

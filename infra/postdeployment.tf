@@ -14,126 +14,248 @@
  * limitations under the License.
  */
 
-resource "google_compute_network" "gce_init" {
-  count = var.init ? 1 : 0
+locals {
+  random_suffix_value  = var.random_suffix ? random_id.suffix.hex : ""       # literal value  (NNNN)
+  random_suffix_append = var.random_suffix ? "-${random_id.suffix.hex}" : "" # appended value (-NNNN)
 
-  name                            = var.random_suffix ? "gce-init-network-${random_id.suffix.hex}" : "gce-init-network"
-  auto_create_subnetworks         = false
-  routing_mode                    = "GLOBAL"
-  project                         = var.project_id
-  delete_default_routes_on_create = false
-  mtu                             = 0
+  setup_job_name  = "setup${local.random_suffix_append}"
+  client_job_name = "client${local.random_suffix_append}"
 
-  depends_on = [module.project_services]
+  gcloud_step_container = "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
 }
 
-resource "google_compute_subnetwork" "gce_init" {
-  count = var.init ? 1 : 0
-
-  name          = var.random_suffix ? "subnet-gce-init-${random_id.suffix.hex}" : "subnet-gce-init"
-  network       = google_compute_network.gce_init[0].id
-  ip_cidr_range = "10.10.10.0/24"
-  region        = var.region
-
-  depends_on = [module.project_services]
+# used to collect access token, for authenticated POST commands
+data "google_client_config" "current" {
 }
 
-resource "google_compute_instance" "gce_init" {
+# topic that is never used, except as a configuration type for Cloud Build Triggers
+resource "google_pubsub_topic" "faux" {
+  name = "faux-topic${local.random_suffix_append}"
+}
+
+
+## Failing Build - help get Cloud Build ready for work
+resource "google_cloudbuild_trigger" "activategcb" {
   count = var.init ? 1 : 0
+
+  name     = "activategcb${local.random_suffix_append}"
+  location = var.region
+
+  description = "Get Cloud Build ready for work. This build is expected to fail."
+
+  pubsub_config {
+    topic = google_pubsub_topic.faux.id
+  }
+
+  service_account = google_service_account.init[0].id
+
+  build {
+    step {
+      id     = "no-op"
+      name   = "ubuntu"
+      script = "echo 'Hello Cloud Build'"
+    }
+
+    options {
+      logging = "CLOUD_LOGGING_ONLY"
+    }
+  }
 
   depends_on = [
-    module.project_services,
+    # This is waiting for IAM to update but skipping the delay for IAM propagation.
+    google_project_iam_member.init_permissions
+  ]
+}
+
+# execute the trigger, once it and other dependencies exist. Intended side-effect.
+# tflint-ignore: terraform_unused_declarations
+data "http" "execute_activategcb_trigger" {
+  count = var.init ? 1 : 0
+
+  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.activategcb[0].id}:run"
+  method = "POST"
+  request_headers = {
+    Authorization = "Bearer ${data.google_client_config.current.access_token}"
+  }
+  depends_on = [
+    google_cloudbuild_trigger.activategcb[0]
+  ]
+}
+
+
+## Placeholder - deploys a placeholder website - uses prebuilt image in /app/placeholder
+resource "google_cloudbuild_trigger" "placeholder" {
+  count = var.init ? 1 : 0
+
+  name     = "placeholder${local.random_suffix_append}"
+  location = var.region
+
+  description = "Deploy a placeholder Firebase website"
+
+  pubsub_config {
+    topic = google_pubsub_topic.faux.id
+  }
+
+  service_account = google_service_account.init[0].id
+
+  build {
+    step {
+      id   = "deploy-placeholder"
+      name = local.placeholder_image
+      env = [
+        "PROJECT_ID=${var.project_id}",
+        "SUFFIX=${local.random_suffix_value}",
+        "FIREBASE_URL=${local.firebase_url}",
+      ]
+    }
+
+    options {
+      logging = "CLOUD_LOGGING_ONLY"
+    }
+  }
+
+  depends_on = [
+    time_sleep.init_permissions_propagation
+
+  ]
+}
+
+
+# execute the trigger, once it and other dependencies exist. Intended side-effect.
+# tflint-ignore: terraform_unused_declarations
+data "http" "execute_placeholder_trigger" {
+  count = var.init ? 1 : 0
+
+  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.placeholder[0].id}:run"
+  method = "POST"
+  request_headers = {
+    Authorization = "Bearer ${data.google_client_config.current.access_token}"
+  }
+  depends_on = [
+    google_cloudbuild_trigger.placeholder[0],
+    # Do not trigger placeholder build before activategcb build.
+    # activategcb exists to be run first.
+    data.http.execute_activategcb_trigger[0]
+  ]
+}
+
+
+## Initalization trigger
+resource "google_cloudbuild_trigger" "init" {
+  count = var.init ? 1 : 0
+
+  name     = "init-application${local.random_suffix_append}"
+  location = var.region
+
+  description = "Perform initialization setup for server and client"
+
+  pubsub_config {
+    topic = google_pubsub_topic.faux.id
+  }
+
+  service_account = google_service_account.init[0].id
+
+  build {
+    ## Client/frontend processing
+    step {
+      # Check if a job already exists under the exact name. If it doesn't, create it.
+      # Environment variables used to customise Firebase configuration on deployment
+      # https://github.com/GoogleCloudPlatform/avocano/blob/main/client/docker-deploy.sh
+      id     = "create-client-job"
+      name   = local.gcloud_step_container
+      script = <<EOT
+#!/bin/bash
+SETUP_JOB=$(gcloud run jobs list --filter "metadata.name~${local.client_job_name}$" --format "value(metadata.name)" --region ${var.region})
+
+if [[ -z $SETUP_JOB ]]; then
+  echo "Creating ${local.client_job_name} Cloud Run Job"
+  gcloud run jobs create ${local.client_job_name} --region ${var.region} \
+    --image ${local.client_image} \
+    --service-account ${google_service_account.client.email} \
+    --set-env-vars PROJECT_ID=${var.project_id} \
+    --set-env-vars SUFFIX=${local.random_suffix_value} \
+    --set-env-vars REGION=${var.region} \
+    --set-env-vars SERVICE_NAME=${google_cloud_run_v2_service.server.name}
+else
+  echo "Cloud Run Job ${local.client_job_name} already exists."
+fi
+EOT
+    }
+
+    ## Server/API processing
+    step {
+      # Check if a job already exists under the exact name. If it doesn't, create it.
+      id     = "create-setup-job"
+      name   = local.gcloud_step_container
+      script = <<EOT
+#!/bin/bash
+SETUP_JOB=$(gcloud run jobs list --filter "metadata.name~${local.setup_job_name}$" --format "value(metadata.name)" --region ${var.region})
+
+if [[ -z $SETUP_JOB ]]; then
+  echo "Creating ${local.setup_job_name} Cloud Run Job"
+  gcloud run jobs create ${local.setup_job_name} --region ${var.region} \
+    --command setup \
+    --image ${local.server_image} \
+    --service-account ${google_service_account.automation.email} \
+    --set-secrets DJANGO_ENV=${google_secret_manager_secret.django_settings.secret_id}:latest \
+    --set-secrets DJANGO_SUPERUSER_PASSWORD=${google_secret_manager_secret.django_admin_password.secret_id}:latest \
+    --set-cloudsql-instances ${google_sql_database_instance.postgres.connection_name}
+else
+  echo "Cloud Run Job ${local.setup_job_name} already exists."
+fi
+EOT
+    }
+
+    # Now that the jobs definitely exist, execute them.
+    step {
+      id     = "execute-setup-job"
+      name   = local.gcloud_step_container
+      script = "gcloud run jobs execute ${local.setup_job_name} --wait --region ${var.region} --project ${var.project_id}"
+    }
+
+    step {
+      id     = "execute-client-job"
+      name   = local.gcloud_step_container
+      script = "gcloud run jobs execute ${local.client_job_name} --wait --region ${var.region} --project ${var.project_id}"
+    }
+
+    # Ensure any cached versions of the application are purged
+    # Preemptively warm up the server API
+    step {
+      id     = "purge-and-warmfirebase"
+      name   = "ubuntu"
+      script = <<EOT
+#!/bin/bash
+apt-get update && apt-get install curl -y
+curl -X PURGE "${local.firebase_url}/"
+curl "${google_cloud_run_v2_service.server.uri}/api/products/?warmup"
+EOT
+    }
+
+    options {
+      logging = "CLOUD_LOGGING_ONLY"
+    }
+  }
+
+  depends_on = [
     google_sql_database_instance.postgres,
-    google_cloud_run_v2_job.setup,
-    google_cloud_run_v2_job.client,
+    google_cloud_run_v2_job.migrate,
+    # Expected to be shorter than database provisioning.
+    time_sleep.init_permissions_propagation
   ]
-
-  name           = var.random_suffix ? "head-start-initialize-${random_id.suffix.hex}" : "head-start-initialize"
-  machine_type   = "n1-standard-1"
-  zone           = var.zone
-  desired_status = "RUNNING" # https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/pull/75#issuecomment-1547198414
-
-  allow_stopping_for_update = true
-
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-11"
-    }
-  }
-
-  network_interface {
-    network    = google_compute_network.gce_init[0].self_link
-    subnetwork = google_compute_subnetwork.gce_init[0].self_link
-
-    access_config {
-      // Ephemeral public IP
-    }
-  }
-
-  service_account {
-    email  = google_service_account.compute[0].email
-    scopes = ["cloud-platform"] # TODO: Restrict??
-  }
-
-  metadata_startup_script = <<EOT
-#!/bin/bash
-
-echo "Running init database migration"
-gcloud beta run jobs execute ${google_cloud_run_v2_job.setup.name} --wait --project ${var.project_id} --region ${var.region}
-
-echo "Running client deploy"
-gcloud beta run jobs execute ${google_cloud_run_v2_job.client.name} --wait --project ${var.project_id} --region ${var.region}
-curl -X PURGE "${local.firebase_url}/"
-
-echo "Warm up API"
-curl ${local.server_url}/api/products/?warmup
-
-shutdown -h now
-EOT
 }
 
-
-resource "google_compute_instance" "placeholder_init" {
+# execute the trigger, once it and other dependencies exist. Intended side-effect.
+# tflint-ignore: terraform_unused_declarations
+data "http" "execute_init_trigger" {
   count = var.init ? 1 : 0
 
+  url    = "https://cloudbuild.googleapis.com/v1/${google_cloudbuild_trigger.init[0].id}:run"
+  method = "POST"
+  request_headers = {
+    Authorization = "Bearer ${data.google_client_config.current.access_token}"
+  }
   depends_on = [
-    module.project_services,
-    google_cloud_run_v2_job.placeholder,
+    google_cloudbuild_trigger.init[0],
   ]
-
-  name         = var.random_suffix ? "placeholder-initialize-${random_id.suffix.hex}" : "placeholder-initialize"
-  machine_type = "n1-standard-1"
-  zone         = var.zone
-
-  allow_stopping_for_update = true
-
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-11"
-    }
-  }
-
-  network_interface {
-    network    = google_compute_network.gce_init[0].self_link
-    subnetwork = google_compute_subnetwork.gce_init[0].self_link
-
-    access_config {
-      // Ephemeral public IP
-    }
-  }
-
-  service_account {
-    email  = google_service_account.compute[0].email
-    scopes = ["cloud-platform"] # TODO: Restrict??
-  }
-
-  metadata_startup_script = <<EOT
-#!/bin/bash
-
-echo "Running placeholder deployment"
-gcloud beta run jobs execute ${google_cloud_run_v2_job.placeholder.name} --wait --project ${var.project_id} --region ${var.region}
-curl -X PURGE "${local.firebase_url}/"
-
-shutdown -h now
-EOT
 }

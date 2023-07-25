@@ -16,6 +16,7 @@
 
 locals {
   int_required_roles = [
+    "roles/cloudbuild.builds.editor",
     "roles/cloudsql.admin",
     "roles/compute.admin",
     "roles/compute.networkAdmin",
@@ -23,6 +24,7 @@ locals {
     "roles/firebasehosting.admin",
     "roles/iam.serviceAccountAdmin",
     "roles/iam.serviceAccountUser",
+    "roles/pubsub.editor",
     "roles/resourcemanager.projectIamAdmin",
     "roles/run.admin",
     "roles/secretmanager.admin",

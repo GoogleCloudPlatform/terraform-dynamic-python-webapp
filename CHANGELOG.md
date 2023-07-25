@@ -8,6 +8,27 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.7.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.6.0...v0.7.0) (2023-07-25)
+
+
+### Features
+
+* Ignore health checks for tracing purposes ([#91](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/91)) ([d2aebb5](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/d2aebb54bde83b09ac665b6fa3a17b9561cc299d))
+* replace Compute Engine metadata startup scripts with Cloud Build ([#128](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/128)) ([6f80860](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/6f80860f799ad581c8e31c2d3988ab6017975631))
+* Switch google_secret_manager_secret to user_managed replication ([#118](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/118)) ([48060b8](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/48060b8eeec67e6f8c849cd8a601869b46bcd069))
+* use Uniform Bucket Level Access in Cloud Storage ([#115](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/115)) ([0df3685](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/0df3685dada3c6e8da9f90165242db54da1be570))
+
+
+### Bug Fixes
+
+* **deps:** update go modules ([#107](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/107)) ([daf1a09](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/daf1a094024f059af5a5219cc145a2b3c3f4b4f7))
+* **deps:** update module github.com/googlecloudplatform/cloud-foundation-toolkit/infra/blueprint-test to v0.6.0 ([#100](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/100)) ([2454407](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/2454407cf249f4908d5de8c752aa7ab51339460d))
+* **deps:** update module github.com/gruntwork-io/terratest to v0.43.3 ([#102](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/102)) ([2e83540](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/2e8354095de68cf9008e8a47b7770717e4a90ac0))
+* **deps:** update module github.com/gruntwork-io/terratest to v0.43.6 ([#109](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/109)) ([054b562](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/054b56259f9398fd813cee1bb1d973d46a5d7485))
+* **deps:** update module github.com/gruntwork-io/terratest to v0.43.8 ([#120](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/120)) ([1a54f47](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/1a54f47901954da403f2d33b5b96d984561aabc6))
+* revert use Uniform Bucket Level Access in Cloud Storage ([#124](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/124)) ([508ca55](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/508ca552d0b81212d5c703cedd59987f4f822917))
+* support deployment suffix for CSRF domain customisation ([#98](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/98)) ([56e5b09](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/56e5b09ef40ae632afc1f45448424da991942539))
+
 ## [0.6.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.5.0...v0.6.0) (2023-06-07)
 
 

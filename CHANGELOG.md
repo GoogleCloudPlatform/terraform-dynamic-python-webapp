@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.7.1](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.7.0...v0.7.1) (2023-07-26)
+
+
+### Bug Fixes
+
+* pinning google provider &lt; 4.75.0 ([#131](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/131)) ([3a41693](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/3a41693e900366beb755896cf14f1d3d6fd1b455))
+
 ## [0.7.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.6.0...v0.7.0) (2023-07-25)
 
 

@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.7.2](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.7.1...v0.7.2) (2023-08-01)
+
+
+### Bug Fixes
+
+* Remove clouddebugger api ([#139](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/139)) ([6383d6d](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/6383d6d59a6e5d326b3eb7a8fbb0dbb750bad9aa))
+
 ## [0.7.1](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.7.0...v0.7.1) (2023-07-26)
 
 

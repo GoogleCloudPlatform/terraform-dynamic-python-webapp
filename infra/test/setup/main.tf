@@ -29,7 +29,6 @@ module "project" {
     "bigquery.googleapis.com",
     "bigquerymigration.googleapis.com",
     "bigquerystorage.googleapis.com",
-    "clouddebugger.googleapis.com",
     "cloudtrace.googleapis.com",
     "datastore.googleapis.com",
     "logging.googleapis.com",

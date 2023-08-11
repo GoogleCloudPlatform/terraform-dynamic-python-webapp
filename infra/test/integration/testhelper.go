@@ -45,7 +45,8 @@ func AssertExample(t *testing.T) {
 		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
 		t.Log("Firebase Hosting should be running at ", firebase_url)
-		assertResponseContains(t, assert, firebase_url, "Your application is still deploying")
+		
+		assertResponseContains(t, assert, firebase_url, true, "Your application is still deploying", "<title>Avocano</title>")
 	})
 
 	example.DefineVerify(func(assert *assert.Assertions) {
@@ -75,7 +76,7 @@ func AssertExample(t *testing.T) {
 			t.Log("Cloud Run service URL:", serviceURL)
 
 			// The Cloud Run service is the app's API backend (it does not serve the Avocano homepage)
-			assertResponseContains(t, assert, serviceURL, "/api", "/admin")
+			assertResponseContains(t, assert, serviceURL, false, "/api", "/admin")
 
 			// The data is populated by two Cloud Run jobs, so wait for the final job to finish before continuing.
 			// A job execution is completed if it has a completed time.
@@ -107,18 +108,21 @@ func AssertExample(t *testing.T) {
 			utils.Poll(t, isJobFinished, 10, time.Second*10)
 
 			// The API must return a list that includes our flagship product
-			assertResponseContains(t, assert, serviceURL+"/api/products/", flagshipProduct)
+			assertResponseContains(t, assert, serviceURL+"/api/products/", false, flagshipProduct)
 		}
 		{
 			// Check that the Avocano front page is deployed to Firebase Hosting, and serving
 			t.Log("Firebase Hosting should be running at ", firebase_url)
-			assertResponseContains(t, assert, firebase_url, "<title>Avocano</title>")
+			assertResponseContains(t, assert, firebase_url, false, "<title>Avocano</title>")
 		}
 	})
 	example.Test()
 }
 
-func assertResponseContains(t *testing.T, assert *assert.Assertions, url string, text ...string) {
+// TODO: Added oneOf to add in capability to assert if at least one string is present within response.
+// Verify better solution to handle race between placeholder + final app deployment
+// Ref: https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/143
+func assertResponseContains(t *testing.T, assert *assert.Assertions, url string, oneOf bool, text ...string) {
 	t.Helper()
 	var code int
 	var responseBody string
@@ -146,8 +150,16 @@ func assertResponseContains(t *testing.T, assert *assert.Assertions, url string,
 	assert.Nil(err)
 	assert.GreaterOrEqual(code, 200)
 	assert.LessOrEqual(code, 299)
-	for _, fragment := range text {
-		assert.Containsf(responseBody, fragment, "couldn't find %q in response body", fragment)
+
+	// Assert that at least one fragment is present in responseBody
+	if oneOf {
+		// Ref: https://pkg.go.dev/github.com/stretchr/testify/assert#Containsf
+		assert.Containsf(text, responseBody, "couldn't find any values from list %v in response body", text)
+	} else {
+		// Otherwise, assert that all fragments are present in responseBody
+		for _, fragment := range text {
+			assert.Containsf(responseBody, fragment, "couldn't find %q in response body", fragment)
+		}
 	}
 }
 

@@ -152,16 +152,23 @@ func assertResponseContains(t *testing.T, assert *assert.Assertions, url string,
 	assert.GreaterOrEqual(code, 200)
 	assert.LessOrEqual(code, 299)
 
-	// Assert that at least one fragment is present in responseBody
-	if oneOf {
-		// Ref: https://pkg.go.dev/github.com/stretchr/testify/assert#Containsf
-		assert.Containsf(text, responseBody, "couldn't find any values from list %v in response body", text)
-	} else {
-		// Otherwise, assert that all fragments are present in responseBody
+	if !oneOf {
+		// Assert that all fragments are present in responseBody
 		for _, fragment := range text {
 			assert.Containsf(responseBody, fragment, "couldn't find %q in response body", fragment)
 		}
+		return
 	}
+
+	// Otherwise, assert that at least one fragment is present in responseBody
+	for _, fragment := range text {
+		if strings.Contains(responseBody, fragment) {
+			assert.Containsf(responseBody, fragment, "couldn't find %q in response body", fragment)
+			return
+		}
+	}
+
+	assert.Containsf(text, responseBody, "couldn't find any values from list %v in response body", text)
 }
 
 func assertErrorResponseContains(t *testing.T, assert *assert.Assertions, url string, wantCode int, text string) {

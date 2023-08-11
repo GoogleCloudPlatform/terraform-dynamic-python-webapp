@@ -45,7 +45,8 @@ func AssertExample(t *testing.T) {
 		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
 		t.Log("Firebase Hosting should be running at ", firebase_url)
-		
+
+		// Patch: Adding in oneOf bool param to allow check of at least one of the strings should match
 		assertResponseContains(t, assert, firebase_url, true, "Your application is still deploying", "<title>Avocano</title>")
 	})
 
@@ -119,8 +120,8 @@ func AssertExample(t *testing.T) {
 	example.Test()
 }
 
-// TODO: Added oneOf to add in capability to assert if at least one string is present within response.
-// Verify better solution to handle race between placeholder + final app deployment
+// TODO: Added a patch (oneOf) to add in capability to assert if at least one string is present within response.
+// Verify better solution to handle race between placeholder + final app deployment.
 // Ref: https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/143
 func assertResponseContains(t *testing.T, assert *assert.Assertions, url string, oneOf bool, text ...string) {
 	t.Helper()

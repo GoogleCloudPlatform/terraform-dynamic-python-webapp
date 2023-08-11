@@ -47,7 +47,7 @@ func AssertExample(t *testing.T) {
 		t.Log("Firebase Hosting should be running at ", firebase_url)
 
 		// Patch: Adding in oneOf bool param to allow check of at least one of the strings should match
-		assertResponseContains(t, assert, firebase_url, true, "Your application is still deploying", "<title>Avocano</title>")
+		assertResponseContains(t, assert, firebase_url, true, "<title>Application still deploying</title>", "<title>Avocano</title>")
 	})
 
 	example.DefineVerify(func(assert *assert.Assertions) {

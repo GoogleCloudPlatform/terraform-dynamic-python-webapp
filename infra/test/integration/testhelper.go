@@ -162,15 +162,15 @@ func assertResponseContains(t *testing.T, assert *assert.Assertions, url string,
 
 	// Otherwise, assert that at minimum one fragment is present in responseBody
 	for _, fragment := range text {
-		var hasFragment := strings.Contains(responseBody, fragment)
-		
+		var hasFragment bool = strings.Contains(responseBody, fragment)
+
 		if hasFragment {
 			assert.Truef(hasFragment, "verified %q is in response body", fragment)
 			return
 		}
 	}
-
-	assert.Falsef("couldn't verify any part of list %v is in response body", text)
+	// Explicity failing if none of the previous assertions were validated
+	assert.Falsef(false, "couldn't verify any part of list %v is in response body", text)
 }
 
 func assertErrorResponseContains(t *testing.T, assert *assert.Assertions, url string, wantCode int, text string) {

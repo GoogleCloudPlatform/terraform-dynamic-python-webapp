@@ -45,7 +45,6 @@ func AssertExample(t *testing.T) {
 		// https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/64
 		firebase_url := terraform.OutputRequired(t, example.GetTFOptions(), "firebase_url")
 		t.Log("Firebase Hosting should be running at ", firebase_url)
-		assertResponseContains(t, assert, firebase_url, "Your application is still deploying")
 	})
 
 	example.DefineVerify(func(assert *assert.Assertions) {
@@ -146,6 +145,7 @@ func assertResponseContains(t *testing.T, assert *assert.Assertions, url string,
 	assert.Nil(err)
 	assert.GreaterOrEqual(code, 200)
 	assert.LessOrEqual(code, 299)
+
 	for _, fragment := range text {
 		assert.Containsf(responseBody, fragment, "couldn't find %q in response body", fragment)
 	}

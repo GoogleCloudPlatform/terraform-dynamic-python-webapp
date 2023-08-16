@@ -17,6 +17,7 @@ package test
 import (
 	"io"
 	"net/http"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -29,7 +30,11 @@ import (
 )
 
 func AssertExample(t *testing.T) {
-	example := tft.NewTFBlueprintTest(t)
+	region := regionFromEnv()
+
+	example := tft.NewTFBlueprintTest(t, tft.WithVars(map[string]interface{}{
+		"region": region,
+	}))
 
 	example.DefineApply(func(assert *assert.Assertions) {
 		example.DefaultApply(assert)
@@ -56,7 +61,6 @@ func AssertExample(t *testing.T) {
 		client_job_name := terraform.OutputRequired(t, example.GetTFOptions(), "client_job_name")
 
 		flagshipProduct := "Sparkly Avocado"
-		region := "us-central1"
 		t.Logf("Using Project ID %q", projectID)
 
 		// Delay to give deploy longer time to complete before app testing.
@@ -182,4 +186,11 @@ func delayUntilServiceDeploy(t *testing.T, projectID string, serviceName string)
 		return percent != 100, nil
 	}
 	utils.Poll(t, fn, 24, 10*time.Second)
+}
+
+func regionFromEnv() string {
+	if r := os.Getenv("GOOGLE_CLOUD_REGION"); r != "" {
+		return r
+	}
+	return "us-central1"
 }

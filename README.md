@@ -37,7 +37,7 @@ module "dynamic-python-webapp" {
 ```
 
 Functional examples are included in the
-[examples](./examples/) directory.
+[examples](./infra/examples/) directory.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

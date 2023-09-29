@@ -1,4 +1,4 @@
-# Simple Example
+# Suffix Example
 
 This example illustrates how to use the `dynamic-python-webapp` module.
 

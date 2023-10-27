@@ -63,19 +63,19 @@ variable "init" {
 variable "image_version" {
   type        = string
   default     = "v1.9.0"
-  description = "Version of the Container Registry image to use"
+  description = "Version of the container image to use"
 }
 
 variable "client_image_host" {
   type        = string
-  default     = "hsa-public/terraform-python-dynamic-webapp"
-  description = "Container Registry that hosts the client image (PROJECT_ID[/folder])"
+  default     = "hsa-public/containers/terraform-python-dynamic-webapp"
+  description = "Artifact Registry that hosts the client image (PROJECT_ID/registry[/folder])"
 }
 
 variable "server_image_host" {
   type        = string
-  default     = "hsa-public/terraform-python-dynamic-webapp"
-  description = "Container Registry that hosts the server image (PROJECT_ID[/folder])"
+  default     = "hsa-public/containers/terraform-python-dynamic-webapp"
+  description = "Artifact Registry that hosts the server image (PROJECT_ID/registry[/folder])"
 }
 
 # Optional customisation

@@ -69,13 +69,13 @@ variable "image_version" {
 variable "client_image_host" {
   type        = string
   default     = "hsa-public/containers/terraform-python-dynamic-webapp"
-  description = "Artifact Registry that hosts the client image (PROJECT_ID/registry[/folder])"
+  description = "Artifact Registry that hosts the client image (PROJECT_ID/registry)"
 }
 
 variable "server_image_host" {
   type        = string
   default     = "hsa-public/containers/terraform-python-dynamic-webapp"
-  description = "Artifact Registry that hosts the server image (PROJECT_ID/registry[/folder])"
+  description = "Artifact Registry that hosts the server image (PROJECT_ID/registry)"
 }
 
 # Optional customisation

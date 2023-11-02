@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-# Base images supplied pre-built.
+# Base images supplied pre-built
 
 locals {
   server_image      = "us-docker.pkg.dev/${var.server_image_host}/server:${var.image_version}"

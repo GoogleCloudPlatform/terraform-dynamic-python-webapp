@@ -10,6 +10,7 @@ This example uses a randomly generated suffix when naming resources to support m
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | project\_id | The ID of the project in which to provision resources. | `string` | n/a | yes |
+| region | Google Cloud Region | `string` | `"us-central1"` | no |
 
 ## Outputs
 

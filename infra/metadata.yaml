@@ -51,7 +51,7 @@ spec:
   interfaces:
     variables:
       - name: client_image_host
-        description: Artifact Registry that hosts the client image (PROJECT_ID/registry[/folder])
+        description: Artifact Registry that hosts the client image (PROJECT_ID/registry)
         varType: string
         defaultValue: hsa-public/containers/terraform-python-dynamic-webapp
       - name: database_name
@@ -96,7 +96,7 @@ spec:
         varType: string
         defaultValue: us-central1
       - name: server_image_host
-        description: Artifact Registry that hosts the server image (PROJECT_ID/registry[/folder])
+        description: Artifact Registry that hosts the server image (PROJECT_ID/registry)
         varType: string
         defaultValue: hsa-public/containers/terraform-python-dynamic-webapp
       - name: service_name

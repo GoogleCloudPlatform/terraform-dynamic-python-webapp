@@ -18,5 +18,6 @@ module "dynamic-python-webapp" {
   source = "../.."
 
   project_id  = var.project_id
+  region      = var.region
   enable_apis = false
 }

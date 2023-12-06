@@ -68,7 +68,8 @@ substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
   _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1'
 
-# Temporary: Test environment variable config.
-options:
-  env:
-    - 'GOOGLE_CLOUD_REGION=us-west2'
+# Uncomment to specify the deployment region.
+# Resources default to 'us-central1' without a value assigned here.
+# options:
+#  env:
+#    - 'GOOGLE_CLOUD_REGION=us-central1'

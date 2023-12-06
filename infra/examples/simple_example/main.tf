@@ -15,7 +15,7 @@
  */
 
 module "dynamic-python-webapp" {
-  source        = "../.."
+  source = "../.."
 
   project_id    = var.project_id
   region        = var.region

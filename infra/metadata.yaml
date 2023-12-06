@@ -27,7 +27,7 @@ spec:
       dir: /infra
     actuationTool:
       flavor: Terraform
-      version: '>= 0.13'
+      version: ">= 0.13"
     description:
       tagline: This is an auto-generated module.
       detailed: |-
@@ -41,125 +41,126 @@ spec:
       preDeploy: To deploy this blueprint you must have an active billing account and billing permissions.
   content:
     documentation:
-    - title: Hosting a Static Website
-      url: https://cloud.google.com/storage/docs/hosting-static-website
+      - title: Hosting a Static Website
+        url: https://cloud.google.com/storage/docs/hosting-static-website
     examples:
-    - name: simple_example
-      location: examples/simple_example
-    - name: suffix_example
-      location: examples/suffix_example
+      - name: simple_example
+        location: examples/simple_example
+      - name: suffix_example
+        location: examples/suffix_example
   interfaces:
     variables:
-    - name: client_image_host
-      description: Container Registry that hosts the client image (PROJECT_ID[/folder])
-      varType: string
-      defaultValue: hsa-public/terraform-python-dynamic-webapp
-    - name: database_name
-      description: Cloud SQL database name
-      varType: string
-      defaultValue: django
-    - name: database_username
-      description: Cloud SQL database name
-      varType: string
-      defaultValue: server
-    - name: enable_apis
-      description: Whether or not to enable underlying apis in this solution.
-      varType: bool
-      defaultValue: true
-    - name: image_version
-      description: Version of the Container Registry image to use
-      varType: string
-      defaultValue: v1.9.0
-    - name: init
-      description: Initialize database?
-      varType: bool
-      defaultValue: true
-    - name: instance_name
-      description: Cloud SQL Instance name
-      varType: string
-      defaultValue: psql
-    - name: labels
-      description: A set of key/value label pairs to assign to the resources deployed by this blueprint.
-      varType: map(string)
-      defaultValue: {}
-    - name: project_id
-      description: Google Cloud Project ID
-      varType: string
-      required: true
-    - name: random_suffix
-      description: Add random suffix to VM name
-      varType: string
-      defaultValue: true
-    - name: region
-      description: Google Cloud Region
-      varType: string
-      defaultValue: us-central1
-    - name: server_image_host
-      description: Container Registry that hosts the server image (PROJECT_ID[/folder])
-      varType: string
-      defaultValue: hsa-public/terraform-python-dynamic-webapp
-    - name: service_name
-      description: Cloud Run service name
-      varType: string
-      defaultValue: server
-    - name: zone
-      description: GCP zone for provisioning zonal resources.
-      varType: string
-      defaultValue: us-central1-c
+      - name: client_image_host
+        description: Artifact Registry that hosts the client image (PROJECT_ID/registry[/folder])
+        varType: string
+        defaultValue: hsa-public/containers/terraform-python-dynamic-webapp
+      - name: database_name
+        description: Cloud SQL database name
+        varType: string
+        defaultValue: django
+      - name: database_username
+        description: Cloud SQL database name
+        varType: string
+        defaultValue: server
+      - name: enable_apis
+        description: Whether or not to enable underlying apis in this solution.
+        varType: bool
+        defaultValue: true
+      - name: image_version
+        description: Version of the container image to use
+        varType: string
+        defaultValue: v1.9.0
+      - name: init
+        description: Initialize database?
+        varType: bool
+        defaultValue: true
+      - name: instance_name
+        description: Cloud SQL Instance name
+        varType: string
+        defaultValue: psql
+      - name: labels
+        description: A set of key/value label pairs to assign to the resources deployed by this blueprint.
+        varType: map(string)
+        defaultValue: {}
+      - name: project_id
+        description: Google Cloud Project ID
+        varType: string
+        defaultValue: null
+        required: true
+      - name: random_suffix
+        description: Add random suffix to VM name
+        varType: string
+        defaultValue: true
+      - name: region
+        description: Google Cloud Region
+        varType: string
+        defaultValue: us-central1
+      - name: server_image_host
+        description: Artifact Registry that hosts the server image (PROJECT_ID/registry[/folder])
+        varType: string
+        defaultValue: hsa-public/containers/terraform-python-dynamic-webapp
+      - name: service_name
+        description: Cloud Run service name
+        varType: string
+        defaultValue: server
+      - name: zone
+        description: GCP zone for provisioning zonal resources.
+        varType: string
+        defaultValue: us-central1-c
     outputs:
-    - name: client_job_name
-      description: Name of the Cloud Run Job, deploying the front end
-    - name: django_admin_password
-      description: Django Admin password
-    - name: django_admin_url
-      description: Django Admin URL
-    - name: firebase_url
-      description: Firebase URL
-    - name: neos_toc_url
-      description: Neos Tutorial URL
-    - name: server_service_name
-      description: Name of the Cloud Run service, hosting the server API
-    - name: usage
-      description: Next steps for usage
+      - name: client_job_name
+        description: Name of the Cloud Run Job, deploying the front end
+      - name: django_admin_password
+        description: Django Admin password
+      - name: django_admin_url
+        description: Django Admin URL
+      - name: firebase_url
+        description: Firebase URL
+      - name: neos_toc_url
+        description: Neos Tutorial URL
+      - name: server_service_name
+        description: Name of the Cloud Run service, hosting the server API
+      - name: usage
+        description: Next steps for usage
   requirements:
     roles:
-    - level: Project
-      roles:
-      - roles/cloudbuild.builds.editor
-      - roles/cloudsql.admin
-      - roles/compute.admin
-      - roles/compute.networkAdmin
-      - roles/firebase.managementServiceAgent
-      - roles/firebasehosting.admin
-      - roles/iam.serviceAccountAdmin
-      - roles/iam.serviceAccountUser
-      - roles/pubsub.editor
-      - roles/resourcemanager.projectIamAdmin
-      - roles/run.admin
-      - roles/secretmanager.admin
-      - roles/storage.admin
+      - level: Project
+        roles:
+          - roles/cloudbuild.builds.editor
+          - roles/cloudsql.admin
+          - roles/compute.admin
+          - roles/compute.networkAdmin
+          - roles/firebase.managementServiceAgent
+          - roles/firebasehosting.admin
+          - roles/iam.serviceAccountAdmin
+          - roles/iam.serviceAccountUser
+          - roles/pubsub.editor
+          - roles/resourcemanager.projectIamAdmin
+          - roles/run.admin
+          - roles/secretmanager.admin
+          - roles/storage.admin
     services:
-    - bigquery.googleapis.com
-    - bigquerymigration.googleapis.com
-    - bigquerystorage.googleapis.com
-    - cloudtrace.googleapis.com
-    - datastore.googleapis.com
-    - logging.googleapis.com
-    - monitoring.googleapis.com
-    - servicemanagement.googleapis.com
-    - serviceusage.googleapis.com
-    - sql-component.googleapis.com
-    - storage.googleapis.com
-    - storage-api.googleapis.com
-    - storage-component.googleapis.com
-    - artifactregistry.googleapis.com
-    - cloudbuild.googleapis.com
-    - cloudresourcemanager.googleapis.com
-    - compute.googleapis.com
-    - firebase.googleapis.com
-    - firebasehosting.googleapis.com
-    - iam.googleapis.com
-    - pubsub.googleapis.com
-    - run.googleapis.com
-    - secretmanager.googleapis.com
-    - sqladmin.googleapis.com
+      - bigquery.googleapis.com
+      - bigquerymigration.googleapis.com
+      - bigquerystorage.googleapis.com
+      - cloudtrace.googleapis.com
+      - datastore.googleapis.com
+      - logging.googleapis.com
+      - monitoring.googleapis.com
+      - servicemanagement.googleapis.com
+      - serviceusage.googleapis.com
+      - sql-component.googleapis.com
+      - storage.googleapis.com
+      - storage-api.googleapis.com
+      - storage-component.googleapis.com
+      - artifactregistry.googleapis.com
+      - cloudbuild.googleapis.com
+      - cloudresourcemanager.googleapis.com
+      - compute.googleapis.com
+      - firebase.googleapis.com
+      - firebasehosting.googleapis.com
+      - iam.googleapis.com
+      - pubsub.googleapis.com
+      - run.googleapis.com
+      - secretmanager.googleapis.com
+      - sqladmin.googleapis.com

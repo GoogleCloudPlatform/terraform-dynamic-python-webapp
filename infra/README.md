@@ -44,18 +44,18 @@ Functional examples are included in the
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| client\_image\_host | Container Registry that hosts the client image (PROJECT\_ID[/folder]) | `string` | `"hsa-public/terraform-python-dynamic-webapp"` | no |
+| client\_image\_host | Artifact Registry that hosts the client image (PROJECT\_ID/registry) | `string` | `"hsa-public/containers/terraform-python-dynamic-webapp"` | no |
 | database\_name | Cloud SQL database name | `string` | `"django"` | no |
 | database\_username | Cloud SQL database name | `string` | `"server"` | no |
 | enable\_apis | Whether or not to enable underlying apis in this solution. | `bool` | `true` | no |
-| image\_version | Version of the Container Registry image to use | `string` | `"v1.9.0"` | no |
+| image\_version | Version of the container image to use | `string` | `"v1.9.0"` | no |
 | init | Initialize database? | `bool` | `true` | no |
 | instance\_name | Cloud SQL Instance name | `string` | `"psql"` | no |
 | labels | A set of key/value label pairs to assign to the resources deployed by this blueprint. | `map(string)` | `{}` | no |
 | project\_id | Google Cloud Project ID | `string` | n/a | yes |
 | random\_suffix | Add random suffix to VM name | `string` | `true` | no |
 | region | Google Cloud Region | `string` | `"us-central1"` | no |
-| server\_image\_host | Container Registry that hosts the server image (PROJECT\_ID[/folder]) | `string` | `"hsa-public/terraform-python-dynamic-webapp"` | no |
+| server\_image\_host | Artifact Registry that hosts the server image (PROJECT\_ID/registry) | `string` | `"hsa-public/containers/terraform-python-dynamic-webapp"` | no |
 | service\_name | Cloud Run service name | `string` | `"server"` | no |
 | zone | GCP zone for provisioning zonal resources. | `string` | `"us-central1-c"` | no |
 

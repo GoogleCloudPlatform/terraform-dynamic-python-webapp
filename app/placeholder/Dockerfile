@@ -15,7 +15,7 @@
 
 # Execute with "docker run --build-arg PROJECT_ID=$PROJECT_ID ..."
 ARG PROJECT_ID=YOURPROJECTID
-FROM gcr.io/$PROJECT_ID/firebase
+FROM us-docker.pkg.dev/$PROJECT_ID/containers/firebase
 WORKDIR /app
 
 RUN apk add gettext curl

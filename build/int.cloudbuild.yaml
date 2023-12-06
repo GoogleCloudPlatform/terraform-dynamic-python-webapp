@@ -71,4 +71,4 @@ substitutions:
 # Temporary: Test environment variable config.
 options:
   env:
-    - 'GOOGLE_CLOUD_REGION="us-west1"'
+    - 'GOOGLE_CLOUD_REGION=us-west2'

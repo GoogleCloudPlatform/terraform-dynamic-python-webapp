@@ -8,6 +8,29 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.8.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.7.2...v0.8.0) (2024-01-22)
+
+
+### Features
+
+* **deps:** Update Terraform Google Provider to &gt;= 3.53, &lt; 4.84.1 ([#151](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/151)) ([96c5c62](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/96c5c6211079943c199ec770e629c2419293f68d))
+* **deps:** Update Terraform Google Provider to &gt;= 3.53, &lt; 5.4.1 ([#172](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/172)) ([2fd1adb](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/2fd1adb1be7c6724b040d7c1f3d0f00c443b637e))
+* **deps:** Update Terraform Google Provider to &gt;= 3.53, &lt; 5.5.1 ([#174](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/174)) ([811e458](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/811e45825e38ec79793e3d2cd794b5ffdc173904))
+* **deps:** Update Terraform Google Provider to &gt;= 3.53, &lt; 5.6.1 ([#177](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/177)) ([4a254ef](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/4a254efc7866e533ed829c63c594246857536f07))
+* **deps:** Update Terraform Google Provider to &gt;= 3.53, &lt; 5.7.1 ([#178](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/178)) ([50dbfd0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/50dbfd07c892023f2345d2b2c6c50f5ba0769203))
+* **deps:** Update Terraform Google Provider to &gt;= 3.53, &lt; 5.8.1 ([#183](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/183)) ([609f306](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/609f30622e67503c5a13acd9f7a2697296e33557))
+* **deps:** Update Terraform Google Provider to v5 (major) ([#155](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/155)) ([047f8bf](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/047f8bf282344152d4ac725237a60963d16fea95))
+* Migrate to Artifact Registry ([#165](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/165)) ([b58821a](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/b58821a4f12d9dadadda433f5d08c0b63a8c3e14))
+
+
+### Bug Fixes
+
+* **deps:** update go modules ([#136](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/136)) ([0bc5832](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/0bc5832a128e215380bcccd940ba7016c35a40ab))
+* **deps:** Update Terraform Google Provider to &gt;= 3.53, &lt; 6 ([#191](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/191)) ([1182eef](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/1182eef28e5971a569ad9f77bd8e511cc71ed4f1))
+* go mod tidy ([#187](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/187)) ([80d2b76](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/80d2b7694ecd4cf40855ef16e797af5f989e51c4))
+* **issue-143:** resolve periodic assertion failures  ([#144](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/144)) ([6cb3d5c](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/6cb3d5c3cbd15899fa5974110907762903d0de25))
+* update int gcb cft tools to match ([#188](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/188)) ([4d1e831](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/4d1e83121e6badb034116c4c8e2a9e112ee58e40))
+
 ## [0.7.2](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.7.1...v0.7.2) (2023-08-01)
 
 

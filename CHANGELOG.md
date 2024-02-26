@@ -8,6 +8,15 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.8.1](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.8.0...v0.8.1) (2024-02-23)
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test to v0.12.0 ([#203](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/203)) ([92a3cd0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/92a3cd01f515a3ec3897eddf2ac2ef87e96d56bd))
+* **deps:** Update module github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test to v0.12.1 ([#205](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/205)) ([4005f91](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/4005f9107273814f87ed05242ca739c7eb2e6c31))
+* **deps:** Update module github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test to v0.13.0 ([#206](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/206)) ([cbcbcfc](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/cbcbcfcd192f44adb196eb6c74efb80a4ef43cf1))
+
 ## [0.8.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.7.2...v0.8.0) (2024-01-22)
 
 

@@ -1,0 +1,16 @@
+roles/cloudbuild.builds.editor
+roles/cloudsql.admin
+roles/compute.admin
+roles/compute.networkAdmin
+roles/config.agent
+roles/firebase.admin
+roles/firebase.managementServiceAgent
+roles/firebasehosting.admin
+roles/iam.serviceAccountAdmin
+roles/iam.serviceAccountUser
+roles/pubsub.editor
+roles/resourcemanager.projectIamAdmin
+roles/run.admin
+roles/secretmanager.admin
+roles/serviceusage.serviceUsageAdmin
+roles/storage.admin

@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.9.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.8.1...v0.9.0) (2024-04-22)
+
+
+### Features
+
+* add support for make it mine and deploy via cloudbuild trigger ([#212](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/212)) ([5d5851c](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/5d5851cb307e2e7e6a9e12500d7479dbd821389f))
+
 ## [0.8.1](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.8.0...v0.8.1) (2024-02-23)
 
 

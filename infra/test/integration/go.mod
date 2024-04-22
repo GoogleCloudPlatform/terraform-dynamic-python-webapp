@@ -2,7 +2,7 @@ module github.com/terraform-google-modules/dynamic-python-webapp/test/integratio
 
 go 1.21
 
-toolchain go1.21.5
+toolchain go1.21.9
 
 require (
 	github.com/GoogleCloudPlatform/cloud-foundation-toolkit/infra/blueprint-test v0.14.0

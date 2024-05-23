@@ -66,7 +66,7 @@ tags:
 - 'integration'
 substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
-  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.20'
+  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.21'
 
 # Uncomment to specify the deployment region.
 # Resources default to 'us-central1' without a value assigned here.

@@ -48,7 +48,7 @@ Functional examples are included in the
 | database\_name | Cloud SQL database name | `string` | `"django"` | no |
 | database\_username | Cloud SQL database name | `string` | `"server"` | no |
 | enable\_apis | Whether or not to enable underlying apis in this solution. | `bool` | `true` | no |
-| image\_version | Version of the container image to use | `string` | `"v1.9.0"` | no |
+| image\_version | Version of the container image to use | `string` | `"v1.10.3"` | no |
 | init | Initialize database? | `bool` | `true` | no |
 | instance\_name | Cloud SQL Instance name | `string` | `"psql"` | no |
 | labels | A set of key/value label pairs to assign to the resources deployed by this blueprint. | `map(string)` | `{}` | no |

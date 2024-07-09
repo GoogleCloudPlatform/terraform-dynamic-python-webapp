@@ -8,6 +8,13 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.9.1](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.9.0...v0.9.1) (2024-07-09)
+
+
+### Bug Fixes
+
+* add depends_on between cloud run service and IAM ([#244](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/244)) ([fd3502d](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/fd3502df4d6af1de49f760eb304942e03cffc38f))
+
 ## [0.9.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.8.1...v0.9.0) (2024-04-22)
 
 

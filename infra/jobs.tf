@@ -21,6 +21,8 @@ resource "google_cloud_run_v2_job" "migrate" {
 
   labels = var.labels
 
+  deletion_protection = false
+
   template {
     template {
       service_account = google_service_account.automation.email

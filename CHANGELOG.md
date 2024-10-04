@@ -8,6 +8,20 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.10.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.9.2...v0.10.0) (2024-10-04)
+
+
+### Features
+
+* **deps:** Update Terraform Google Provider to v6 (major) ([#264](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/264)) ([c52aacf](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/c52aacff83af08961a8064ee3b145e0c5893a974))
+* Set Terraform required_version to &gt;= 1.5 ([#267](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/267)) ([5cc3fc4](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/5cc3fc4ffc9fce01684be7b82e6a92f3e4af3740))
+* update avocano to v1.12.0 ([#277](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/277)) ([b6f0eee](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/b6f0eeee3c2552c0cb64af4f8693d0b66544868f))
+
+
+### Bug Fixes
+
+* update minimum provider, deletion_protection field for cloud run ([#276](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/276)) ([190503c](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/190503c9db3d26e009d822b9b3f55514387d7267))
+
 ## [0.9.2](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.9.1...v0.9.2) (2024-08-09)
 
 

@@ -60,7 +60,7 @@ func AssertExample(t *testing.T) {
 		server_service_name := terraform.OutputRequired(t, example.GetTFOptions(), "server_service_name")
 		client_job_name := terraform.OutputRequired(t, example.GetTFOptions(), "client_job_name")
 
-		flagshipProduct := "Sparkly Avocado"
+		flagshipProduct := "Sparkly Avocado Test"
 		t.Logf("Using Project ID %q", projectID)
 
 		// Delay to give deploy longer time to complete before app testing.

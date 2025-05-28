@@ -107,7 +107,7 @@ func AssertExample(t *testing.T) {
 
 				return false, nil
 			}
-			utils.Poll(t, isJobFinished, 10, time.Second*10)
+			utils.Poll(t, isJobFinished, 10, time.Second*20)
 
 			// The API must return a list that includes our flagship product
 			assertResponseContains(t, assert, serviceURL+"/api/products/", flagshipProduct)

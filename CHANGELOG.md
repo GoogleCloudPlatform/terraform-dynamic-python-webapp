@@ -8,6 +8,18 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.11.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.10.0...v0.11.0) (2025-08-28)
+
+
+### Features
+
+* **deps:** Update Terraform Google Provider to v7 (major) ([#383](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/383)) ([348e181](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/348e1813fd813dfbb0b47477e1ce9aac7d5b20ef))
+
+
+### Bug Fixes
+
+* extend timeout waiting for job completion ([#348](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/348)) ([8f3f278](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/8f3f278eeb8dbdac3cc1e94644880aed985cdfec))
+
 ## [0.10.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.9.2...v0.10.0) (2024-10-04)
 
 

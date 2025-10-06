@@ -62,7 +62,7 @@ variable "init" {
 
 variable "image_version" {
   type        = string
-  default     = "v1.13.9"
+  default     = "v1.13.10"
   description = "Version of the container image to use"
 }
 

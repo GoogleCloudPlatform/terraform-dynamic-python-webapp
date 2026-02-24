@@ -51,12 +51,10 @@ jobs:
         env:
           ENABLE_BPMETADATA: 1
           STEPS_VARIABLES_OUTPUTS_DEV_TOOLS: ${{ steps.variables.outputs.dev-tools }}
-
       - run: docker run --rm -e ENABLE_BPMETADATA -v ${{ github.workspace }}:/workspace ${STEPS_VARIABLES_OUTPUTS_DEV_TOOLS} /usr/local/bin/test_lint.sh
         env:
           ENABLE_BPMETADATA: 1
           STEPS_VARIABLES_OUTPUTS_DEV_TOOLS: ${{ steps.variables.outputs.dev-tools }}
-
   commitlint:
     runs-on: ubuntu-latest
     steps:

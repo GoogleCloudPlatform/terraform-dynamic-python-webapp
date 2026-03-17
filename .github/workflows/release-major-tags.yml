@@ -48,10 +48,15 @@ jobs:
         if: ${{ steps.parse-major.outputs.result }}
       - name: delete existing major tag
         run: |
-          (git tag -d ${{ steps.parse-major.outputs.result }} && git push origin :${{ steps.parse-major.outputs.result }}) || true
+          (git tag -d ${STEPS_PARSE_MAJOR_OUTPUTS_RESULT} && git push origin :${STEPS_PARSE_MAJOR_OUTPUTS_RESULT}) || true
         if: ${{ steps.parse-major.outputs.result }}
+        env:
+          STEPS_PARSE_MAJOR_OUTPUTS_RESULT: ${{ steps.parse-major.outputs.result }}
       - name: create major tag
         run: |
-          git tag ${{ steps.parse-major.outputs.result }} ${{ github.event.GITHUB_REF }}
+          git tag ${STEPS_PARSE_MAJOR_OUTPUTS_RESULT} ${GITHUB_EVENT_GITHUB_REF}
           git push origin --tags
         if: ${{ steps.parse-major.outputs.result }}
+        env:
+          STEPS_PARSE_MAJOR_OUTPUTS_RESULT: ${{ steps.parse-major.outputs.result }}
+          GITHUB_EVENT_GITHUB_REF: ${{ github.event.GITHUB_REF }}

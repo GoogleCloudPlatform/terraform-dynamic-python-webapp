@@ -87,6 +87,12 @@ resource "google_cloud_run_v2_service" "server" {
   depends_on = [
     google_secret_manager_secret_version.django_settings
   ]
+
+  lifecycle {
+    ignore_changes = [
+      template[0].scaling,
+    ]
+  }
 }
 
 

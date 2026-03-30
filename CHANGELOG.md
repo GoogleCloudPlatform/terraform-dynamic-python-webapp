@@ -8,6 +8,21 @@ and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 This changelog is generated automatically based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
+## [0.11.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.10.0...v0.11.0) (2026-03-30)
+
+
+### Features
+
+* **deps:** Update Terraform Google Provider to v7 (major) ([#383](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/383)) ([348e181](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/348e1813fd813dfbb0b47477e1ce9aac7d5b20ef))
+* Migrate gsutil usage to gcloud storage ([#425](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/425)) ([1511153](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/1511153ef2a18274dc8833ffc95b1e0adf5ccbf6))
+
+
+### Bug Fixes
+
+* extend timeout waiting for job completion ([#348](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/348)) ([8f3f278](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/8f3f278eeb8dbdac3cc1e94644880aed985cdfec))
+* prevent scaling plan changes from blocking CI ([#433](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/433)) ([bf3262d](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/bf3262d88658a2f2c79ed7900a9f45242c1a38d8))
+* Refactor Github Action per b/485167538 ([#431](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/issues/431)) ([81852a6](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/commit/81852a6854f8c63e7113f1464faf339c8475d030))
+
 ## [0.10.0](https://github.com/GoogleCloudPlatform/terraform-dynamic-python-webapp/compare/v0.9.2...v0.10.0) (2024-10-04)
 
 
